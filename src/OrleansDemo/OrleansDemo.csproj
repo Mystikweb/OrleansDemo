@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461;</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Base_ClusterConfiguration.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Base_ClusterConfiguration.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0-beta1" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.0-beta1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Patterns\Aggregate\" />
+    <Folder Include="Patterns\Registry\" />
+    <Folder Include="Providers\" />
+  </ItemGroup>
+
+</Project>

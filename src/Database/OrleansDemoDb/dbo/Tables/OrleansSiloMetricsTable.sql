@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[OrleansSiloMetricsTable] (
+    [DeploymentId]                NVARCHAR (150) NOT NULL,
+    [SiloId]                      NVARCHAR (150) NOT NULL,
+    [Timestamp]                   DATETIME2 (3)  DEFAULT (getutcdate()) NOT NULL,
+    [Address]                     VARCHAR (45)   NOT NULL,
+    [Port]                        INT            NOT NULL,
+    [Generation]                  INT            NOT NULL,
+    [HostName]                    NVARCHAR (150) NOT NULL,
+    [GatewayAddress]              VARCHAR (45)   NOT NULL,
+    [GatewayPort]                 INT            NOT NULL,
+    [CpuUsage]                    FLOAT (53)     NOT NULL,
+    [MemoryUsage]                 BIGINT         NOT NULL,
+    [SendQueueLength]             INT            NOT NULL,
+    [ReceiveQueueLength]          INT            NOT NULL,
+    [SentMessages]                BIGINT         NOT NULL,
+    [ReceivedMessages]            BIGINT         NOT NULL,
+    [ActivationCount]             INT            NOT NULL,
+    [RecentlyUsedActivationCount] INT            NOT NULL,
+    [RequestQueueLength]          BIGINT         NOT NULL,
+    [IsOverloaded]                BIT            NOT NULL,
+    [ClientCount]                 BIGINT         NOT NULL,
+    CONSTRAINT [PK_SiloMetricsTable_DeploymentId_SiloId] PRIMARY KEY CLUSTERED ([DeploymentId] ASC, [SiloId] ASC),
+    CONSTRAINT [FK_SiloMetricsTable_MembershipVersionTable_DeploymentId] FOREIGN KEY ([DeploymentId]) REFERENCES [dbo].[OrleansMembershipVersionTable] ([DeploymentId])
+);
+
