@@ -67,9 +67,11 @@
     <Folder Include="Security\Roles" />
     <Folder Include="Security\Users" />
     <Folder Include="Security\Roles\Database Roles" />
-    <Folder Include="Server" />
-    <Folder Include="Server\Security" />
-    <Folder Include="Server\Security\Logins" />
+    <Folder Include="Server Objects" />
+    <Folder Include="Server Objects\Security" />
+    <Folder Include="Server Objects\Security\Logins" />
+    <Folder Include="Configuration" />
+    <Folder Include="Configuration\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Cluster\Tables\OrleansClientMetricsTable.sql" />
@@ -80,7 +82,13 @@
     <Build Include="Security\Schemas\Cluster.sql" />
     <Build Include="Security\Roles\Database Roles\ClusterManagement.sql" />
     <Build Include="Security\Users\ClusterManager.sql" />
-    <Build Include="Server\Security\Logins\ClusterManager.sql" />
+    <Build Include="Server Objects\Security\Logins\ClusterManager.sql" />
+    <Build Include="Server Objects\Security\Logins\DeviceManager.sql" />
+    <Build Include="Security\Roles\Database Roles\ConfigurationManagement.sql" />
+    <Build Include="Security\Users\DeviceManager.sql" />
+    <Build Include="Security\Schemas\Configuration.sql" />
+    <Build Include="Configuration\Tables\Device.sql" />
+    <Build Include="Configuration\Tables\DeviceType.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />

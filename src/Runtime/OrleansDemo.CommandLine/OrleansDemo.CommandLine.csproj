@@ -9,4 +9,10 @@
     <ProjectReference Include="..\..\OrleansDemo.Server\OrleansDemo.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>

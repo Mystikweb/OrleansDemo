@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  orleansdemo.web:
+    image: orleansdemo.web
+    build:
+      context: ./OrleansDemo.Web
+      dockerfile: Dockerfile
+
+  orleansdemo.commandline:
+    image: orleansdemo.commandline
+    build:
+      context: ./OrleansDemo.CommandLine
+      dockerfile: Dockerfile
