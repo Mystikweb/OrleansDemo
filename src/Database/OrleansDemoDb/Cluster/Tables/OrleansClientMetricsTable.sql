@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[OrleansClientMetricsTable] (
+﻿CREATE TABLE [Cluster].[OrleansClientMetricsTable] (
     [DeploymentId]          NVARCHAR (150) NOT NULL,
     [ClientId]              NVARCHAR (150) NOT NULL,
     [Timestamp]             DATETIME2 (3)  DEFAULT (getutcdate()) NOT NULL,

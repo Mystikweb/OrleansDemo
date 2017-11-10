@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[OrleansStatisticsTable] (
+﻿CREATE TABLE [Cluster].[OrleansStatisticsTable] (
     [OrleansStatisticsTableId] INT             IDENTITY (1, 1) NOT NULL,
     [DeploymentId]             NVARCHAR (150)  NOT NULL,
     [Timestamp]                DATETIME2 (3)   DEFAULT (getutcdate()) NOT NULL,

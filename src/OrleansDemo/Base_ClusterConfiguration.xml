@@ -3,13 +3,13 @@
   <Globals>
     <SystemStore SystemStoreType="SqlServer"
                  DeploymentId="OrleansDemo"
-                 DataConnectionString="Data Source=localhost;Initial Catalog=OrleansDemoDb;Integrated Security=True;MultipleActiveResultSets=True"
+                 DataConnectionString="Server=localhost;Database=OrleansDemoDb;User Id=ClusterManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True"
                  AdoInvariant="System.Data.SqlClient" />
     <Liveness LivenessType ="SqlServer" />
     <StatisticsProviders>
       <Provider Type="Orleans.Providers.SqlServer.SqlStatisticsPublisher"
                 Name="OrleansDemoStats"
-                ConnectionString="Data Source=localhost;Initial Catalog=OrleansDemoDb;Integrated Security=True;MultipleActiveResultSets=True" />
+                ConnectionString="Server=localhost;Database=OrleansDemoDb;User Id=ClusterManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True" />
     </StatisticsProviders>
     <BootstrapProviders>
     </BootstrapProviders>
@@ -24,6 +24,6 @@
   <Defaults>
     <Networking Address="" Port="11111" />
     <ProxyingGateway Address="" Port="30000" />
-    <Statistics ProviderType="OrleansDemoStats" WriteLogStatisticsToTable="false"/>
+    <Statistics ProviderType="OrleansDemoStats" WriteLogStatisticsToTable="true"/>
   </Defaults>
 </OrleansConfiguration>

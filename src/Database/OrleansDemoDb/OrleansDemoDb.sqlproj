@@ -59,19 +59,28 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\Tables\" />
     <Folder Include="Snapshots" />
+    <Folder Include="Cluster" />
+    <Folder Include="Cluster\Tables" />
+    <Folder Include="Security" />
+    <Folder Include="Security\Schemas" />
+    <Folder Include="Security\Roles" />
+    <Folder Include="Security\Users" />
+    <Folder Include="Security\Roles\Database Roles" />
+    <Folder Include="Server" />
+    <Folder Include="Server\Security" />
+    <Folder Include="Server\Security\Logins" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\OrleansQuery.sql" />
-    <Build Include="dbo\Tables\OrleansMembershipVersionTable.sql" />
-    <Build Include="dbo\Tables\OrleansMembershipTable.sql" />
-    <Build Include="dbo\Tables\OrleansRemindersTable.sql" />
-    <Build Include="dbo\Tables\OrleansStatisticsTable.sql" />
-    <Build Include="dbo\Tables\OrleansClientMetricsTable.sql" />
-    <Build Include="dbo\Tables\OrleansSiloMetricsTable.sql" />
-    <Build Include="dbo\Tables\Storage.sql" />
+    <Build Include="Cluster\Tables\OrleansClientMetricsTable.sql" />
+    <Build Include="Cluster\Tables\OrleansMembershipTable.sql" />
+    <Build Include="Cluster\Tables\OrleansMembershipVersionTable.sql" />
+    <Build Include="Cluster\Tables\OrleansQuery.sql" />
+    <Build Include="Cluster\Tables\Storage.sql" />
+    <Build Include="Security\Schemas\Cluster.sql" />
+    <Build Include="Security\Roles\Database Roles\ClusterManagement.sql" />
+    <Build Include="Security\Users\ClusterManager.sql" />
+    <Build Include="Server\Security\Logins\ClusterManager.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />
@@ -83,5 +92,10 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Cluster\Tables\OrleansRemindersTable.sql" />
+    <Build Include="Cluster\Tables\OrleansSiloMetricsTable.sql" />
+    <Build Include="Cluster\Tables\OrleansStatisticsTable.sql" />
   </ItemGroup>
 </Project>

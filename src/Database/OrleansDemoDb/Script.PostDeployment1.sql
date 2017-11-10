@@ -10,9 +10,9 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpdateIAmAlivetimeKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'UpdateIAmAlivetimeKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'UpdateIAmAlivetimeKey','
@@ -30,9 +30,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpdateIAmAlivetimeKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'InsertMembershipVersionKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'InsertMembershipVersionKey','
@@ -55,9 +55,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'InsertMembershipKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'InsertMembershipKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'InsertMembershipKey','
@@ -119,9 +119,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpdateMembershipKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'UpdateMembershipKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'UpdateMembershipKey','
@@ -153,9 +153,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpsertReminderRowKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'UpsertReminderRowKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'UpsertReminderRowKey','
@@ -198,9 +198,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpsertReportClientMetricsKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'UpsertReportClientMetricsKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'UpsertReportClientMetricsKey','
@@ -254,9 +254,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'UpsertSiloMetricsKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'UpsertSiloMetricsKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'UpsertSiloMetricsKey','
@@ -334,9 +334,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'GatewaysQueryKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'GatewaysQueryKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'GatewaysQueryKey','
@@ -353,9 +353,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'MembershipReadRowKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'MembershipReadRowKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'MembershipReadRowKey','
@@ -384,9 +384,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'MembershipReadAllKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'MembershipReadAllKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'MembershipReadAllKey','
@@ -411,9 +411,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'DeleteMembershipTableEntriesKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'DeleteMembershipTableEntriesKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'DeleteMembershipTableEntriesKey','
@@ -424,9 +424,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ReadReminderRowsKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ReadReminderRowsKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'ReadReminderRowsKey','
@@ -443,9 +443,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ReadReminderRowKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ReadReminderRowKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'ReadReminderRowKey','
@@ -463,9 +463,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ReadRangeRows1Key')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ReadRangeRows1Key')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'ReadRangeRows1Key','
@@ -483,9 +483,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ReadRangeRows2Key')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ReadRangeRows2Key')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'ReadRangeRows2Key','
@@ -503,9 +503,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'InsertOrleansStatisticsKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'InsertOrleansStatisticsKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'InsertOrleansStatisticsKey','
@@ -532,9 +532,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'DeleteReminderRowKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'DeleteReminderRowKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'DeleteReminderRowKey','
@@ -548,9 +548,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'DeleteReminderRowsKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'DeleteReminderRowsKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'DeleteReminderRowsKey','
@@ -560,9 +560,9 @@ BEGIN
 	');
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'WriteToStorageKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'WriteToStorageKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'WriteToStorageKey',
@@ -670,9 +670,9 @@ BEGIN
 	);
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ClearStorageKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ClearStorageKey')
 BEGIN
-INSERT INTO OrleansQuery(QueryKey, QueryText)
+INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 VALUES
 (
 	'ClearStorageKey',
@@ -703,9 +703,9 @@ VALUES
 );
 END
 
-IF NOT EXISTS (SELECT * FROM [OrleansQuery] WHERE [QueryKey] = 'ReadFromStorageKey')
+IF NOT EXISTS (SELECT * FROM [Cluster].[OrleansQuery] WHERE [QueryKey] = 'ReadFromStorageKey')
 BEGIN
-	INSERT INTO OrleansQuery(QueryKey, QueryText)
+	INSERT INTO [Cluster].[OrleansQuery](QueryKey, QueryText)
 	VALUES
 	(
 		'ReadFromStorageKey',

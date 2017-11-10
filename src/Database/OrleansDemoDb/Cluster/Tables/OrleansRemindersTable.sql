@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[OrleansRemindersTable] (
+﻿CREATE TABLE [Cluster].[OrleansRemindersTable] (
     [ServiceId]    NVARCHAR (150) NOT NULL,
     [GrainId]      VARCHAR (150)  NOT NULL,
     [ReminderName] NVARCHAR (150) NOT NULL,

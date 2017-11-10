@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Storage] (
+﻿CREATE TABLE [Cluster].[Storage] (
     [GrainIdHash]            INT             NOT NULL,
     [GrainIdN0]              BIGINT          NOT NULL,
     [GrainIdN1]              BIGINT          NOT NULL,
@@ -15,10 +15,10 @@
 
 
 GO
-ALTER TABLE [dbo].[Storage] SET (LOCK_ESCALATION = DISABLE);
+ALTER TABLE [Cluster].[Storage] SET (LOCK_ESCALATION = DISABLE);
 
 
 GO
 CREATE NONCLUSTERED INDEX [IX_Storage]
-    ON [dbo].[Storage]([GrainIdHash] ASC, [GrainTypeHash] ASC);
+    ON [Cluster].[Storage]([GrainIdHash] ASC, [GrainTypeHash] ASC);
 
