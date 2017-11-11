@@ -89,6 +89,8 @@
     <Build Include="Security\Schemas\Configuration.sql" />
     <Build Include="Configuration\Tables\Device.sql" />
     <Build Include="Configuration\Tables\DeviceType.sql" />
+    <Build Include="Server Objects\Security\Logins\ClusterClient.sql" />
+    <Build Include="Security\Users\ClusterClient.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />
