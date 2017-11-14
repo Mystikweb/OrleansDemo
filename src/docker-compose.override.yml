@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  orleansdemo.web:
+  orleansdemo.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:

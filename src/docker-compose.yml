@@ -8,8 +8,8 @@ services:
       context: ./Runtime/OrleansDemo.CommandLine
       dockerfile: Dockerfile
 
-  orleansdemo.web:
-    image: orleansdemo.web
+  orleansdemo.api:
+    image: orleansdemo.api
     build:
-      context: ./Runtime/OrleansDemo.Web
+      context: ./Runtime/OrleansDemo.API
       dockerfile: Dockerfile

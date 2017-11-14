@@ -1,0 +1,15 @@
+.app-container {
+  height: calc(100vh - 64px);
+}
+
+.app-content {
+  padding: 4px 8px;
+}
+
+.app-nav {
+  padding-top: 0;
+}
+
+.app-nav-text {
+  margin: 0 16px;
+}
