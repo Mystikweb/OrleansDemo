@@ -72,6 +72,8 @@
     <Folder Include="Server Objects\Security\Logins" />
     <Folder Include="Configuration" />
     <Folder Include="Configuration\Tables" />
+    <Folder Include="Runtime" />
+    <Folder Include="Runtime\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Cluster\Tables\OrleansClientMetricsTable.sql" />
@@ -91,6 +93,13 @@
     <Build Include="Configuration\Tables\DeviceType.sql" />
     <Build Include="Server Objects\Security\Logins\ClusterClient.sql" />
     <Build Include="Security\Users\ClusterClient.sql" />
+    <Build Include="Runtime\Tables\Device.sql" />
+    <Build Include="Security\Roles\Database Roles\DeviceRuntime.sql" />
+    <Build Include="Security\Schemas\Runtime.sql" />
+    <Build Include="Configuration\Tables\ReadingType.sql" />
+    <Build Include="Configuration\Tables\Reading.sql" />
+    <Build Include="Runtime\Tables\Reading.sql" />
+    <Build Include="Runtime\Tables\Configuration.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />
@@ -107,5 +116,8 @@
     <Build Include="Cluster\Tables\OrleansRemindersTable.sql" />
     <Build Include="Cluster\Tables\OrleansSiloMetricsTable.sql" />
     <Build Include="Cluster\Tables\OrleansStatisticsTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="OrleansDemoDb.refactorlog" />
   </ItemGroup>
 </Project>

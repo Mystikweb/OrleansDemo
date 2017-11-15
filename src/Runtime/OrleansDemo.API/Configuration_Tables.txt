@@ -1,2 +1,4 @@
 ﻿Configuration.Device
 Configuration.DeviceType
+Configuration.Reading
+Configuration.ReadingType

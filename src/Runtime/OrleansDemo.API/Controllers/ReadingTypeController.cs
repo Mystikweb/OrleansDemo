@@ -10,57 +10,57 @@ using OrleansDemo.API.Models;
 namespace OrleansDemo.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/DeviceType")]
-    public class DeviceTypeController : Controller
+    [Route("api/ReadingType")]
+    public class ReadingTypeController : Controller
     {
         private readonly ConfigurationContext _context;
 
-        public DeviceTypeController(ConfigurationContext context)
+        public ReadingTypeController(ConfigurationContext context)
         {
             _context = context;
         }
 
-        // GET: api/DeviceType
+        // GET: api/ReadingType
         [HttpGet]
-        public IEnumerable<DeviceType> GetDeviceTypes()
+        public IEnumerable<ReadingType> GetReadingTypes()
         {
-            return _context.DeviceTypes;
+            return _context.ReadingTypes;
         }
 
-        // GET: api/DeviceType/5
+        // GET: api/ReadingType/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDeviceType([FromRoute] int id)
+        public async Task<IActionResult> GetReadingType([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
+            var readingType = await _context.ReadingTypes.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (deviceType == null)
+            if (readingType == null)
             {
                 return NotFound();
             }
 
-            return Ok(deviceType);
+            return Ok(readingType);
         }
 
-        // PUT: api/DeviceType/5
+        // PUT: api/ReadingType/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PutReadingType([FromRoute] int id, [FromBody] ReadingType readingType)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != deviceType.Id)
+            if (id != readingType.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(deviceType).State = EntityState.Modified;
+            _context.Entry(readingType).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace OrleansDemo.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DeviceTypeExists(id))
+                if (!ReadingTypeExists(id))
                 {
                     return NotFound();
                 }
@@ -81,45 +81,45 @@ namespace OrleansDemo.API.Controllers
             return NoContent();
         }
 
-        // POST: api/DeviceType
+        // POST: api/ReadingType
         [HttpPost]
-        public async Task<IActionResult> PostDeviceType([FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PostReadingType([FromBody] ReadingType readingType)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.DeviceTypes.Add(deviceType);
+            _context.ReadingTypes.Add(readingType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeviceType", new { id = deviceType.Id }, deviceType);
+            return CreatedAtAction("GetReadingType", new { id = readingType.Id }, readingType);
         }
 
-        // DELETE: api/DeviceType/5
+        // DELETE: api/ReadingType/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeviceType([FromRoute] int id)
+        public async Task<IActionResult> DeleteReadingType([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
-            if (deviceType == null)
+            var readingType = await _context.ReadingTypes.SingleOrDefaultAsync(m => m.Id == id);
+            if (readingType == null)
             {
                 return NotFound();
             }
 
-            _context.DeviceTypes.Remove(deviceType);
+            _context.ReadingTypes.Remove(readingType);
             await _context.SaveChangesAsync();
 
-            return Ok(deviceType);
+            return Ok(readingType);
         }
 
-        private bool DeviceTypeExists(int id)
+        private bool ReadingTypeExists(int id)
         {
-            return _context.DeviceTypes.Any(e => e.Id == id);
+            return _context.ReadingTypes.Any(e => e.Id == id);
         }
     }
 }

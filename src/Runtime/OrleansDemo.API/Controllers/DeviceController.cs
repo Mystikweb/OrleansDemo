@@ -10,7 +10,7 @@ using OrleansDemo.API.Models;
 namespace OrleansDemo.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/device")]
+    [Route("api/Device")]
     public class DeviceController : Controller
     {
         private readonly ConfigurationContext _context;
@@ -20,47 +20,47 @@ namespace OrleansDemo.API.Controllers
             _context = context;
         }
 
-        // GET: api/DeviceTypes
+        // GET: api/Device
         [HttpGet]
-        public IEnumerable<DeviceType> GetDeviceTypes()
+        public IEnumerable<Device> GetDevices()
         {
-            return _context.DeviceTypes;
+            return _context.Devices;
         }
 
-        // GET: api/DeviceTypes/5
+        // GET: api/Device/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDeviceType([FromRoute] int id)
+        public async Task<IActionResult> GetDevice([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
+            var device = await _context.Devices.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (deviceType == null)
+            if (device == null)
             {
                 return NotFound();
             }
 
-            return Ok(deviceType);
+            return Ok(device);
         }
 
-        // PUT: api/DeviceTypes/5
+        // PUT: api/Device/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PutDevice([FromRoute] Guid id, [FromBody] Device device)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != deviceType.Id)
+            if (id != device.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(deviceType).State = EntityState.Modified;
+            _context.Entry(device).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace OrleansDemo.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DeviceTypeExists(id))
+                if (!DeviceExists(id))
                 {
                     return NotFound();
                 }
@@ -81,45 +81,45 @@ namespace OrleansDemo.API.Controllers
             return NoContent();
         }
 
-        // POST: api/DeviceTypes
+        // POST: api/Device
         [HttpPost]
-        public async Task<IActionResult> PostDeviceType([FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PostDevice([FromBody] Device device)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.DeviceTypes.Add(deviceType);
+            _context.Devices.Add(device);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeviceType", new { id = deviceType.Id }, deviceType);
+            return CreatedAtAction("GetDevice", new { id = device.Id }, device);
         }
 
-        // DELETE: api/DeviceTypes/5
+        // DELETE: api/Device/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeviceType([FromRoute] int id)
+        public async Task<IActionResult> DeleteDevice([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
-            if (deviceType == null)
+            var device = await _context.Devices.SingleOrDefaultAsync(m => m.Id == id);
+            if (device == null)
             {
                 return NotFound();
             }
 
-            _context.DeviceTypes.Remove(deviceType);
+            _context.Devices.Remove(device);
             await _context.SaveChangesAsync();
 
-            return Ok(deviceType);
+            return Ok(device);
         }
 
-        private bool DeviceTypeExists(int id)
+        private bool DeviceExists(Guid id)
         {
-            return _context.DeviceTypes.Any(e => e.Id == id);
+            return _context.Devices.Any(e => e.Id == id);
         }
     }
 }

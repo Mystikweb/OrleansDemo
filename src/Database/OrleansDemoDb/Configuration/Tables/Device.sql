@@ -7,10 +7,10 @@
     [CreatedBy] NVARCHAR(75) NOT NULL, 
     [UpdatedAt] DATETIME2 NULL, 
     [UpdatedBy] NVARCHAR(75) NULL, 
-    CONSTRAINT [PK_Device] PRIMARY KEY ([Id]), 
-    CONSTRAINT [FK_Device_DeviceType] FOREIGN KEY ([DeviceTypeId]) REFERENCES [Configuration].[DeviceType]([Id])
+    CONSTRAINT [PK_Configuration_Device] PRIMARY KEY ([Id]), 
+    CONSTRAINT [FK_Configuration_Device_DeviceType] FOREIGN KEY ([DeviceTypeId]) REFERENCES [Configuration].[DeviceType]([Id])
 )
 
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [IX_Device_Name_DeviceTypeId] ON [Configuration].[Device] ([Name], [DeviceTypeId])
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Configuration_Device_Name_DeviceTypeId] ON [Configuration].[Device] ([Name], [DeviceTypeId])

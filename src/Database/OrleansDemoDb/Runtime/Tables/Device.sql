@@ -1,0 +1,7 @@
+﻿CREATE TABLE [Runtime].[Device]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL  DEFAULT NEWID(), 
+    [Name] NVARCHAR(50) NOT NULL, 
+    [Type] NVARCHAR(50) NOT NULL, 
+    CONSTRAINT [PK_Runtime_Device] PRIMARY KEY ([Id])
+)

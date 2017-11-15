@@ -8,6 +8,11 @@ namespace OrleansDemo.API.Models
     [Table("Device", Schema = "Configuration")]
     public partial class Device
     {
+        public Device()
+        {
+            Readings = new HashSet<Reading>();
+        }
+
         public Guid Id { get; set; }
         [Required]
         [StringLength(50)]
@@ -24,5 +29,7 @@ namespace OrleansDemo.API.Models
         [ForeignKey("DeviceTypeId")]
         [InverseProperty("Devices")]
         public DeviceType DeviceType { get; set; }
+        [InverseProperty("Device")]
+        public ICollection<Reading> Readings { get; set; }
     }
 }
