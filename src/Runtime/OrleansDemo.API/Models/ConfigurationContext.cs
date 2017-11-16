@@ -33,6 +33,10 @@ namespace OrleansDemo.API.Models
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
+                entity.Property(e => e.Enabled).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.RunOnStartup).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.DeviceType)

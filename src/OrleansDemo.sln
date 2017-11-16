@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo", "OrleansDemo\OrleansDemo.csproj", "{30079F99-91F4-4869-BB2B-83C39E493B49}"
 EndProject
@@ -21,7 +21,9 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OrleansDemoDb", "Database\O
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5F842D60-0956-49C9-9917-B0E44BF51C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.API", "Runtime\OrleansDemo.API\OrleansDemo.API.csproj", "{3683590D-8E8F-4801-AFEC-F683B5FD59C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo.API", "Runtime\OrleansDemo.API\OrleansDemo.API.csproj", "{3683590D-8E8F-4801-AFEC-F683B5FD59C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.Models", "OrleansDemo.Models\OrleansDemo.Models.csproj", "{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{3683590D-8E8F-4801-AFEC-F683B5FD59C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3683590D-8E8F-4801-AFEC-F683B5FD59C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3683590D-8E8F-4801-AFEC-F683B5FD59C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,6 +14,11 @@
     <BootstrapProviders>
     </BootstrapProviders>
     <StorageProviders>
+      <Provider Type="Orleans.Storage.AdoNetStorageProvider"
+                Name="OrleansDemoStorage"
+                AdoInvariant="System.Data.SqlClient"
+                DataConnectionString="Server=localhost;Database=OrleansDemoDb;User Id=ClusterManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True"
+                UseJsonFormat="true" />
     </StorageProviders>
     <Application>
       <Defaults>

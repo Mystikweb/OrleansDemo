@@ -18,6 +18,8 @@ namespace OrleansDemo.API.Models
         [StringLength(50)]
         public string Name { get; set; }
         public int DeviceTypeId { get; set; }
+        public bool? Enabled { get; set; }
+        public bool? RunOnStartup { get; set; }
         public DateTime CreatedAt { get; set; }
         [Required]
         [StringLength(75)]
