@@ -5,25 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Base_ClusterConfiguration.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Base_ClusterConfiguration.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0-beta1" />
     <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.0-beta1" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Patterns\Aggregate\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OrleansDemo.Models\OrleansDemo.Models.csproj" />
   </ItemGroup>
 
 </Project>

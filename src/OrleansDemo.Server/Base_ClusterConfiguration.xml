@@ -12,6 +12,7 @@
                 ConnectionString="Server=localhost;Database=OrleansDemoDb;User Id=ClusterManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True" />
     </StatisticsProviders>
     <BootstrapProviders>
+      <Provider Type="OrleansDemo.Server.Providers.SiloBootstrap" Name="SiloBootstrap" />
     </BootstrapProviders>
     <StorageProviders>
       <Provider Type="Orleans.Storage.AdoNetStorageProvider"
@@ -24,6 +25,12 @@
       <Defaults>
         <Deactivation AgeLimit="1m"/>
       </Defaults>
+      <GrainType Type="OrleansDemo.Implementations.DeviceGrain">
+        <Deactivation AgeLimit="24hr"/>
+      </GrainType>
+      <GrainType Type="OrleansDemo.Implementations.DeviceRegistryGrain">
+        <Deactivation AgeLimit="24hr"/>
+      </GrainType>
     </Application>
   </Globals>
   <Defaults>

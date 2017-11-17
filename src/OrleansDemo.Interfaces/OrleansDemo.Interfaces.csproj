@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrleansDemo.Models\OrleansDemo.Models.csproj" />
     <ProjectReference Include="..\OrleansDemo\OrleansDemo.csproj" />
   </ItemGroup>
 

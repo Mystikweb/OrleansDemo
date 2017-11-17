@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OrleansDemo.Interfaces\OrleansDemo.Interfaces.csproj" />
+    <ProjectReference Include="..\OrleansDemo.Models\OrleansDemo.Models.csproj" />
     <ProjectReference Include="..\OrleansDemo\OrleansDemo.csproj" />
   </ItemGroup>
 

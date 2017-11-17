@@ -20,7 +20,7 @@ namespace OrleansDemo.Server
 
         public string BuildClusterConfiguration()
         {
-            XDocument baseConfig = LoadXmlFile("OrleansDemo", "Base_ClusterConfiguration.xml");
+            XDocument baseConfig = LoadXmlFile("OrleansDemo.Server", "Base_ClusterConfiguration.xml");
 
             XElement xConfig = baseConfig.Elements().FirstOrDefault(x => x.Name.LocalName == "OrleansConfiguration");
             XElement xGlobals = xConfig.Elements().FirstOrDefault(x => x.Name.LocalName == "Globals");

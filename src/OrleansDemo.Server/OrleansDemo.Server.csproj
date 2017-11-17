@@ -4,9 +4,17 @@
     <TargetFrameworks>netstandard2.0;net461;</TargetFrameworks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Base_ClusterConfiguration.xml" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0-beta1" />
     <PackageReference Include="Microsoft.Orleans.OrleansSQLUtils" Version="2.0.0-beta1" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.0-beta1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
@@ -15,6 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\OrleansDemo.Implementations\OrleansDemo.Implementations.csproj" />
     <ProjectReference Include="..\OrleansDemo.Interfaces\OrleansDemo.Interfaces.csproj" />
+    <ProjectReference Include="..\OrleansDemo.Models\OrleansDemo.Models.csproj" />
+    <ProjectReference Include="..\OrleansDemo\OrleansDemo.csproj" />
   </ItemGroup>
 
 </Project>

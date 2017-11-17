@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
+using OrleansDemo.Models;
+using OrleansDemo.Server.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -54,10 +58,15 @@ namespace OrleansDemo.Server
         {
             var builder = new SiloHostBuilder()
                 .UseConfiguration(clusterConfiguration)
+                .ConfigureSiloName(System.Net.Dns.GetHostName())
                 .AddApplicationPartsFromBasePath()
                 .ConfigureServices(services =>
                 {
-                    
+                    // hard coding the connection string for now need to come up with a better way
+                    services.AddDbContextPool<RuntimeContext>(opts =>
+                        opts.UseSqlServer("Server=localhost;Database=OrleansDemoDb;User Id=RuntimeManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True"));
+
+                    services.AddTransient<IConfigurationManager, ConfigurationManager>();
                 })
                 .ConfigureLogging(logging =>
                 {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OrleansDemo.Patterns.Registry
 {
     [StorageProvider(ProviderName = "OrleansDemoStorage")]
-    public class RegistryGrain<TRegisteredGrain> : Grain<RegistryGrainState<TRegisteredGrain>>, 
+    public abstract class RegistryGrain<TRegisteredGrain> : Grain<RegistryGrainState<TRegisteredGrain>>, 
         IRegistryGrain<TRegisteredGrain> where TRegisteredGrain : IGrain
     {
         public Task<List<TRegisteredGrain>> GetRegisteredGrains()

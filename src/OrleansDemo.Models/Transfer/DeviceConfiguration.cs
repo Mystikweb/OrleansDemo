@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OrleansDemo.Models
+namespace OrleansDemo.Models.Transfer
 {
     public class DeviceConfiguration
     {
