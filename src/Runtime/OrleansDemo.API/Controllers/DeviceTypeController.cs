@@ -22,9 +22,22 @@ namespace OrleansDemo.API.Controllers
 
         // GET: api/DeviceType
         [HttpGet]
-        public IEnumerable<DeviceType> GetDeviceTypes()
+        public async Task<IEnumerable<DeviceType>> GetDeviceTypes(string sort, string order, int page)
         {
-            return _context.DeviceTypes;
+            string sortOptions = $"{sort}_{order}";
+            var deviceTypes = from t in _context.DeviceTypes select t;
+
+            switch (sortOptions)
+            {
+                case "name_desc":
+                    deviceTypes = deviceTypes.OrderByDescending(t => t.Name);
+                    break;
+                default:
+                    deviceTypes = deviceTypes.OrderBy(t => t.Name);
+                    break;
+            }
+
+            return await deviceTypes.ToListAsync();
         }
 
         // GET: api/DeviceType/5

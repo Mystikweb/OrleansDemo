@@ -43,6 +43,11 @@ namespace OrleansDemo.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(pol =>
+            {
+                pol.AllowAnyOrigin();
+            });
+
             app.UseMvc();
         }
 

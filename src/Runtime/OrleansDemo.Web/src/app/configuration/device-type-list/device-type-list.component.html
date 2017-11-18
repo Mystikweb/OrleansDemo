@@ -1,0 +1,25 @@
+<div class="example-container mat-elevation-z8">
+  <div class="example-loading-shade" *ngIf="dataSource.isLoadingResults || dataSource.isRateLimitReached">
+    <mat-spinner *ngIf="dataSource.isLoadingResults"></mat-spinner>
+    <div class="example-rate-limit-reached" *ngIf="dataSource.isRateLimitReached">
+      API rate limit has been reached. It will be reset in one minute.
+    </div>
+  </div>
+
+  <mat-table #deviceTypeTable [dataSource]="dataSource" class="example-table"
+            matSort matSortActive="Name" matSortDisableClear matSortDirection="asc">
+    <ng-container matColumnDef="Name">
+      <mat-header-cell *matHeaderCellDef
+                        mat-sort-header
+                        disableClear="true">Name</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.Name }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+      <mat-header-cell *matHeaderCellDef>Active</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.Active }}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
+</div>
