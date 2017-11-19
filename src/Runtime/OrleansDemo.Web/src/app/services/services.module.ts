@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
-import { DeviceApiService } from './device-api.service';
+import { DeviceService } from './device.service';
 import { DeviceTypeService } from './device-type.service';
 
 @NgModule({
@@ -12,8 +12,8 @@ import { DeviceTypeService } from './device-type.service';
   ],
   declarations: [],
   providers: [
-    DeviceApiService,
-    DeviceTypeService
+    DeviceTypeService,
+    DeviceService
   ]
 })
 export class ServicesModule { }

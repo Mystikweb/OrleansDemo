@@ -1,4 +1,5 @@
-﻿using Orleans.Storage;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Orleans.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,13 +13,11 @@ namespace OrleansDemo.Server.Providers
 {
     public class RuntimeStorage : IStorageProvider
     {
-        private readonly RuntimeContext _context;
+        private RuntimeContext context;
 
         public Logger Log { get; private set; }
 
         public string Name { get; private set; }
-
-        public RuntimeStorage(RuntimeContext context) => _context = context;
 
         public Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
@@ -34,6 +33,8 @@ namespace OrleansDemo.Server.Providers
         {
             Name = name;
             Log = providerRuntime.GetLogger(name);
+
+            context = providerRuntime.ServiceProvider.GetService<RuntimeContext>();
 
             return Task.CompletedTask;
         }

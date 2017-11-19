@@ -23,7 +23,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo.API", "Runtime\OrleansDemo.API\OrleansDemo.API.csproj", "{3683590D-8E8F-4801-AFEC-F683B5FD59C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.Models", "OrleansDemo.Models\OrleansDemo.Models.csproj", "{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo.Models", "OrleansDemo.Models\OrleansDemo.Models.csproj", "{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{A683B085-F666-45E5-BD81-37E29BBEC658}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.Clients.CommandLine", "Clients\OrleansDemo.Clients.CommandLine\OrleansDemo.Clients.CommandLine.csproj", "{4F3866F8-8542-485C-B676-06439CFB4667}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,10 @@ Global
 		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0598CD69-6D4B-4413-B24B-1B07FD0E8B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F3866F8-8542-485C-B676-06439CFB4667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F3866F8-8542-485C-B676-06439CFB4667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F3866F8-8542-485C-B676-06439CFB4667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F3866F8-8542-485C-B676-06439CFB4667}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +85,7 @@ Global
 		{27E6E081-E9A9-4DEC-86C6-7B257908E1A6} = {D7CE480E-6006-4632-BB4A-D7E05B62171B}
 		{417C8B0C-5203-495B-AAAA-7421C8EFF024} = {1CC403FC-4C44-47FF-B80F-4DD8A4E9F033}
 		{3683590D-8E8F-4801-AFEC-F683B5FD59C9} = {D7CE480E-6006-4632-BB4A-D7E05B62171B}
+		{4F3866F8-8542-485C-B676-06439CFB4667} = {A683B085-F666-45E5-BD81-37E29BBEC658}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D1BD94EB-573E-4C5D-88AF-451E0276D294}

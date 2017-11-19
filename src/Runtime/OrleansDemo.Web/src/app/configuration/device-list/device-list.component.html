@@ -1,3 +1,53 @@
-<p>
-  device-list works!
-</p>
+<div class="app-table-container mat-elevation-z8">
+    <div class="app-table-loading-shade" *ngIf="dataSource.isLoadingResults || dataSource.isRateLimitReached">
+      <mat-spinner *ngIf="dataSource.isLoadingResults"></mat-spinner>
+      <div class="app-table-rate-limit-reached" *ngIf="dataSource.isRateLimitReached">
+        API rate limit has been reached. It will be reset in one minute.
+      </div>
+    </div>
+  
+    <mat-table #deviceTypeTable [dataSource]="dataSource" class="app-table"
+              matSort matSortActive="Name" matSortDisableClear matSortDirection="asc">
+      <ng-container matColumnDef="Name">
+        <mat-header-cell *matHeaderCellDef
+                          mat-sort-header
+                          disableClear="true">Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.Name }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="DeviceTypeId">
+        <mat-header-cell *matHeaderCellDef>DeviceTypeId</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.DeviceTypeId }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Enabled">
+        <mat-header-cell *matHeaderCellDef>Enabled</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.Enabled }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="RunOnStartup">
+          <mat-header-cell *matHeaderCellDef>Run On Startup</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.RunOnStartup }}</mat-cell>
+        </ng-container>
+      <ng-container matColumnDef="CreatedAt">
+        <mat-header-cell *matHeaderCellDef
+                          mat-sort-header
+                          disableClear="true">Created At</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.CreatedAt | date }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="CreatedBy">
+        <mat-header-cell *matHeaderCellDef>Created By</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.CreatedBy }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="UpdatedAt">
+        <mat-header-cell *matHeaderCellDef
+                          mat-sort-header
+                          disableClear="true">Updated At</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.UpdatedAt | date }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="UpdatedBy">
+        <mat-header-cell *matHeaderCellDef>Updated By</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.UpdatedBy }}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
+  </div>

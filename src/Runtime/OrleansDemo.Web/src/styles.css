@@ -6,3 +6,59 @@ body {
     margin: 0;
     padding-top: 64px;
 }
+
+.app-table-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+    min-width: 300px;
+    position: relative;
+}
+
+.app-table-header {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    font-size: 20px;
+}
+
+.app-table {
+    overflow: auto;
+    min-height: 300px;
+}
+
+.mat-column-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    overflow: hidden;
+}
+  
+.mat-column-number,
+.mat-column-state {
+    max-width: 64px;
+}
+
+.mat-column-created {
+    max-width: 124px;
+}
+
+.app-table-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-table-rate-limit-reached {
+    color: #980000;
+    max-width: 360px;
+    text-align: center;
+  }
