@@ -1,6 +1,11 @@
 import { NgModule } from '@angular/core';
 
 import {
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatDialogModule,
   MatToolbarModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -16,6 +21,11 @@ import {
 
 @NgModule({
   imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatDialogModule,
     MatToolbarModule,
     MatButtonModule,
     MatButtonToggleModule,
@@ -29,6 +39,11 @@ import {
     MatProgressSpinnerModule
   ],
   exports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatDialogModule,
     MatToolbarModule,
     MatButtonModule,
     MatButtonToggleModule,

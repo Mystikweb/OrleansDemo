@@ -46,6 +46,8 @@ namespace OrleansDemo.API
             app.UseCors(pol =>
             {
                 pol.AllowAnyOrigin();
+                pol.AllowAnyHeader();
+                pol.AllowAnyMethod();
             });
 
             app.UseMvc();

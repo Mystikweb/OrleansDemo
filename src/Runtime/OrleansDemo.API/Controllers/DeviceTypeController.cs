@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.API.Models;
+using OrleansDemo.API.ViewModels;
 
 namespace OrleansDemo.API.Controllers
 {
@@ -22,22 +23,15 @@ namespace OrleansDemo.API.Controllers
 
         // GET: api/DeviceType
         [HttpGet]
-        public async Task<IEnumerable<DeviceType>> GetDeviceTypes(string sort, string order, int page)
+        public async Task<IEnumerable<DeviceTypeViewModel>> GetDeviceTypes()
         {
-            string sortOptions = $"{sort}_{order}";
-            var deviceTypes = from t in _context.DeviceTypes select t;
-
-            switch (sortOptions)
-            {
-                case "name_desc":
-                    deviceTypes = deviceTypes.OrderByDescending(t => t.Name);
-                    break;
-                default:
-                    deviceTypes = deviceTypes.OrderBy(t => t.Name);
-                    break;
-            }
-
-            return await deviceTypes.ToListAsync();
+            return await (from t in _context.DeviceTypes
+                          select new DeviceTypeViewModel
+                          {
+                              Id = t.Id,
+                              Name = t.Name,
+                              Active = t.Active.HasValue ? t.Active.Value : false
+                          }).ToListAsync();
         }
 
         // GET: api/DeviceType/5
@@ -49,7 +43,14 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
+            var deviceType = await (from t in _context.DeviceTypes
+                                    where t.Id == id
+                                    select new DeviceTypeViewModel
+                                    {
+                                        Id = t.Id,
+                                        Name = t.Name,
+                                        Active = t.Active.HasValue ? t.Active.Value : false
+                                    }).FirstOrDefaultAsync();
 
             if (deviceType == null)
             {
@@ -61,7 +62,7 @@ namespace OrleansDemo.API.Controllers
 
         // PUT: api/DeviceType/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceTypeViewModel deviceType)
         {
             if (!ModelState.IsValid)
             {
@@ -73,7 +74,17 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(deviceType).State = EntityState.Modified;
+            DeviceType model = await _context.DeviceTypes.FirstOrDefaultAsync(t => t.Id == id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            model.Name = deviceType.Name;
+            model.Active = deviceType.Active;
+
+            _context.Entry(model).State = EntityState.Modified;
 
             try
             {
@@ -96,15 +107,23 @@ namespace OrleansDemo.API.Controllers
 
         // POST: api/DeviceType
         [HttpPost]
-        public async Task<IActionResult> PostDeviceType([FromBody] DeviceType deviceType)
+        public async Task<IActionResult> PostDeviceType([FromBody] DeviceTypeViewModel deviceType)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.DeviceTypes.Add(deviceType);
+            DeviceType model = new DeviceType()
+            {
+                Name = deviceType.Name,
+                Active = deviceType.Active
+            };
+
+            _context.DeviceTypes.Add(model);
             await _context.SaveChangesAsync();
+
+            deviceType.Id = model.Id;
 
             return CreatedAtAction("GetDeviceType", new { id = deviceType.Id }, deviceType);
         }
@@ -124,10 +143,17 @@ namespace OrleansDemo.API.Controllers
                 return NotFound();
             }
 
+            DeviceTypeViewModel result = new DeviceTypeViewModel()
+            {
+                Id = deviceType.Id,
+                Name = deviceType.Name,
+                Active = deviceType.Active.Value
+            };
+
             _context.DeviceTypes.Remove(deviceType);
             await _context.SaveChangesAsync();
 
-            return Ok(deviceType);
+            return Ok(result);
         }
 
         private bool DeviceTypeExists(int id)

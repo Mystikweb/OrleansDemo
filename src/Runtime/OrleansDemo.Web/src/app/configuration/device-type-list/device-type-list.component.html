@@ -1,25 +1,32 @@
+<div class="app-table-filter-header">
+  <mat-form-field floatPlaceholder="never">
+    <input matInput #filter placeholder="Filter">
+  </mat-form-field>
+</div>
 <div class="app-table-container mat-elevation-z8">
-  <div class="app-table-loading-shade" *ngIf="dataSource.isLoadingResults || dataSource.isRateLimitReached">
+  <div class="app-table-loading-shade" *ngIf="dataSource.isLoadingResults">
     <mat-spinner *ngIf="dataSource.isLoadingResults"></mat-spinner>
-    <div class="app-table-rate-limit-reached" *ngIf="dataSource.isRateLimitReached">
-      API rate limit has been reached. It will be reset in one minute.
-    </div>
   </div>
-
   <mat-table #deviceTypeTable [dataSource]="dataSource" class="app-table"
-            matSort matSortActive="Name" matSortDisableClear matSortDirection="asc">
-    <ng-container matColumnDef="Name">
+            matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
+    <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef
                         mat-sort-header
                         disableClear="true">Name</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{ row.Name }}</mat-cell>
+      <mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
     </ng-container>
-    <ng-container matColumnDef="Active">
+    <ng-container matColumnDef="active">
       <mat-header-cell *matHeaderCellDef>Active</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{ row.Active }}</mat-cell>
+      <mat-cell *matCellDef="let row">{{ row.active }}</mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
+  <div class="app-table-filter-no-results" [style.display]="dataSource.resultsLength === 0 ? '' : 'none'">
+    No types found matching filter.
+  </div>
   <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
 </div>
+<button mat-fab class="add-button-fab" (click)="openDialog(null)">
+  <mat-icon>add</mat-icon>
+</button>

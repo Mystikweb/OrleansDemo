@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.API.Models;
+using OrleansDemo.API.ViewModels;
 
 namespace OrleansDemo.API.Controllers
 {
@@ -22,9 +23,40 @@ namespace OrleansDemo.API.Controllers
 
         // GET: api/Device
         [HttpGet]
-        public IEnumerable<Device> GetDevices()
+        public async Task<IEnumerable<DeviceViewModel>> GetDevices(string sort, string order, int page)
         {
-            return _context.Devices;
+            string sortOptions = $"{sort}_{order}".ToLower();
+            var devices = from d in _context.Devices
+                          select new DeviceViewModel
+                          {
+                              Id = d.Id,
+                              Name = d.Name,
+                              DeviceType = d.DeviceType.Name,
+                              Enabled = d.Enabled.HasValue ? d.Enabled.Value : false,
+                              RunOnStartup = d.RunOnStartup.HasValue ? d.RunOnStartup.Value : false,
+                              CreatedAt = d.CreatedAt,
+                              CreatedBy = d.CreatedBy,
+                              UpdatedAt = d.UpdatedAt,
+                              UpdatedBy = d.UpdatedBy
+                          };
+
+            switch (sortOptions)
+            {
+                case "name_desc":
+                    devices = devices.OrderByDescending(d => d.Name);
+                    break;
+                case "createdAt_asc":
+                    devices = devices.OrderBy(d => d.CreatedAt);
+                    break;
+                case "createdAt_desc":
+                    devices = devices.OrderByDescending(d => d.CreatedAt);
+                    break;
+                default:
+                    devices = devices.OrderBy(d => d.Name);
+                    break;
+            }
+
+            return await devices.ToListAsync();
         }
 
         // GET: api/Device/5
