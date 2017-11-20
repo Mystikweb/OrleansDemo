@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { DeviceService } from './device.service';
 import { DeviceTypeService } from './device-type.service';
+import { ReadingTypeService } from './reading-type.service';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { DeviceTypeService } from './device-type.service';
   declarations: [],
   providers: [
     DeviceTypeService,
-    DeviceService
+    DeviceService,
+    ReadingTypeService
   ]
 })
 export class ServicesModule { }

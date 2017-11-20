@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ConfigurationComponent } from './configuration.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
+import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
 
 const routes: Routes = [{
   path: 'configuration',
@@ -11,7 +12,8 @@ const routes: Routes = [{
   children: [
     { path: '', redirectTo: 'devices', pathMatch: 'full' },
     { path: 'devices', component: DeviceListComponent },
-    { path: 'devicetypes', component: DeviceTypeListComponent }
+    { path: 'devicetypes', component: DeviceTypeListComponent },
+    { path: 'readingtypes', component: ReadingTypeListComponent }
   ]
 }];
 

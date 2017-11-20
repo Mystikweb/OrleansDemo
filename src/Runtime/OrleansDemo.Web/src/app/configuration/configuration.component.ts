@@ -9,7 +9,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 export class ConfigurationComponent implements OnInit {
   navLinks = [
     { label: 'Devices', path: 'devices' },
-    { label: 'Device Types', path: 'devicetypes'}
+    { label: 'Device Types', path: 'devicetypes'},
+    { label: 'Reading Types', path: 'readingtypes'}
   ];
 
   constructor() { }

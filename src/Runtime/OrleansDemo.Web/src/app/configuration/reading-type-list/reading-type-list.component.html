@@ -1,0 +1,40 @@
+<div class="app-table-filter-header">
+  <mat-form-field floatPlaceholder="never">
+    <input matInput #filter placeholder="Filter">
+  </mat-form-field>
+</div>
+<div class="app-table-container mat-elevation-z8">
+  <div class="app-table-loading-shade" *ngIf="dataSource.isLoadingResults">
+    <mat-spinner *ngIf="dataSource.isLoadingResults"></mat-spinner>
+  </div>
+  <mat-table #readingTypeTable [dataSource]="dataSource" class="app-table"
+            matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef
+                        mat-sort-header
+                        disableClear="true">Name</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="uom">
+      <mat-header-cell *matHeaderCellDef
+                        mat-sort-header
+                        disableClear="true">UOM</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.uom }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="datatype">
+      <mat-header-cell *matHeaderCellDef
+                        mat-sort-header
+                        disableClear="true">Data Type</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.datatype }}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <div class="app-table-filter-no-results" [style.display]="dataSource.resultsLength === 0 ? '' : 'none'">
+    No types found matching filter.
+  </div>
+  <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
+</div>
+<!-- <button mat-fab class="add-button-fab" (click)="openDialog(null)">
+  <mat-icon>add</mat-icon>
+</button> -->
