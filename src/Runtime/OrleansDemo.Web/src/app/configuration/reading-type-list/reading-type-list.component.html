@@ -21,11 +21,11 @@
                         disableClear="true">UOM</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.uom }}</mat-cell>
     </ng-container>
-    <ng-container matColumnDef="datatype">
+    <ng-container matColumnDef="dataType">
       <mat-header-cell *matHeaderCellDef
                         mat-sort-header
                         disableClear="true">Data Type</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{ row.datatype }}</mat-cell>
+      <mat-cell *matCellDef="let row">{{ row.dataType }}</mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
@@ -35,6 +35,6 @@
   </div>
   <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
 </div>
-<!-- <button mat-fab class="add-button-fab" (click)="openDialog(null)">
+<button mat-fab class="add-button-fab" (click)="openDialog(null)">
   <mat-icon>add</mat-icon>
-</button> -->
+</button>

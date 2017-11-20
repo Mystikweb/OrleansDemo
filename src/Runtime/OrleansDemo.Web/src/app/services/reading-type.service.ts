@@ -23,7 +23,7 @@ export interface ReadingType {
   id: number;
   name: string;
   uom: string;
-  datatype: string;
+  dataType: string;
 }
 
 @Injectable()
@@ -76,7 +76,7 @@ export class ReadingTypeService {
   }
 
   delete(id: number): Observable<ReadingType> {
-    const requestUrl = `${this.readingTypeUrl}/${readingType.id}`;
+    const requestUrl = `${this.readingTypeUrl}/${id}`;
     return this.http.delete<ReadingType>(requestUrl, httpOptions)
       .pipe(
         tap(t => {
@@ -97,6 +97,9 @@ export class ReadingTypeDataSource extends DataSource<ReadingType> {
   filterChange: BehaviorSubject<string> = new BehaviorSubject<string>('');
   get filter(): string { return this.filterChange.value; }
   set filter(filter: string) { this.filterChange.next(filter); }
+
+  filteredData: ReadingType[] = [];
+  renderedData: ReadingType[] = [];
 
   constructor(private readingTypeService: ReadingTypeService,
               private paginator: MatPaginator,
@@ -121,7 +124,7 @@ export class ReadingTypeDataSource extends DataSource<ReadingType> {
 
         // Filter data
         this.filteredData = this.readingTypeService.data.slice().filter((item: ReadingType) => {
-          const searchStr = (item.name + item.uom + item.datatype).toLowerCase();
+          const searchStr = (item.name + item.uom + item.dataType).toLowerCase();
           return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
         });
 
@@ -155,7 +158,7 @@ export class ReadingTypeDataSource extends DataSource<ReadingType> {
       switch (this.sort.active) {
         case 'name': [propertyA, propertyB] = [a.name, b.name]; break;
         case 'uom': [propertyA, propertyB] = [a.name, b.name]; break;
-        case 'datatype': [propertyA, propertyB] = [a.name, b.name]; break;
+        case 'dataType': [propertyA, propertyB] = [a.name, b.name]; break;
       }
 
       const valueA = isNaN(+propertyA) ? propertyA : +propertyA;

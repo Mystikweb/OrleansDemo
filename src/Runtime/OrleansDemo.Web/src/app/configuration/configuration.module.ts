@@ -11,6 +11,7 @@ import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
 import { DeviceTypeDialogComponent } from './device-type-list/device-type-dialog.component';
 import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
+import { ReadingTypeDialogComponent } from './reading-type-list/reading-type-dialog.component';
 
 @NgModule({
   imports: [
@@ -26,10 +27,12 @@ import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.
     DeviceListComponent,
     DeviceTypeListComponent,
     DeviceTypeDialogComponent,
-    ReadingTypeListComponent
+    ReadingTypeListComponent,
+    ReadingTypeDialogComponent
   ],
   bootstrap: [
-    DeviceTypeDialogComponent
+    DeviceTypeDialogComponent,
+    ReadingTypeDialogComponent
   ]
 })
 export class ConfigurationModule { }
