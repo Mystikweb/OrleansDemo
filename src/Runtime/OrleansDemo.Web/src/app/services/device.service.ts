@@ -19,16 +19,33 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-export interface Device {
-  Id: string;
-  Name: string;
-  DeviceTypeId: number;
-  Enabled: boolean;
-  RunOnStartup: boolean;
-  CreatedAt: Date;
-  CreatedBy: string;
-  UpdatedAt: Date;
-  UpdatedBy: string;
+export class Device {
+  id: string;
+  name: string;
+  deviceTypeId: number;
+  enabled: boolean;
+  runOnStartup: boolean;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: Date;
+  updatedBy: string;
+  readings: Reading[];
+
+  constructor() {
+    this.readings = new Array<Reading>();
+  }
+}
+
+export class Reading {
+    id: string;
+    readingTypeId: string;
+    readyingType: string;
+    readingUom: string;
+    readingDataType: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date;
+    updatedBy: string;
 }
 
 @Injectable()
@@ -38,53 +55,7 @@ export class DeviceService {
 
   constructor(private http: HttpClient) { }
 
-  getDevices(sort: string, order: string, page: number): Observable<Device[]> {
-    const requestUrl = `${this.deviceUrl}?sort=${sort}&order=${order}&page=${page + 1}`;
-    return this.http.get<Device[]>(requestUrl);
+  getDevices(): Observable<Device[]> {
+    return this.http.get<Device[]>(this.deviceUrl);
   }
-
-}
-
-export class DeviceDataSource extends DataSource<Device> {
-  resultsLength = 0;
-  isLoadingResults = false;
-  isRateLimitReached = false;
-
-  constructor(private deviceApi: DeviceService,
-              private paginator: MatPaginator,
-              private sort: MatSort) {
-    super();
-  }
-
-  connect(): Observable<Device[]> {
-    const displayDataChanges = [
-      this.sort.sortChange,
-      this.paginator.page
-    ];
-
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    return Observable.merge(...displayDataChanges)
-      .startWith(null)
-      .switchMap(() => {
-        this.isLoadingResults = true;
-        return this.deviceApi.getDevices(this.sort.active,
-          this.sort.direction,
-          this.paginator.pageIndex);
-      })
-      .map(data => {
-        this.isLoadingResults = false;
-        this.isRateLimitReached = false;
-        this.resultsLength = data.length;
-
-        return data;
-      })
-      .catch(() => {
-        this.isLoadingResults = false;
-        this.isRateLimitReached = true;
-        return Observable.of([]);
-      });
-  }
-
-  disconnect() {}
 }

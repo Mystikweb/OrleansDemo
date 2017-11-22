@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import {
+  MatGridListModule,
   MatFormFieldModule,
   MatInputModule,
   MatSelectModule,
@@ -21,6 +22,7 @@ import {
 
 @NgModule({
   imports: [
+    MatGridListModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -39,6 +41,7 @@ import {
     MatProgressSpinnerModule
   ],
   exports: [
+    MatGridListModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,

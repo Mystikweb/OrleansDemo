@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
 
-import { Device, DeviceService, DeviceDataSource } from '../../services/device.service';
+import { Observable } from 'rxjs/Observable';
+
+import { EditorHostItem, ConfigurationDrawerService } from '../configuration-drawer.service';
+import { Device, DeviceService } from '../../services/device.service';
+import { DeviceEditorComponent } from './device-editor.component';
 
 @Component({
   selector: 'app-device-list',
@@ -10,25 +13,16 @@ import { Device, DeviceService, DeviceDataSource } from '../../services/device.s
   encapsulation: ViewEncapsulation.None
 })
 export class DeviceListComponent implements OnInit {
-  displayColumns = [
-    'Name',
-    'DeviceTypeId',
-    'Enabled',
-    'RunOnStartup',
-    'CreatedAt',
-    'CreatedBy',
-    'UpdatedAt',
-    'UpdatedBy'
-  ];
-  dataSource: DeviceDataSource | null;
+  devices$: Observable<Device[]>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  constructor(private deviceService: DeviceService) { }
+  constructor(private deviceService: DeviceService,
+    private drawerService: ConfigurationDrawerService) { }
 
   ngOnInit() {
-    this.dataSource = new DeviceDataSource(this.deviceService, this.paginator, this.sort);
+    this.devices$ = this.deviceService.getDevices();
   }
 
+  openEditor(device: Device) {
+    this.drawerService.openComponent(new EditorHostItem(DeviceEditorComponent, device === null ? new Device() : device));
+  }
 }

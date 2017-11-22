@@ -4,14 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../material/material.module';
 import { ServicesModule } from '../services/services.module';
-
 import { ConfigurationRoutingModule } from './configuration-routing.module';
+
+import { EditorHostDirective } from './editor-host.directive';
 import { ConfigurationComponent } from './configuration.component';
 import { DeviceListComponent } from './device-list/device-list.component';
+import { DeviceEditorComponent } from './device-list/device-editor.component';
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
 import { DeviceTypeDialogComponent } from './device-type-list/device-type-dialog.component';
 import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
 import { ReadingTypeDialogComponent } from './reading-type-list/reading-type-dialog.component';
+import { ConfigurationDrawerService } from './configuration-drawer.service';
+import { EditorShellComponent } from './editor-shell.component';
 
 @NgModule({
   imports: [
@@ -23,16 +27,22 @@ import { ReadingTypeDialogComponent } from './reading-type-list/reading-type-dia
     ServicesModule
   ],
   declarations: [
+    EditorHostDirective,
     ConfigurationComponent,
     DeviceListComponent,
+    DeviceEditorComponent,
     DeviceTypeListComponent,
     DeviceTypeDialogComponent,
     ReadingTypeListComponent,
-    ReadingTypeDialogComponent
+    ReadingTypeDialogComponent,
+    EditorShellComponent
   ],
-  bootstrap: [
+  bootstrap: [],
+  entryComponents: [
     DeviceTypeDialogComponent,
-    ReadingTypeDialogComponent
-  ]
+    ReadingTypeDialogComponent,
+    DeviceEditorComponent
+  ],
+  providers: [ConfigurationDrawerService]
 })
 export class ConfigurationModule { }

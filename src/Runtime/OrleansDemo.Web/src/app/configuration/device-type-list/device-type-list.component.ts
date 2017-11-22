@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MatPaginator, MatSort } from '@angular/material';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/fromEvent';

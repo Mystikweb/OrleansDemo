@@ -23,40 +23,32 @@ namespace OrleansDemo.API.Controllers
 
         // GET: api/Device
         [HttpGet]
-        public async Task<IEnumerable<DeviceViewModel>> GetDevices(string sort, string order, int page)
+        public async Task<IEnumerable<DeviceViewModel>> GetDevices()
         {
-            string sortOptions = $"{sort}_{order}".ToLower();
-            var devices = from d in _context.Devices
-                          select new DeviceViewModel
-                          {
-                              Id = d.Id,
-                              Name = d.Name,
-                              DeviceType = d.DeviceType.Name,
-                              Enabled = d.Enabled.HasValue ? d.Enabled.Value : false,
-                              RunOnStartup = d.RunOnStartup.HasValue ? d.RunOnStartup.Value : false,
-                              CreatedAt = d.CreatedAt,
-                              CreatedBy = d.CreatedBy,
-                              UpdatedAt = d.UpdatedAt,
-                              UpdatedBy = d.UpdatedBy
-                          };
-
-            switch (sortOptions)
+            return await _context.Devices.Select(d => new DeviceViewModel
             {
-                case "name_desc":
-                    devices = devices.OrderByDescending(d => d.Name);
-                    break;
-                case "createdAt_asc":
-                    devices = devices.OrderBy(d => d.CreatedAt);
-                    break;
-                case "createdAt_desc":
-                    devices = devices.OrderByDescending(d => d.CreatedAt);
-                    break;
-                default:
-                    devices = devices.OrderBy(d => d.Name);
-                    break;
-            }
-
-            return await devices.ToListAsync();
+                Id = d.Id,
+                Name = d.Name,
+                DeviceType = d.DeviceType.Name,
+                Enabled = d.Enabled.HasValue ? d.Enabled.Value : false,
+                RunOnStartup = d.RunOnStartup.HasValue ? d.RunOnStartup.Value : false,
+                CreatedAt = d.CreatedAt,
+                CreatedBy = d.CreatedBy,
+                UpdatedAt = d.UpdatedAt,
+                UpdatedBy = d.UpdatedBy,
+                Readings = d.Readings.Select(r => new ReadingViewModel
+                {
+                    Id = r.Id,
+                    ReadingTypeId = r.ReadingType.Id,
+                    ReadyingType = r.ReadingType.Name,
+                    ReadingUom = r.ReadingType.Uom,
+                    ReadingDataType = r.ReadingType.DataType,
+                    CreatedAt = r.CreatedAt,
+                    CreatedBy = r.CreatedBy,
+                    UpdatedAt = r.UpdatedAt,
+                    UpdatedBy = r.UpdatedBy
+                }).ToList()
+            }).ToListAsync();
         }
 
         // GET: api/Device/5

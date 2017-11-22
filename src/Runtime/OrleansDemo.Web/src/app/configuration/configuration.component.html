@@ -7,4 +7,11 @@
     {{link.label}}
   </a>
 </nav>
-<router-outlet></router-outlet>
+<mat-drawer-container  class="config-container">
+  <mat-drawer mode="over" align="end" opened="{{drawerOpen}}">
+      <app-editor-shell></app-editor-shell>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
