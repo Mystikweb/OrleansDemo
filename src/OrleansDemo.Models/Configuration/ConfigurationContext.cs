@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace OrleansDemo.API.Models
+namespace OrleansDemo.Models.Configuration
 {
     public partial class ConfigurationContext : DbContext
     {
@@ -11,6 +11,7 @@ namespace OrleansDemo.API.Models
 
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<DeviceType> DeviceTypes { get; set; }
+        public virtual DbSet<DeviceTypeReadingType> DeviceTypeReadingTypes { get; set; }
         public virtual DbSet<Reading> Readings { get; set; }
         public virtual DbSet<ReadingType> ReadingTypes { get; set; }
 
@@ -33,11 +34,11 @@ namespace OrleansDemo.API.Models
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.Enabled).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.RunOnStartup).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.DeviceType)
                     .WithMany(p => p.Devices)
@@ -51,11 +52,28 @@ namespace OrleansDemo.API.Models
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
             });
 
+            modelBuilder.Entity<DeviceTypeReadingType>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.DeviceType)
+                    .WithMany(p => p.DeviceTypeReadingTypes)
+                    .HasForeignKey(d => d.DeviceTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceTypeReadingType_DeviceType");
+
+                entity.HasOne(d => d.ReadingType)
+                    .WithMany(p => p.DeviceTypeReadingTypes)
+                    .HasForeignKey(d => d.ReadingTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceTypeReadingType_ReadingType");
+            });
+
             modelBuilder.Entity<Reading>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.Readings)

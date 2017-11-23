@@ -6,7 +6,7 @@ using System.Text;
 using Orleans;
 using Orleans.Providers;
 using Orleans.Runtime;
-using OrleansDemo.Models;
+using OrleansDemo.Models.Runtime;
 using System.Threading.Tasks;
 
 namespace OrleansDemo.Server.Providers

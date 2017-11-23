@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OrleansDemo.Models
+namespace OrleansDemo.Models.Runtime
 {
     [Table("Reading", Schema = "Runtime")]
     public partial class Reading

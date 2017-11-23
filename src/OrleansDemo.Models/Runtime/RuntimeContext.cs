@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace OrleansDemo.Models
+namespace OrleansDemo.Models.Runtime
 {
     public partial class RuntimeContext : DbContext
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OrleansDemo.API.Models;
+using OrleansDemo.Models.Configuration;
 using OrleansDemo.Models.Transfer;
 using System.Collections.Generic;
 using System.Linq;

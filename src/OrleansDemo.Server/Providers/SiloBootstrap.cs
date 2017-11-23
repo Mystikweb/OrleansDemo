@@ -2,7 +2,7 @@
 using Orleans.Providers;
 using Orleans.Runtime;
 using OrleansDemo.Interfaces;
-using OrleansDemo.Models;
+using OrleansDemo.Models.Runtime;
 using OrleansDemo.Models.Transfer;
 using OrleansDemo.Server.Services;
 using System;

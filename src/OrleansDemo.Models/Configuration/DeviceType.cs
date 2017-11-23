@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OrleansDemo.API.Models
+namespace OrleansDemo.Models.Configuration
 {
     [Table("DeviceType", Schema = "Configuration")]
     public partial class DeviceType
     {
         public DeviceType()
         {
+            DeviceTypeReadingTypes = new HashSet<DeviceTypeReadingType>();
             Devices = new HashSet<Device>();
         }
 
@@ -19,6 +20,8 @@ namespace OrleansDemo.API.Models
         public string Name { get; set; }
         public bool? Active { get; set; }
 
+        [InverseProperty("DeviceType")]
+        public ICollection<DeviceTypeReadingType> DeviceTypeReadingTypes { get; set; }
         [InverseProperty("DeviceType")]
         public ICollection<Device> Devices { get; set; }
     }

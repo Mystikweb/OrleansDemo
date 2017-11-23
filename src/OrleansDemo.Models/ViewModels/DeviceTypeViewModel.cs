@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OrleansDemo.API.ViewModels
+namespace OrleansDemo.Models.ViewModels
 {
-    public class ReadingTypeViewModel
+    public class DeviceTypeViewModel
     {
         public int? Id { get; set; }
         public string Name { get; set; }
-        public string UOM { get; set; }
-        public string DataType { get; set; }
+        public bool Active { get; set; }
     }
 }

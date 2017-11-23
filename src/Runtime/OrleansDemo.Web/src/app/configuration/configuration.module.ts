@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../material/material.module';
+import { SharedModule } from '../shared/shared.module';
 import { ServicesModule } from '../services/services.module';
 import { ConfigurationRoutingModule } from './configuration-routing.module';
 
-import { EditorHostDirective } from './editor-host.directive';
 import { ConfigurationComponent } from './configuration.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceEditorComponent } from './device-list/device-editor.component';
@@ -14,8 +14,6 @@ import { DeviceTypeListComponent } from './device-type-list/device-type-list.com
 import { DeviceTypeDialogComponent } from './device-type-list/device-type-dialog.component';
 import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
 import { ReadingTypeDialogComponent } from './reading-type-list/reading-type-dialog.component';
-import { ConfigurationDrawerService } from './configuration-drawer.service';
-import { EditorShellComponent } from './editor-shell.component';
 
 @NgModule({
   imports: [
@@ -24,10 +22,10 @@ import { EditorShellComponent } from './editor-shell.component';
     ReactiveFormsModule,
     ConfigurationRoutingModule,
     MaterialModule,
+    SharedModule,
     ServicesModule
   ],
   declarations: [
-    EditorHostDirective,
     ConfigurationComponent,
     DeviceListComponent,
     DeviceEditorComponent,
@@ -35,7 +33,6 @@ import { EditorShellComponent } from './editor-shell.component';
     DeviceTypeDialogComponent,
     ReadingTypeListComponent,
     ReadingTypeDialogComponent,
-    EditorShellComponent
   ],
   bootstrap: [],
   entryComponents: [
@@ -43,6 +40,6 @@ import { EditorShellComponent } from './editor-shell.component';
     ReadingTypeDialogComponent,
     DeviceEditorComponent
   ],
-  providers: [ConfigurationDrawerService]
+  providers: []
 })
 export class ConfigurationModule { }

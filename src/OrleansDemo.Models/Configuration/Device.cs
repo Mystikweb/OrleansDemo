@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OrleansDemo.API.Models
+namespace OrleansDemo.Models.Configuration
 {
     [Table("Device", Schema = "Configuration")]
     public partial class Device

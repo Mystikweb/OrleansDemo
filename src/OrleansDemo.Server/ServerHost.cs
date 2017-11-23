@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
-using OrleansDemo.Models;
+using OrleansDemo.Models.Runtime;
 using OrleansDemo.Server.Services;
 using System;
 using System.Threading.Tasks;

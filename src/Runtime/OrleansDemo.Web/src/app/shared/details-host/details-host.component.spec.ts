@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditorShellComponent } from './editor-shell.component';
+import { DetailsHostComponent } from './details-host.component';
 
-describe('EditorShellComponent', () => {
-  let component: EditorShellComponent;
-  let fixture: ComponentFixture<EditorShellComponent>;
+describe('DetailsHostComponent', () => {
+  let component: DetailsHostComponent;
+  let fixture: ComponentFixture<DetailsHostComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditorShellComponent ]
+      declarations: [ DetailsHostComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditorShellComponent);
+    fixture = TestBed.createComponent(DetailsHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

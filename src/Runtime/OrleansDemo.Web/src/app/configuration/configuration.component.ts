@@ -1,7 +1,5 @@
 import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
-import { ConfigurationDrawerService } from './configuration-drawer.service';
-
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
@@ -14,12 +12,10 @@ export class ConfigurationComponent implements OnInit {
     { label: 'Device Types', path: 'devicetypes'},
     { label: 'Reading Types', path: 'readingtypes'}
   ];
-  drawerOpen = false;
 
-  constructor(private drawerService: ConfigurationDrawerService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.drawerService.drawerOpen$.subscribe(opened => this.drawerOpen = opened);
   }
 
 }

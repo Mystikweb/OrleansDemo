@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OrleansDemo.API.Models;
-using OrleansDemo.API.ViewModels;
+using OrleansDemo.Models.ViewModels;
+using OrleansDemo.Models.Configuration;
 
 namespace OrleansDemo.API.Controllers
 {

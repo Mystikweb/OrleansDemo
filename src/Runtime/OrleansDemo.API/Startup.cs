@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans;
 using Orleans.Runtime.Configuration;
-using OrleansDemo.API.Models;
 using Microsoft.EntityFrameworkCore;
+using OrleansDemo.Models.Configuration;
 
 namespace OrleansDemo.API
 {
