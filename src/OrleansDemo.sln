@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo.Models", "Orlea
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{A683B085-F666-45E5-BD81-37E29BBEC658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.Clients.CommandLine", "Clients\OrleansDemo.Clients.CommandLine\OrleansDemo.Clients.CommandLine.csproj", "{4F3866F8-8542-485C-B676-06439CFB4667}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansDemo.Clients.CommandLine", "Clients\OrleansDemo.Clients.CommandLine\OrleansDemo.Clients.CommandLine.csproj", "{4F3866F8-8542-485C-B676-06439CFB4667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansDemo.Services", "OrleansDemo.Services\OrleansDemo.Services.csproj", "{B9FABAEB-9F7D-4D86-982B-431C0FD3D747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{4F3866F8-8542-485C-B676-06439CFB4667}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F3866F8-8542-485C-B676-06439CFB4667}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F3866F8-8542-485C-B676-06439CFB4667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9FABAEB-9F7D-4D86-982B-431C0FD3D747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FABAEB-9F7D-4D86-982B-431C0FD3D747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9FABAEB-9F7D-4D86-982B-431C0FD3D747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FABAEB-9F7D-4D86-982B-431C0FD3D747}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

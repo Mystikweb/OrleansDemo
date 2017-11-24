@@ -69,17 +69,9 @@ export class DeviceTypeService {
       );
   }
 
-  update(deviceType: DeviceType): Observable<DeviceType> {
+  update(deviceType: DeviceType) {
     const requestUrl = `${this.deviceTypeUrl}/${deviceType.id}`;
-    return this.http.put<DeviceType>(requestUrl, deviceType, httpOptions)
-      .pipe(
-        tap(t => {
-          const copiedData = this.data.slice();
-          const itemIndex = copiedData.findIndex(item => item.id === t.id);
-          copiedData[itemIndex] = t;
-          this.dataChange.next(copiedData);
-        })
-      );
+    return this.http.put(requestUrl, deviceType, httpOptions);
   }
 
   delete(id: number): Observable<DeviceType> {
