@@ -19,7 +19,7 @@ export class ReadingTypeDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: ReadingType) { }
 
   ngOnInit() {
-    this.readingType = this.data === null ? { id: null, name: null, uom: null, dataType: null } : this.data;
+    this.readingType = this.data === null ? new ReadingType() : this.data;
   }
 
   save() {

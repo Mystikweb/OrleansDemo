@@ -7,6 +7,7 @@ body {
     padding-top: 64px;
 }
 
+/* Global table formatting */
 .app-table-container {
     display: flex;
     flex-direction: column;
@@ -28,65 +29,71 @@ body {
     min-height: 300px;
 }
 
-.mat-column-title {
+.app-table-loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-table-filter-header {
+  min-height: 56px;
+  max-height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 8px 24px 0;
+  font-size: 20px;
+  justify-content: space-between;
+  border-bottom: 1px solid transparent;
+}
+
+.app-table-filter-input {
+  font-size: 14px;
+  flex-grow: 1;
+  margin-top: 8px;
+}
+
+.app-table-filter-no-results {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.app-table-rate-limit-reached {
+  color: #980000;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Any material table column formats for columns */
+.mat-column-name {
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
     overflow: hidden;
 }
-  
-.mat-column-number,
-.mat-column-state {
-    max-width: 64px;
+
+.mat-column-edit,
+.mat-column-remove {
+    max-width: 48px;
 }
 
-.mat-column-created {
-    max-width: 124px;
+/* Gloabl add button */
+.add-button-fab.mat-fab {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }
 
-.app-table-loading-shade {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 56px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.app-table-filter-header {
-    min-height: 56px;
-    max-height: 56px;
-    display: flex;
-    align-items: center;
-    padding: 8px 24px 0;
-    font-size: 20px;
-    justify-content: space-between;
-    border-bottom: 1px solid transparent;
-}
-
-.app-table-filter-no-results {
-    display: flex;
-    justify-content: center;
-    padding: 24px;
-    font-size: 12px;
-    font-style: italic;
-}
-
-.app-table-rate-limit-reached {
-    color: #980000;
-    max-width: 360px;
-    text-align: center;
-}
-
-.dialog-container {
-    display: flex;
-    flex-direction: column;
-}
-  
-.dialog-container > * {
-    width: 100%;
+/* Global flexbox spacer class */
+.flex-column-spacer {
+  flex: 1;
 }

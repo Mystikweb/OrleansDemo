@@ -1,12 +1,5 @@
-.add-button-fab.mat-fab {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-  }
-  
-  .mat-form-field {
-    font-size: 14px;
-    flex-grow: 1;
-    margin-top: 8px;
-  }
-  
+.mat-form-field {
+  font-size: 14px;
+  flex-grow: 1;
+  margin-top: 8px;
+}

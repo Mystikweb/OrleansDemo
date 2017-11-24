@@ -19,9 +19,21 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-export interface DeviceType {
+export class DeviceType {
   id: number;
   name: string;
+  active: boolean;
+  readings: DeviceReadingType[];
+
+  constructor() {
+    this.readings = new Array<DeviceReadingType>();
+  }
+}
+
+export class DeviceReadingType {
+  id: number;
+  readingTypeId: number;
+  readingType: string;
   active: boolean;
 }
 

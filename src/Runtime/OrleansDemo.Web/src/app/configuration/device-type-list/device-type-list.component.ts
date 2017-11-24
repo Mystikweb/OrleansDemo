@@ -1,16 +1,13 @@
 import { Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
+import { DetailsHostItem, DetailsHostService } from '../../shared/details-host/details-host.service';
 import { DeviceType, DeviceTypeService, DeviceTypeDataSource } from '../../services/device-type.service';
-
-import { DeviceTypeDialogComponent } from './device-type-dialog.component';
+import { DeviceTypeEditorComponent } from './device-type-editor.component';
 
 @Component({
   selector: 'app-device-type-list',
@@ -19,7 +16,7 @@ import { DeviceTypeDialogComponent } from './device-type-dialog.component';
   encapsulation: ViewEncapsulation.None
 })
 export class DeviceTypeListComponent implements OnInit {
-  displayedColumns = ['name', 'active'];
+  displayedColumns = ['edit', 'name', 'active', 'readings', 'remove'];
   dataSource: DeviceTypeDataSource | null;
   deviceTypes: DeviceType[];
 
@@ -28,7 +25,7 @@ export class DeviceTypeListComponent implements OnInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(private deviceTypeService: DeviceTypeService,
-              private dialog: MatDialog) { }
+    private detailsService: DetailsHostService) { }
 
   ngOnInit() {
     this.dataSource = new DeviceTypeDataSource(this.deviceTypeService, this.paginator, this.sort);
@@ -46,14 +43,11 @@ export class DeviceTypeListComponent implements OnInit {
     this.deviceTypeService.getList().subscribe();
   }
 
-  openDialog(type: DeviceType) {
-    const dialogRef = this.dialog.open(DeviceTypeDialogComponent, {
-      disableClose: true,
-      data: type
-    });
+  openEditor(type: DeviceType) {
+    this.detailsService.openItem(new DetailsHostItem(DeviceTypeEditorComponent, type === null ? new DeviceType() : type));
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-    });
+  delete(type: DeviceType) {
+    console.log(type);
   }
 }

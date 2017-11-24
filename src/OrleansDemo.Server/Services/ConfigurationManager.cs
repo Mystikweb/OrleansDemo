@@ -10,27 +10,35 @@ namespace OrleansDemo.Server.Services
 {
     public class ConfigurationManager : IConfigurationManager
     {
+        private readonly HttpClient http;
+
+        public ConfigurationManager()
+        {
+            http = new HttpClient();
+            http.BaseAddress = new Uri("http://localhost:11635/");
+            http.DefaultRequestHeaders.Accept.Clear();
+            http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
         public async Task<List<DeviceConfiguration>> GetDeviceConfigurations()
         {
             List<DeviceConfiguration> results = new List<DeviceConfiguration>();
 
-            using (var http = new HttpClient())
+            var res = await http.GetAsync("api/runtime/configuration");
+
+            if (res.IsSuccessStatusCode)
             {
-                http.BaseAddress = new Uri("http://localhost:11635/");
-                http.DefaultRequestHeaders.Accept.Clear();
-                http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                string resContent = await res.Content.ReadAsStringAsync();
 
-                var res = await http.GetAsync("api/runtime/configuration");
-
-                if (res.IsSuccessStatusCode)
-                {
-                    string resContent = await res.Content.ReadAsStringAsync();
-
-                    results = JsonConvert.DeserializeObject<List<DeviceConfiguration>>(resContent);
-                }
+                results = JsonConvert.DeserializeObject<List<DeviceConfiguration>>(resContent);
             }
 
             return results;
+        }
+
+        public void Dispose()
+        {
+            http.Dispose();
         }
     }
 }

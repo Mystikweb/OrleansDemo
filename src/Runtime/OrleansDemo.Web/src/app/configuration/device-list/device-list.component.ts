@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { DetailsHostItem, DetailsHostService } from '../../shared/details-host/details-host.service';
 
-import { EditorHostItem, ConfigurationDrawerService } from '../configuration-drawer.service';
 import { Device, DeviceService } from '../../services/device.service';
 import { DeviceEditorComponent } from './device-editor.component';
 

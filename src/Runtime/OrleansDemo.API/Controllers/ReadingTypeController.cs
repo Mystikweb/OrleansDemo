@@ -31,7 +31,17 @@ namespace OrleansDemo.API.Controllers
                               Id = t.Id,
                               Name = t.Name,
                               UOM = t.Uom,
-                              DataType = t.DataType
+                              DataType = t.DataType,
+                              Assembly = t.Assembly,
+                              Class = t.Class,
+                              Method = t.Method,
+                              DeviceTypes = t.DeviceTypeReadingTypes.Select(a => new ReadingTypeDeviceTypeViewModel
+                              {
+                                  Id = a.Id,
+                                  DeviceTypeId = a.DeviceTypeId,
+                                  DeviceType = a.DeviceType.Name,
+                                  Active = a.Active.HasValue ? a.Active.Value : false
+                              }).ToList()
                           }).ToListAsync();
         }
 
@@ -51,7 +61,17 @@ namespace OrleansDemo.API.Controllers
                                          Id = t.Id,
                                          Name = t.Name,
                                          UOM = t.Uom,
-                                         DataType = t.DataType
+                                         DataType = t.DataType,
+                                         Assembly = t.Assembly,
+                                         Class = t.Class,
+                                         Method = t.Method,
+                                         DeviceTypes = t.DeviceTypeReadingTypes.Select(a => new ReadingTypeDeviceTypeViewModel
+                                         {
+                                             Id = a.Id,
+                                             DeviceTypeId = a.DeviceTypeId,
+                                             DeviceType = a.DeviceType.Name,
+                                             Active = a.Active.HasValue ? a.Active.Value : false
+                                         }).ToList()
                                      }).FirstOrDefaultAsync();
 
             if (readingType == null)
@@ -71,22 +91,19 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != readingType.Id)
+            if (id != readingType.Id || !ReadingTypeExists(id))
             {
                 return BadRequest();
             }
 
             ReadingType model = await _context.ReadingTypes.FirstOrDefaultAsync(t => t.Id == id);
 
-            if (model == null)
-            {
-                return NotFound();
-            }
-
             model.Name = readingType.Name;
             model.Uom = readingType.UOM;
             model.DataType = readingType.DataType;
-
+            model.Assembly = readingType.Assembly;
+            model.Class = readingType.Class;
+            model.Method = readingType.Method;
             _context.Entry(model).State = EntityState.Modified;
 
             try
@@ -95,14 +112,7 @@ namespace OrleansDemo.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ReadingTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();

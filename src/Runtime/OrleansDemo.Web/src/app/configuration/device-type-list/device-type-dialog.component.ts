@@ -21,7 +21,7 @@ export class DeviceTypeDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DeviceType) { }
 
   ngOnInit() {
-    this.deviceType = this.data === null ? { id: null, name: null, active: false } : this.data;
+    this.deviceType = this.data === null ? new DeviceType() : this.data;
   }
 
   save() {

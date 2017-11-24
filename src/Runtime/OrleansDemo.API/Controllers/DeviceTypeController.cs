@@ -25,13 +25,19 @@ namespace OrleansDemo.API.Controllers
         [HttpGet]
         public async Task<IEnumerable<DeviceTypeViewModel>> GetDeviceTypes()
         {
-            return await (from t in _context.DeviceTypes
-                          select new DeviceTypeViewModel
-                          {
-                              Id = t.Id,
-                              Name = t.Name,
-                              Active = t.Active.HasValue ? t.Active.Value : false
-                          }).ToListAsync();
+            return await (_context.DeviceTypes.Select(t => new DeviceTypeViewModel
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Active = t.Active.HasValue ? t.Active.Value : false,
+                ReadingTypes = t.DeviceTypeReadingTypes.Select(r => new DeviceTypeReadingTypeViewModel
+                {
+                    Id = r.Id,
+                    ReadingTypeId = r.ReadingTypeId,
+                    ReadingType = r.ReadingType.Name,
+                    Active = r.Active.HasValue ? r.Active.Value : false
+                }).ToList()
+            })).ToListAsync();
         }
 
         // GET: api/DeviceType/5
@@ -49,7 +55,14 @@ namespace OrleansDemo.API.Controllers
                                     {
                                         Id = t.Id,
                                         Name = t.Name,
-                                        Active = t.Active.HasValue ? t.Active.Value : false
+                                        Active = t.Active.HasValue ? t.Active.Value : false,
+                                        ReadingTypes = t.DeviceTypeReadingTypes.Select(r => new DeviceTypeReadingTypeViewModel
+                                        {
+                                            Id = r.Id,
+                                            ReadingTypeId = r.ReadingTypeId,
+                                            ReadingType = r.ReadingType.Name,
+                                            Active = r.Active.HasValue ? r.Active.Value : false
+                                        }).ToList()
                                     }).FirstOrDefaultAsync();
 
             if (deviceType == null)
@@ -69,17 +82,12 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != deviceType.Id)
+            if (id != deviceType.Id || !DeviceTypeExists(id))
             {
                 return BadRequest();
             }
 
             DeviceType model = await _context.DeviceTypes.FirstOrDefaultAsync(t => t.Id == id);
-
-            if (model == null)
-            {
-                return NotFound();
-            }
 
             model.Name = deviceType.Name;
             model.Active = deviceType.Active;
@@ -92,14 +100,35 @@ namespace OrleansDemo.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DeviceTypeExists(id))
+                throw;
+            }
+
+            foreach (var item in deviceType.ReadingTypes)
+            {
+                DeviceTypeReadingType assoc = null;
+                if (item.Id.HasValue)
                 {
-                    return NotFound();
+                    assoc = await _context.DeviceTypeReadingTypes.FirstOrDefaultAsync(a => a.Id == item.Id.Value);
+                    assoc.Active = item.Active;
+                    _context.Entry(assoc).State = EntityState.Modified;
                 }
                 else
                 {
-                    throw;
+                    assoc = new DeviceTypeReadingType();
+                    assoc.DeviceTypeId = model.Id;
+                    assoc.ReadingTypeId = item.ReadingTypeId;
+                    assoc.Active = item.Active;
+                    _context.DeviceTypeReadingTypes.Add(assoc);
                 }
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
             return NoContent();
@@ -121,6 +150,20 @@ namespace OrleansDemo.API.Controllers
             };
 
             _context.DeviceTypes.Add(model);
+            await _context.SaveChangesAsync();
+
+            foreach (var item in deviceType.ReadingTypes)
+            {
+                DeviceTypeReadingType deviceTypeReadingType = new DeviceTypeReadingType()
+                {
+                    DeviceTypeId = model.Id,
+                    ReadingTypeId = item.ReadingTypeId,
+                    Active = true
+                };
+
+                _context.DeviceTypeReadingTypes.Add(deviceTypeReadingType);
+            }
+
             await _context.SaveChangesAsync();
 
             deviceType.Id = model.Id;
