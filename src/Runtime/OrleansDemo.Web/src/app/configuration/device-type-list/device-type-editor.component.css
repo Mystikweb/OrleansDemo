@@ -21,16 +21,16 @@
 }
 
 .device-type-button-bar > button {
-  margin-left: 16px;
+  margin-left: 8px;
 }
 
-.device-type-active-section {
+.device-type-control-section {
   display: flex;
   align-content: center;
   align-items: center;
   height: 60px;
 }
 
-.device-type-active-margin {
+.device-type-control-margin {
   margin: 10px;
 }

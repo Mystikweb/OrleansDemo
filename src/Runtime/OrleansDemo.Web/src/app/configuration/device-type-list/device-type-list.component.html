@@ -27,7 +27,7 @@
     <ng-container matColumnDef="readings">
       <mat-header-cell *matHeaderCellDef>Readings</mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <span *ngFor="let reading of row.readingTypes; last as isLast">
+        <span *ngFor="let reading of row.readings; last as isLast">
           {{reading.readingType}}<span *ngIf="!isLast">, </span>
         </span>
       </mat-cell>

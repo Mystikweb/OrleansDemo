@@ -17,12 +17,14 @@ export class DetailsHostComponent implements OnInit {
 
   ngOnInit() {
     this.detailsHost.currentItem$.subscribe(item => {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(item.component);
       const viewContainerRef = this.appDetailsHost.viewContainerRef;
       viewContainerRef.clear();
 
-      const componentRef = viewContainerRef.createComponent(componentFactory);
-      (<DetailsItemComponent>componentRef.instance).data = item.data;
+      if (item !== null) {
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(item.component);
+        const componentRef = viewContainerRef.createComponent(componentFactory);
+        (<DetailsItemComponent>componentRef.instance).data = item.data;
+      }
     });
   }
 

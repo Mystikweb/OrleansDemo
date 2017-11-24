@@ -23,11 +23,7 @@ export class DeviceType {
   id: number;
   name: string;
   active: boolean;
-  readings: DeviceReadingType[];
-
-  constructor() {
-    this.readings = new Array<DeviceReadingType>();
-  }
+  readingTypes: DeviceReadingType[];
 }
 
 export class DeviceReadingType {

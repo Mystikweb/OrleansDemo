@@ -23,4 +23,9 @@ export class DetailsHostService {
      this.detailsOpen$.next(true);
      this.currentItem$.next(item);
    }
+
+   closeItem() {
+     this.currentItem$.next(null);
+     this.detailsOpen$.next(false);
+   }
 }

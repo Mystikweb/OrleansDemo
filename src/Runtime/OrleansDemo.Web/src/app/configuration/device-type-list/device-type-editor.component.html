@@ -1,20 +1,25 @@
 <div class="form-container">
   <div class="device-type-container">
     <mat-form-field>
-      <input matInput placeholder="Name" [(ngModel)]="data.name" tabindex="1" name="name" />
+      <input matInput placeholder="Name" [(ngModel)]="deviceType.name" tabindex="1" name="name" />
     </mat-form-field>
-    <section class="device-type-active-section">
-      <mat-slide-toggle class="device-type-active-margin" [(ngModel)]="data.active" tabindex="2" name="active">
+    <section class="device-type-control-section">
+      <mat-slide-toggle class="device-type-control-margin" [(ngModel)]="deviceType.active" tabindex="2" name="active">
         Active
       </mat-slide-toggle>
     </section>
+    <mat-divider></mat-divider>
+    <mat-list>
+      <h3 mat-subheader>Reading Types</h3>
+      <mat-list-item *ngFor="let reading of deviceType.readingTypes">
+        <section class="device-type-control-section">
+          <mat-checkbox class="device-type-control-margin" [(ngModel)]="reading.active">{{reading.readingType}}</mat-checkbox>
+        </section>
+      </mat-list-item>
+    </mat-list>
   </div>
   <div class="device-type-button-bar">
-    <button mat-raised-button color="primary">
-      <mat-icon>save</mat-icon> Save
-    </button>
-    <button mat-raised-button color="accent">
-      <mat-icon>cancel</mat-icon> Cancel
-    </button>
+    <button mat-raised-button color="primary">Save</button>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
   </div>
 </div>
