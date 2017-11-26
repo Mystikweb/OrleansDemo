@@ -8,10 +8,10 @@ namespace OrleansDemo.Services.Interfaces
 {
     public interface IDeviceTypeConfiguration : IDisposable
     {
-        Task<bool> DeviceTypeExists(int id);
-        Task<IEnumerable<DeviceTypeViewModel>> GetList();
-        Task<DeviceTypeViewModel> Get(int id);
-        Task<DeviceTypeViewModel> Save(DeviceTypeViewModel deviceType);
-        Task Remove(int id);
+        Task<bool> DeviceTypeExistsAsync(int id);
+        Task<IEnumerable<DeviceTypeViewModel>> GetListAsync();
+        Task<DeviceTypeViewModel> GetAsync(int id);
+        Task<DeviceTypeViewModel> SaveAsync(DeviceTypeViewModel deviceType);
+        Task RemoveAsync(int id);
     }
 }

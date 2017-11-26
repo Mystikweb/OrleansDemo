@@ -1,16 +1,13 @@
 import { Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MatPaginator, MatSort } from '@angular/material';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
+import { MatPaginator, MatSort } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
+import { DetailsHostItem, DetailsHostService } from '../../shared/details-host/details-host.service';
 import { ReadingType, ReadingTypeService, ReadingTypeDataSource } from '../../services/reading-type.service';
-
-import { ReadingTypeDialogComponent } from './reading-type-dialog.component';
+import { ReadingTypeEditorComponent } from './reading-type-editor.component';
 
 @Component({
   selector: 'app-reading-type-list',
@@ -19,7 +16,7 @@ import { ReadingTypeDialogComponent } from './reading-type-dialog.component';
   encapsulation: ViewEncapsulation.None
 })
 export class ReadingTypeListComponent implements OnInit {
-  displayedColumns = ['name', 'uom', 'dataType'];
+  displayedColumns = ['edit', 'name', 'uom', 'dataType', 'remove'];
   dataSource: ReadingTypeDataSource | null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -27,7 +24,7 @@ export class ReadingTypeListComponent implements OnInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(private readingTypeService: ReadingTypeService,
-              private dialog: MatDialog) { }
+    private detailsHost: DetailsHostService) { }
 
   ngOnInit() {
     this.dataSource = new ReadingTypeDataSource(this.readingTypeService, this.paginator, this.sort);
@@ -45,14 +42,11 @@ export class ReadingTypeListComponent implements OnInit {
     this.readingTypeService.getList().subscribe();
   }
 
-  openDialog(type: ReadingType) {
-    const dialogRef = this.dialog.open(ReadingTypeDialogComponent, {
-      disableClose: true,
-      data: type
-    });
+  openEditor(type: ReadingType) {
+    this.detailsHost.openItem(new DetailsHostItem(ReadingTypeEditorComponent, type === null ? new ReadingType() : type));
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-    });
+  delete(type: ReadingType) {
+    console.log(type);
   }
 }

@@ -9,6 +9,14 @@
   </div>
   <mat-table #readingTypeTable [dataSource]="dataSource" class="app-table"
             matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
+    <ng-container matColumnDef="edit">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-icon-button (click)="openEditor(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef
                         mat-sort-header
@@ -27,6 +35,14 @@
                         disableClear="true">Data Type</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.dataType }}</mat-cell>
     </ng-container>
+    <ng-container matColumnDef="remove">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-icon-button (click)="delete(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
@@ -35,6 +51,6 @@
   </div>
   <mat-paginator [length]="dataSource.resultsLength" [pageSize]="30"></mat-paginator>
 </div>
-<button mat-fab class="add-button-fab" (click)="openDialog(null)">
+<button mat-fab class="add-button-fab" (click)="openEditor(null)">
   <mat-icon>add</mat-icon>
 </button>

@@ -27,12 +27,12 @@ export class DeviceTypeEditorComponent implements OnInit, DetailsItemComponent {
   }
 
   save() {
-    if (this.deviceType.id !== null) {
-      this.deviceTypeService.update(this.deviceType).subscribe(result => {
+    if (this.deviceType.id === undefined) {
+      this.deviceTypeService.save(this.deviceType).subscribe(result => {
         this.detailsHost.closeItem();
       });
     } else {
-      this.deviceTypeService.save(this.deviceType).subscribe(result => {
+      this.deviceTypeService.update(this.deviceType).subscribe(result => {
         this.detailsHost.closeItem();
       });
     }

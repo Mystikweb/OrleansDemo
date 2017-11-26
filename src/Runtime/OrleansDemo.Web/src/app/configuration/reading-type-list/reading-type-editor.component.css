@@ -1,0 +1,36 @@
+.form-container {
+  position: relative;
+  height: calc(100% - 32px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 32px;
+}
+
+.device-type-container {
+  flex: 1;
+}
+
+.device-type-container > * {
+  width: 100%;
+}
+
+.device-type-button-bar {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.device-type-button-bar > button {
+  margin-left: 8px;
+}
+
+.device-type-control-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.device-type-control-margin {
+  margin: 10px;
+}

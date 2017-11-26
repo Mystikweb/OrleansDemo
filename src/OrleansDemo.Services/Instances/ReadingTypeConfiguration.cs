@@ -6,6 +6,7 @@ using OrleansDemo.Models.ViewModels;
 using System.Threading.Tasks;
 using OrleansDemo.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace OrleansDemo.Services.Instances
 {
@@ -18,29 +19,79 @@ namespace OrleansDemo.Services.Instances
             context = configurationContext;
         }
 
-        public async Task<bool> ReadingTypeExists(int id)
+        public async Task<bool> ReadingTypeExistsAsync(int id)
         {
             return await context.ReadingTypes.AnyAsync(r => r.Id == id);
         }
 
-        public Task<IEnumerable<ReadingTypeViewModel>> GetList()
+        public async Task<IEnumerable<ReadingTypeViewModel>> GetListAsync()
         {
-            throw new NotImplementedException();
+            return await context.ReadingTypes.Select(r => new ReadingTypeViewModel
+            {
+                Id = r.Id,
+                Name = r.Name,
+                UOM = r.Uom,
+                DataType = r.DataType,
+                Assembly = r.Assembly,
+                Class = r.Class,
+                Method = r.Method
+            }).ToListAsync();
         }
 
-        public Task<ReadingTypeViewModel> Get(int id)
+        public async Task<ReadingTypeViewModel> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await context.ReadingTypes.Select(r => new ReadingTypeViewModel
+            {
+                Id = r.Id,
+                Name = r.Name,
+                UOM = r.Uom,
+                DataType = r.DataType,
+                Assembly = r.Assembly,
+                Class = r.Class,
+                Method = r.Method
+            }).FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public Task<ReadingTypeViewModel> Save(ReadingTypeViewModel readingType)
+        public async Task<ReadingTypeViewModel> SaveAsync(ReadingTypeViewModel readingType)
         {
-            throw new NotImplementedException();
+            ReadingType model = null;
+            if (readingType.Id.HasValue)
+            {
+                model = await context.ReadingTypes.FirstOrDefaultAsync(t => t.Id == readingType.Id.Value);
+                model.Name = readingType.Name;
+                model.Uom = readingType.UOM;
+                model.DataType = readingType.DataType;
+                model.Assembly = readingType.Assembly;
+                model.Class = readingType.Class;
+                model.Method = readingType.Method;
+
+                context.Entry(model).State = EntityState.Modified;
+            }
+            else
+            {
+                model = new ReadingType
+                {
+                    Name = readingType.Name,
+                    Uom = readingType.UOM,
+                    DataType = readingType.DataType,
+                    Assembly = readingType.Assembly,
+                    Class = readingType.Class,
+                    Method = readingType.Method
+                };
+
+                context.ReadingTypes.Add(model);
+            }
+
+            await context.SaveChangesAsync();
+
+            return await GetAsync(model.Id);
         }
 
-        public Task Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            throw new NotImplementedException();
+            ReadingType readingType = await context.ReadingTypes.FirstOrDefaultAsync(t => t.Id == id);
+            context.ReadingTypes.Remove(readingType);
+            await context.SaveChangesAsync();
         }
 
         public void Dispose()

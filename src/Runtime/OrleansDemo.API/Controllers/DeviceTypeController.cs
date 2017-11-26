@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.Models.ViewModels;
 using OrleansDemo.Models.Configuration;
+using OrleansDemo.Services.Interfaces;
 
 namespace OrleansDemo.API.Controllers
 {
@@ -14,30 +15,18 @@ namespace OrleansDemo.API.Controllers
     [Route("api/DeviceType")]
     public class DeviceTypeController : Controller
     {
-        private readonly ConfigurationContext _context;
+        private readonly IDeviceTypeConfiguration deviceType;
 
-        public DeviceTypeController(ConfigurationContext context)
+        public DeviceTypeController(IDeviceTypeConfiguration deviceTypeConfiguration)
         {
-            _context = context;
+            deviceType = deviceTypeConfiguration;
         }
 
         // GET: api/DeviceType
         [HttpGet]
         public async Task<IEnumerable<DeviceTypeViewModel>> GetDeviceTypes()
         {
-            return await (_context.DeviceTypes.Select(t => new DeviceTypeViewModel
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Active = t.Active.HasValue ? t.Active.Value : false,
-                ReadingTypes = t.DeviceTypeReadingTypes.Select(r => new DeviceTypeReadingTypeViewModel
-                {
-                    Id = r.Id,
-                    ReadingTypeId = r.ReadingTypeId,
-                    ReadingType = r.ReadingType.Name,
-                    Active = r.Active.HasValue ? r.Active.Value : false
-                }).ToList()
-            })).ToListAsync();
+            return await deviceType.GetListAsync();
         }
 
         // GET: api/DeviceType/5
@@ -49,84 +38,35 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await (from t in _context.DeviceTypes
-                                    where t.Id == id
-                                    select new DeviceTypeViewModel
-                                    {
-                                        Id = t.Id,
-                                        Name = t.Name,
-                                        Active = t.Active.HasValue ? t.Active.Value : false,
-                                        ReadingTypes = t.DeviceTypeReadingTypes.Select(r => new DeviceTypeReadingTypeViewModel
-                                        {
-                                            Id = r.Id,
-                                            ReadingTypeId = r.ReadingTypeId,
-                                            ReadingType = r.ReadingType.Name,
-                                            Active = r.Active.HasValue ? r.Active.Value : false
-                                        }).ToList()
-                                    }).FirstOrDefaultAsync();
-
-            if (deviceType == null)
+            bool exists = await deviceType.DeviceTypeExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            return Ok(deviceType);
+            return Ok(await deviceType.GetAsync(id));
         }
 
         // PUT: api/DeviceType/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceTypeViewModel deviceType)
+        public async Task<IActionResult> PutDeviceType([FromRoute] int id, [FromBody] DeviceTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != deviceType.Id || !DeviceTypeExists(id))
+            bool exists = await deviceType.DeviceTypeExistsAsync(id);
+            if (id != model.Id || !exists)
             {
                 return BadRequest();
             }
 
-            DeviceType model = await _context.DeviceTypes.FirstOrDefaultAsync(t => t.Id == id);
-
-            model.Name = deviceType.Name;
-            model.Active = deviceType.Active;
-
-            _context.Entry(model).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await deviceType.SaveAsync(model);
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            foreach (var item in deviceType.ReadingTypes)
-            {
-                DeviceTypeReadingType assoc = null;
-                if (item.Id.HasValue)
-                {
-                    assoc = await _context.DeviceTypeReadingTypes.FirstOrDefaultAsync(a => a.Id == item.Id.Value);
-                    assoc.Active = item.Active;
-                    _context.Entry(assoc).State = EntityState.Modified;
-                }
-                else
-                {
-                    assoc = new DeviceTypeReadingType();
-                    assoc.DeviceTypeId = model.Id;
-                    assoc.ReadingTypeId = item.ReadingTypeId;
-                    assoc.Active = item.Active;
-                    _context.DeviceTypeReadingTypes.Add(assoc);
-                }
-            }
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 throw;
             }
@@ -136,39 +76,24 @@ namespace OrleansDemo.API.Controllers
 
         // POST: api/DeviceType
         [HttpPost]
-        public async Task<IActionResult> PostDeviceType([FromBody] DeviceTypeViewModel deviceType)
+        public async Task<IActionResult> PostDeviceType([FromBody] DeviceTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            DeviceType model = new DeviceType()
+            DeviceTypeViewModel result;
+            try
             {
-                Name = deviceType.Name,
-                Active = deviceType.Active
-            };
-
-            _context.DeviceTypes.Add(model);
-            await _context.SaveChangesAsync();
-
-            foreach (var item in deviceType.ReadingTypes)
+                result = await deviceType.SaveAsync(model);
+            }
+            catch (Exception)
             {
-                DeviceTypeReadingType deviceTypeReadingType = new DeviceTypeReadingType()
-                {
-                    DeviceTypeId = model.Id,
-                    ReadingTypeId = item.ReadingTypeId,
-                    Active = true
-                };
-
-                _context.DeviceTypeReadingTypes.Add(deviceTypeReadingType);
+                throw;
             }
 
-            await _context.SaveChangesAsync();
-
-            deviceType.Id = model.Id;
-
-            return CreatedAtAction("GetDeviceType", new { id = deviceType.Id }, deviceType);
+            return CreatedAtAction("GetDeviceType", new { id = result.Id }, result);
         }
 
         // DELETE: api/DeviceType/5
@@ -180,28 +105,17 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deviceType = await _context.DeviceTypes.SingleOrDefaultAsync(m => m.Id == id);
-            if (deviceType == null)
+            bool exists = await deviceType.DeviceTypeExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            DeviceTypeViewModel result = new DeviceTypeViewModel()
-            {
-                Id = deviceType.Id,
-                Name = deviceType.Name,
-                Active = deviceType.Active.Value
-            };
+            DeviceTypeViewModel result = await deviceType.GetAsync(id);
 
-            _context.DeviceTypes.Remove(deviceType);
-            await _context.SaveChangesAsync();
+            await deviceType.RemoveAsync(id);
 
             return Ok(result);
-        }
-
-        private bool DeviceTypeExists(int id)
-        {
-            return _context.DeviceTypes.Any(e => e.Id == id);
         }
     }
 }

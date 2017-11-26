@@ -1,0 +1,17 @@
+<div class="form-container">
+  <div class="device-type-container">
+    <mat-form-field>
+      <input matInput placeholder="Name" [(ngModel)]="readingType.name" tabindex="1" name="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="UOM" [(ngModel)]="readingType.uom" tabindex="1" name="uom" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Data Type" [(ngModel)]="readingType.dataType" tabindex="1" name="dataType" />
+    </mat-form-field>
+  </div>
+  <div class="device-type-button-bar">
+    <button mat-raised-button color="primary" (click)="save()">Save</button>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
+  </div>
+</div>

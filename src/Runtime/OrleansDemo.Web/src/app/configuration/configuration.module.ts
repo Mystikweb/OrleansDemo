@@ -11,10 +11,9 @@ import { ConfigurationComponent } from './configuration.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceEditorComponent } from './device-list/device-editor.component';
 import { DeviceTypeListComponent } from './device-type-list/device-type-list.component';
-import { DeviceTypeDialogComponent } from './device-type-list/device-type-dialog.component';
-import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
-import { ReadingTypeDialogComponent } from './reading-type-list/reading-type-dialog.component';
 import { DeviceTypeEditorComponent } from './device-type-list/device-type-editor.component';
+import { ReadingTypeListComponent } from './reading-type-list/reading-type-list.component';
+import { ReadingTypeEditorComponent } from './reading-type-list/reading-type-editor.component';
 
 @NgModule({
   imports: [
@@ -31,17 +30,15 @@ import { DeviceTypeEditorComponent } from './device-type-list/device-type-editor
     DeviceListComponent,
     DeviceEditorComponent,
     DeviceTypeListComponent,
-    DeviceTypeDialogComponent,
-    ReadingTypeListComponent,
-    ReadingTypeDialogComponent,
     DeviceTypeEditorComponent,
+    ReadingTypeListComponent,
+    ReadingTypeEditorComponent,
   ],
   bootstrap: [],
   entryComponents: [
-    DeviceTypeDialogComponent,
-    ReadingTypeDialogComponent,
     DeviceEditorComponent,
-    DeviceTypeEditorComponent
+    DeviceTypeEditorComponent,
+    ReadingTypeEditorComponent
   ],
   providers: []
 })

@@ -8,10 +8,10 @@ namespace OrleansDemo.Services.Interfaces
 {
     public interface IReadingTypeConfiguration : IDisposable
     {
-        Task<bool> ReadingTypeExists(int id);
-        Task<IEnumerable<ReadingTypeViewModel>> GetList();
-        Task<ReadingTypeViewModel> Get(int id);
-        Task<ReadingTypeViewModel> Save(ReadingTypeViewModel readingType);
-        Task Remove(int id);
+        Task<bool> ReadingTypeExistsAsync(int id);
+        Task<IEnumerable<ReadingTypeViewModel>> GetListAsync();
+        Task<ReadingTypeViewModel> GetAsync(int id);
+        Task<ReadingTypeViewModel> SaveAsync(ReadingTypeViewModel readingType);
+        Task RemoveAsync(int id);
     }
 }

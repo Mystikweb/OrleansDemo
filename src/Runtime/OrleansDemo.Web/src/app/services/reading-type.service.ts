@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
@@ -40,9 +40,7 @@ export class ReadingDeviceType {
 export class ReadingTypeService {
   private readingTypeUrl = environment.rootUri + '/api/readingtype';
 
-  dataChange: BehaviorSubject<ReadingType[]> = new BehaviorSubject<
-    ReadingType[]
-  >([]);
+  dataChange: BehaviorSubject<ReadingType[]> = new BehaviorSubject<ReadingType[]>([]);
   get data(): ReadingType[] {
     return this.dataChange.value;
   }
@@ -177,31 +175,31 @@ export class ReadingTypeDataSource extends DataSource<ReadingType> {
   disconnect() {}
 
   sortData(data: ReadingType[]): ReadingType[] {
-    if (!this.sort.active || this.sort.direction === "") {
+    if (!this.sort.active || this.sort.direction === '') {
       return data;
     }
 
     return data.sort((a, b) => {
-      let propertyA: number | string = "";
-      let propertyB: number | string = "";
+      let propertyA: number | string = '';
+      let propertyB: number | string = '';
 
       switch (this.sort.active) {
-        case "name":
+        case 'name':
           [propertyA, propertyB] = [a.name, b.name];
           break;
-        case "uom":
+        case 'uom':
           [propertyA, propertyB] = [a.uom, b.uom];
           break;
-        case "dataType":
+        case 'dataType':
           [propertyA, propertyB] = [a.dataType, b.dataType];
           break;
-        case "assembly":
+        case 'assembly':
           [propertyA, propertyB] = [a.assembly, b.assembly];
           break;
-        case "class":
+        case 'class':
           [propertyA, propertyB] = [a.class, b.class];
           break;
-        case "methond":
+        case 'method':
           [propertyA, propertyB] = [a.method, b.method];
           break;
       }
@@ -210,7 +208,7 @@ export class ReadingTypeDataSource extends DataSource<ReadingType> {
       const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
 
       return (
-        (valueA < valueB ? -1 : 1) * (this.sort.direction === "asc" ? 1 : -1)
+        (valueA < valueB ? -1 : 1) * (this.sort.direction === 'asc' ? 1 : -1)
       );
     });
   }

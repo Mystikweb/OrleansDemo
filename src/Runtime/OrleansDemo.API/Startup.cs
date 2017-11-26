@@ -12,6 +12,8 @@ using Orleans;
 using Orleans.Runtime.Configuration;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.Models.Configuration;
+using OrleansDemo.Services.Interfaces;
+using OrleansDemo.Services.Instances;
 
 namespace OrleansDemo.API
 {
@@ -29,6 +31,9 @@ namespace OrleansDemo.API
         {
             services.AddDbContext<ConfigurationContext>(opts =>
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<IReadingTypeConfiguration, ReadingTypeConfiguration>();
+            services.AddTransient<IDeviceTypeConfiguration, DeviceTypeConfiguration>();
 
             services.AddSingleton(BuildClient);
 
@@ -61,7 +66,7 @@ namespace OrleansDemo.API
                 .AddApplicationPartsFromBasePath()
                 .ConfigureLogging(logger =>
                 {
-
+                    
                 }).Build();
         }
     }

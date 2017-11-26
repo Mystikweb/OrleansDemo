@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeviceTypeDialogComponent } from './device-type-dialog.component';
+import { ReadingTypeEditorComponent } from './reading-type-editor.component';
 
-describe('DeviceTypeDialogComponent', () => {
-  let component: DeviceTypeDialogComponent;
-  let fixture: ComponentFixture<DeviceTypeDialogComponent>;
+describe('ReadingTypeEditorComponent', () => {
+  let component: ReadingTypeEditorComponent;
+  let fixture: ComponentFixture<ReadingTypeEditorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceTypeDialogComponent ]
+      declarations: [ ReadingTypeEditorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceTypeDialogComponent);
+    fixture = TestBed.createComponent(ReadingTypeEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

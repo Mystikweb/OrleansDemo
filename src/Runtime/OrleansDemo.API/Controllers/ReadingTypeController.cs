@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.Models.ViewModels;
 using OrleansDemo.Models.Configuration;
+using OrleansDemo.Services.Interfaces;
 
 namespace OrleansDemo.API.Controllers
 {
@@ -14,35 +15,18 @@ namespace OrleansDemo.API.Controllers
     [Route("api/ReadingType")]
     public class ReadingTypeController : Controller
     {
-        private readonly ConfigurationContext _context;
+        private readonly IReadingTypeConfiguration readingType;
 
-        public ReadingTypeController(ConfigurationContext context)
+        public ReadingTypeController(IReadingTypeConfiguration readingTypeConfiguration)
         {
-            _context = context;
+            readingType = readingTypeConfiguration;
         }
 
         // GET: api/ReadingType
         [HttpGet]
         public async Task<IEnumerable<ReadingTypeViewModel>> GetReadingTypes()
         {
-            return await (from t in _context.ReadingTypes
-                          select new ReadingTypeViewModel
-                          {
-                              Id = t.Id,
-                              Name = t.Name,
-                              UOM = t.Uom,
-                              DataType = t.DataType,
-                              Assembly = t.Assembly,
-                              Class = t.Class,
-                              Method = t.Method,
-                              DeviceTypes = t.DeviceTypeReadingTypes.Select(a => new ReadingTypeDeviceTypeViewModel
-                              {
-                                  Id = a.Id,
-                                  DeviceTypeId = a.DeviceTypeId,
-                                  DeviceType = a.DeviceType.Name,
-                                  Active = a.Active.HasValue ? a.Active.Value : false
-                              }).ToList()
-                          }).ToListAsync();
+            return await readingType.GetListAsync();
         }
 
         // GET: api/ReadingType/5
@@ -54,63 +38,35 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var readingType = await (from t in _context.ReadingTypes
-                                     where t.Id == id
-                                     select new ReadingTypeViewModel
-                                     {
-                                         Id = t.Id,
-                                         Name = t.Name,
-                                         UOM = t.Uom,
-                                         DataType = t.DataType,
-                                         Assembly = t.Assembly,
-                                         Class = t.Class,
-                                         Method = t.Method,
-                                         DeviceTypes = t.DeviceTypeReadingTypes.Select(a => new ReadingTypeDeviceTypeViewModel
-                                         {
-                                             Id = a.Id,
-                                             DeviceTypeId = a.DeviceTypeId,
-                                             DeviceType = a.DeviceType.Name,
-                                             Active = a.Active.HasValue ? a.Active.Value : false
-                                         }).ToList()
-                                     }).FirstOrDefaultAsync();
-
-            if (readingType == null)
+            bool exists = await readingType.ReadingTypeExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            return Ok(readingType);
+            return Ok(await readingType.GetAsync(id));
         }
 
         // PUT: api/ReadingType/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReadingType([FromRoute] int id, [FromBody] ReadingTypeViewModel readingType)
+        public async Task<IActionResult> PutReadingType([FromRoute] int id, [FromBody] ReadingTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != readingType.Id || !ReadingTypeExists(id))
+            bool exists = await readingType.ReadingTypeExistsAsync(id);
+            if (id != model.Id || !exists)
             {
                 return BadRequest();
             }
 
-            ReadingType model = await _context.ReadingTypes.FirstOrDefaultAsync(t => t.Id == id);
-
-            model.Name = readingType.Name;
-            model.Uom = readingType.UOM;
-            model.DataType = readingType.DataType;
-            model.Assembly = readingType.Assembly;
-            model.Class = readingType.Class;
-            model.Method = readingType.Method;
-            _context.Entry(model).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await readingType.SaveAsync(model);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 throw;
             }
@@ -120,26 +76,16 @@ namespace OrleansDemo.API.Controllers
 
         // POST: api/ReadingType
         [HttpPost]
-        public async Task<IActionResult> PostReadingType([FromBody] ReadingTypeViewModel readingType)
+        public async Task<IActionResult> PostReadingType([FromBody] ReadingTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            ReadingType model = new ReadingType()
-            {
-                Name = readingType.Name,
-                Uom = readingType.UOM,
-                DataType = readingType.DataType
-            };
+            ReadingTypeViewModel result = await readingType.SaveAsync(model);
 
-            _context.ReadingTypes.Add(model);
-            await _context.SaveChangesAsync();
-
-            readingType.Id = model.Id;
-
-            return CreatedAtAction("GetReadingType", new { id = readingType.Id }, readingType);
+            return CreatedAtAction("GetReadingType", new { id = result.Id }, result);
         }
 
         // DELETE: api/ReadingType/5
@@ -151,29 +97,17 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var readingType = await _context.ReadingTypes.SingleOrDefaultAsync(m => m.Id == id);
-            if (readingType == null)
+            bool exists = await readingType.ReadingTypeExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            ReadingTypeViewModel result = new ReadingTypeViewModel()
-            {
-                Id = readingType.Id,
-                Name = readingType.Name,
-                UOM = readingType.Uom,
-                DataType = readingType.DataType
-            };
+            ReadingTypeViewModel result = await readingType.GetAsync(id);
 
-            _context.ReadingTypes.Remove(readingType);
-            await _context.SaveChangesAsync();
+            await readingType.RemoveAsync(id);
 
             return Ok(result);
-        }
-
-        private bool ReadingTypeExists(int id)
-        {
-            return _context.ReadingTypes.Any(e => e.Id == id);
         }
     }
 }

@@ -19,12 +19,12 @@ namespace OrleansDemo.Services.Instances
             context = configurationContext;
         }
 
-        public async Task<bool> DeviceTypeExists(int id)
+        public async Task<bool> DeviceTypeExistsAsync(int id)
         {
             return await context.DeviceTypes.AnyAsync(t => t.Id == id);
         }
 
-        public async Task<IEnumerable<DeviceTypeViewModel>> GetList()
+        public async Task<IEnumerable<DeviceTypeViewModel>> GetListAsync()
         {
             return await (context.DeviceTypes.Select(t => new DeviceTypeViewModel
             {
@@ -41,7 +41,7 @@ namespace OrleansDemo.Services.Instances
             })).ToListAsync();
         }
 
-        public async Task<DeviceTypeViewModel> Get(int id)
+        public async Task<DeviceTypeViewModel> GetAsync(int id)
         {
             return await (context.DeviceTypes.Select(t => new DeviceTypeViewModel
             {
@@ -58,7 +58,7 @@ namespace OrleansDemo.Services.Instances
             })).FirstOrDefaultAsync(dt => dt.Id == id);
         }
 
-        public async Task<DeviceTypeViewModel> Save(DeviceTypeViewModel deviceType)
+        public async Task<DeviceTypeViewModel> SaveAsync(DeviceTypeViewModel deviceType)
         {
             DeviceType model = null;
             if (deviceType.Id.HasValue)
@@ -107,10 +107,10 @@ namespace OrleansDemo.Services.Instances
 
             await context.SaveChangesAsync();
 
-            return await Get(model.Id);
+            return await GetAsync(model.Id);
         }
 
-        public async Task Remove(int id)
+        public async Task RemoveAsync(int id)
         {
             DeviceType deviceType = await context.DeviceTypes.FirstOrDefaultAsync(t => t.Id == id);
 
