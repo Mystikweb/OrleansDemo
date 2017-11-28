@@ -15,6 +15,8 @@ namespace OrleansDemo.Models.ViewModels
         public int? Id { get; set; }
         public int ReadingTypeId { get; set; }
         public string ReadingType { get; set; }
+        public string ReadingTypeUom { get; set; }
+        public string ReadingTypeDataType { get; set; }
         public bool Active { get; set; } = false;
     }
 }

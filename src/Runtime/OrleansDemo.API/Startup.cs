@@ -34,6 +34,7 @@ namespace OrleansDemo.API
 
             services.AddTransient<IReadingTypeConfiguration, ReadingTypeConfiguration>();
             services.AddTransient<IDeviceTypeConfiguration, DeviceTypeConfiguration>();
+            services.AddTransient<IDeviceConfiguration, DeviceConfiguration>();
 
             services.AddSingleton(BuildClient);
 

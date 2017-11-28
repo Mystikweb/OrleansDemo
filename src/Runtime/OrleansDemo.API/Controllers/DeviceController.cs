@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrleansDemo.Models.ViewModels;
 using OrleansDemo.Models.Configuration;
+using OrleansDemo.Services.Interfaces;
 
 namespace OrleansDemo.API.Controllers
 {
@@ -14,39 +15,18 @@ namespace OrleansDemo.API.Controllers
     [Route("api/Device")]
     public class DeviceController : Controller
     {
-        private readonly ConfigurationContext _context;
+        private readonly IDeviceConfiguration device;
 
-        public DeviceController(ConfigurationContext context)
+        public DeviceController(IDeviceConfiguration deviceConfiguration)
         {
-            _context = context;
+            device = deviceConfiguration;
         }
 
         // GET: api/Device
         [HttpGet]
         public async Task<IEnumerable<DeviceViewModel>> GetDevices()
         {
-            return await _context.Devices.Select(d => new DeviceViewModel
-            {
-                Id = d.Id,
-                Name = d.Name,
-                DeviceType = d.DeviceType.Name,
-                Enabled = d.Enabled.HasValue ? d.Enabled.Value : false,
-                RunOnStartup = d.RunOnStartup.HasValue ? d.RunOnStartup.Value : false,
-                CreatedAt = d.CreatedAt,
-                CreatedBy = d.CreatedBy,
-                UpdatedAt = d.UpdatedAt,
-                UpdatedBy = d.UpdatedBy,
-                Readings = d.Readings.Select(r => new ReadingViewModel
-                {
-                    Id = r.Id,
-                    ReadingTypeId = r.ReadingType.Id,
-                    ReadyingType = r.ReadingType.Name,
-                    ReadingUom = r.ReadingType.Uom,
-                    ReadingDataType = r.ReadingType.DataType,
-                    UpdatedAt = r.UpdatedAt,
-                    UpdatedBy = r.UpdatedBy
-                }).ToList()
-            }).ToListAsync();
+            return await device.GetListAsync();
         }
 
         // GET: api/Device/5
@@ -58,46 +38,42 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var device = await _context.Devices.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (device == null)
+            bool exists = await device.DeviceExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            return Ok(device);
+            return Ok(await device.GetAsync(id));
         }
 
         // PUT: api/Device/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDevice([FromRoute] Guid id, [FromBody] Device device)
+        public async Task<IActionResult> PutDevice([FromRoute] Guid id, [FromBody] DeviceViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != device.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(device).State = EntityState.Modified;
+            bool exists = await device.DeviceExistsAsync(id);
+            if (!exists)
+            {
+                return NotFound();
+            }
 
             try
             {
-                await _context.SaveChangesAsync();
+                await device.SaveAsync(model);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DeviceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -105,17 +81,16 @@ namespace OrleansDemo.API.Controllers
 
         // POST: api/Device
         [HttpPost]
-        public async Task<IActionResult> PostDevice([FromBody] Device device)
+        public async Task<IActionResult> PostDevice([FromBody] DeviceViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Devices.Add(device);
-            await _context.SaveChangesAsync();
+            DeviceViewModel result = await device.SaveAsync(model);
 
-            return CreatedAtAction("GetDevice", new { id = device.Id }, device);
+            return CreatedAtAction("GetDevice", new { id = result.Id }, result);
         }
 
         // DELETE: api/Device/5
@@ -127,21 +102,17 @@ namespace OrleansDemo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var device = await _context.Devices.SingleOrDefaultAsync(m => m.Id == id);
-            if (device == null)
+            bool exists = await device.DeviceExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            _context.Devices.Remove(device);
-            await _context.SaveChangesAsync();
+            DeviceViewModel result = await device.GetAsync(id);
 
-            return Ok(device);
-        }
+            await device.RemoveAsync(id);
 
-        private bool DeviceExists(Guid id)
-        {
-            return _context.Devices.Any(e => e.Id == id);
+            return Ok(result);
         }
     }
 }

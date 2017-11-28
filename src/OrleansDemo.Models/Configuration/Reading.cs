@@ -11,6 +11,7 @@ namespace OrleansDemo.Models.Configuration
         public Guid Id { get; set; }
         public Guid DeviceId { get; set; }
         public int ReadingTypeId { get; set; }
+        public bool? Enabled { get; set; }
         public DateTime UpdatedAt { get; set; }
         [Required]
         [StringLength(75)]

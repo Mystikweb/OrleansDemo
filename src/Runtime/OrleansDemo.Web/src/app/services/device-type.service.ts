@@ -30,6 +30,8 @@ export class DeviceReadingType {
   id: number;
   readingTypeId: number;
   readingType: string;
+  readingTypeUom: string;
+  readingTypeDataType: string;
   active: boolean;
 }
 

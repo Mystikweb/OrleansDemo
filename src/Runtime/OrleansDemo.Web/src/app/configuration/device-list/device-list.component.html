@@ -1,7 +1,23 @@
-<mat-grid-list cols="4" rowHeight="100px">
-  <mat-grid-tile
-      *ngFor="let device of devices$ | async">
-    {{device.name}}
+<mat-grid-list cols="4" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let device of devices$ | async">
+    <mat-card class="device-card">
+      <mat-card-header>
+        <mat-card-title>{{device.name}}</mat-card-title>
+        <mat-card-subtitle>{{device.deviceType}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let reading of device.readings">
+            <span>{{reading.readingType}}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button (click)="openEditor(device)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-grid-tile>
 </mat-grid-list>
 <button mat-fab class="add-button-fab" (click)="openEditor(null)">

@@ -36,6 +36,8 @@ namespace OrleansDemo.Services.Instances
                     Id = r.Id,
                     ReadingTypeId = r.ReadingTypeId,
                     ReadingType = r.ReadingType.Name,
+                    ReadingTypeUom = r.ReadingType.Uom,
+                    ReadingTypeDataType = r.ReadingType.DataType,
                     Active = r.Active ?? false
                 }).ToList()
             })).ToListAsync();
@@ -53,6 +55,8 @@ namespace OrleansDemo.Services.Instances
                     Id = r.Id,
                     ReadingTypeId = r.ReadingTypeId,
                     ReadingType = r.ReadingType.Name,
+                    ReadingTypeUom = r.ReadingType.Uom,
+                    ReadingTypeDataType = r.ReadingType.DataType,
                     Active = r.Active ?? false
                 }).ToList()
             })).FirstOrDefaultAsync(dt => dt.Id == id);
