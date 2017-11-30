@@ -1,5 +1,6 @@
 ﻿Configuration.Device
 Configuration.DeviceType
 Configuration.DeviceTypeReadingType
+Configuration.File
 Configuration.Reading
 Configuration.ReadingType

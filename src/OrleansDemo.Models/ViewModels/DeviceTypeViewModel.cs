@@ -7,7 +7,19 @@ namespace OrleansDemo.Models.ViewModels
         public int? Id { get; set; }
         public string Name { get; set; }
         public bool Active { get; set; }
+        public int? FileId { get; set; }
         public List<DeviceTypeReadingTypeViewModel> ReadingTypes { get; set; } = new List<DeviceTypeReadingTypeViewModel>();
+    }
+
+    public class DeviceTypeFileViewModel
+    {
+        public int? Id { get; set; }
+        public int? DecviceTypeId { get; set; }
+        public string Name { get; set; }
+        public string Extension { get; set; }
+        public string MimeType { get; set; }
+        public int FileType { get; set; }
+        public byte[] Data { get; set; }
     }
 
     public class DeviceTypeReadingTypeViewModel

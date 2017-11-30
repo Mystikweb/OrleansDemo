@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
@@ -15,7 +15,7 @@ import { DeviceTypeEditorComponent } from './device-type-editor.component';
   styleUrls: ['./device-type-list.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class DeviceTypeListComponent implements OnInit {
+export class DeviceTypeListComponent implements OnInit, AfterViewInit {
   displayedColumns = ['edit', 'name', 'active', 'readings', 'remove'];
   dataSource: DeviceTypeDataSource | null;
   deviceTypes: DeviceType[];
@@ -36,6 +36,9 @@ export class DeviceTypeListComponent implements OnInit {
         if (!this.dataSource) { return; }
         this.dataSource.filter = this.filter.nativeElement.value;
       });
+  }
+
+  ngAfterViewInit() {
     this.refreshList();
   }
 

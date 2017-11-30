@@ -12,6 +12,7 @@ namespace OrleansDemo.Models.Configuration
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<DeviceType> DeviceTypes { get; set; }
         public virtual DbSet<DeviceTypeReadingType> DeviceTypeReadingTypes { get; set; }
+        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Reading> Readings { get; set; }
         public virtual DbSet<ReadingType> ReadingTypes { get; set; }
 
@@ -20,7 +21,7 @@ namespace OrleansDemo.Models.Configuration
 //            if (!optionsBuilder.IsConfigured)
 //            {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"Data Source=MAK000027;Initial Catalog=OrleansDemoDb;Integrated Security=True");
+//                optionsBuilder.UseSqlServer(@"Data Source=MAK000069;Initial Catalog=OrleansDemoDb;Integrated Security=True");
 //            }
         }
 
@@ -38,8 +39,6 @@ namespace OrleansDemo.Models.Configuration
 
                 entity.Property(e => e.Enabled).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.RunOnStartup).HasDefaultValueSql("((0))");
-
                 entity.HasOne(d => d.DeviceType)
                     .WithMany(p => p.Devices)
                     .HasForeignKey(d => d.DeviceTypeId)
@@ -50,6 +49,11 @@ namespace OrleansDemo.Models.Configuration
             modelBuilder.Entity<DeviceType>(entity =>
             {
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.File)
+                    .WithMany(p => p.DeviceTypes)
+                    .HasForeignKey(d => d.FileId)
+                    .HasConstraintName("FK_DeviceType_File");
             });
 
             modelBuilder.Entity<DeviceTypeReadingType>(entity =>
@@ -67,6 +71,11 @@ namespace OrleansDemo.Models.Configuration
                     .HasForeignKey(d => d.ReadingTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceTypeReadingType_ReadingType");
+            });
+
+            modelBuilder.Entity<File>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<Reading>(entity =>

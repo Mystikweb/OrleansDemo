@@ -19,7 +19,7 @@ namespace OrleansDemo.Models.Configuration
         public string Name { get; set; }
         public int DeviceTypeId { get; set; }
         public bool? Enabled { get; set; }
-        public bool? RunOnStartup { get; set; }
+        public bool RunOnStartup { get; set; }
         public DateTime CreatedAt { get; set; }
         [Required]
         [StringLength(75)]

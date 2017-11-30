@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -13,22 +13,29 @@ import { DeviceEditorComponent } from './device-editor.component';
   styleUrls: ['./device-list.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class DeviceListComponent implements OnInit {
+export class DeviceListComponent implements OnInit, AfterViewInit {
   devices$: Observable<Device[]>;
 
   constructor(private deviceService: DeviceService,
     private detailsService: DetailsHostService) { }
 
   ngOnInit() {
-    this.devices$ = this.deviceService.getDevices();
     this.detailsService.detailsOpen$.subscribe(opened => {
       if (!opened) {
-        this.devices$ = this.deviceService.getDevices();
+        this.loadData();
       }
     });
   }
 
+  ngAfterViewInit() {
+    this.loadData();
+  }
+
   openEditor(device: Device) {
     this.detailsService.openItem(new DetailsHostItem(DeviceEditorComponent, device === null ? new Device() : device));
+  }
+
+  private loadData() {
+    this.devices$ = this.deviceService.getDevices();
   }
 }

@@ -19,7 +19,11 @@ namespace OrleansDemo.Models.Configuration
         [StringLength(50)]
         public string Name { get; set; }
         public bool? Active { get; set; }
+        public int? FileId { get; set; }
 
+        [ForeignKey("FileId")]
+        [InverseProperty("DeviceTypes")]
+        public File File { get; set; }
         [InverseProperty("DeviceType")]
         public ICollection<DeviceTypeReadingType> DeviceTypeReadingTypes { get; set; }
         [InverseProperty("DeviceType")]

@@ -103,6 +103,7 @@
     <Build Include="Server Objects\Security\Logins\RuntimeManager.sql" />
     <Build Include="Security\Users\RuntimeManager.sql" />
     <Build Include="Configuration\Tables\DeviceTypeReadingType.sql" />
+    <Build Include="Configuration\Tables\File.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />
