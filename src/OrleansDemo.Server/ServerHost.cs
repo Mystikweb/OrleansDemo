@@ -5,6 +5,8 @@ using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
 using OrleansDemo.Models.Runtime;
 using OrleansDemo.Server.Services;
+using OrleansDemo.Services.Instances;
+using OrleansDemo.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -67,6 +69,7 @@ namespace OrleansDemo.Server
                         opts.UseSqlServer("Server=localhost;Database=OrleansDemoDb;User Id=RuntimeManager;Password=MyPa55w0rd!;MultipleActiveResultSets=True"));
 
                     services.AddTransient<IConfigurationManager, ConfigurationManager>();
+                    services.AddTransient<IRuntimeReading, RuntimeReading>();
                 })
                 .ConfigureLogging(logging =>
                 {

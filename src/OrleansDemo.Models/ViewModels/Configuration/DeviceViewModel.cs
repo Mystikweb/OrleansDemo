@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OrleansDemo.Models.ViewModels
+namespace OrleansDemo.Models.ViewModels.Configuration
 {
     public class DeviceViewModel
     {

@@ -25,6 +25,7 @@
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
     <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <GenerateCreateScript>False</GenerateCreateScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -74,6 +75,7 @@
     <Folder Include="Configuration\Tables" />
     <Folder Include="Runtime" />
     <Folder Include="Runtime\Tables" />
+    <Folder Include="Configuration\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Cluster\Tables\OrleansClientMetricsTable.sql" />
@@ -98,23 +100,32 @@
     <Build Include="Security\Schemas\Runtime.sql" />
     <Build Include="Configuration\Tables\ReadingType.sql" />
     <Build Include="Configuration\Tables\Reading.sql" />
-    <Build Include="Runtime\Tables\Reading.sql" />
     <Build Include="Runtime\Tables\Configuration.sql" />
     <Build Include="Server Objects\Security\Logins\RuntimeManager.sql" />
     <Build Include="Security\Users\RuntimeManager.sql" />
     <Build Include="Configuration\Tables\DeviceTypeReadingType.sql" />
     <Build Include="Configuration\Tables\File.sql" />
+    <Build Include="Configuration\Stored Procedures\SetupDeviceType.sql" />
+    <Build Include="Configuration\Stored Procedures\SetupReadingType.sql" />
+    <Build Include="Configuration\Stored Procedures\SetupDeviceTypeReadingType.sql" />
+    <Build Include="Configuration\Stored Procedures\SetupDevice.sql" />
+    <Build Include="Configuration\Stored Procedures\SetupDeviceReading.sql" />
+    <Build Include="Runtime\Tables\Reading.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\OrleansDemoDb_20171107_22-04-28.dacpac" />
     <None Include="OrleansDemoDb.publish.xml" />
     <None Include="Snapshots\OrleansDemoDb_20171107_22-32-03.dacpac" />
+    <None Include="Snapshots\OrleansDemoDb_20171130_12-29-15.dacpac" />
+    <None Include="Snapshots\OrleansDemoDb_20171130_12-34-09.dacpac" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Script.PreDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="Script.PostDeployment1.sql" />
+    <None Include="Script.PostDeployment.ClusterConfiguration.sql" />
+    <None Include="Script.PostDeployment.DeviceConfiguration.sql" />
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Cluster\Tables\OrleansRemindersTable.sql" />
@@ -123,5 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="OrleansDemoDb.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="Development">
+      <DefaultValue>False</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
 </Project>

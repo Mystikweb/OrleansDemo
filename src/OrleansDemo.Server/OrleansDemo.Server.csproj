@@ -24,6 +24,7 @@
     <ProjectReference Include="..\OrleansDemo.Implementations\OrleansDemo.Implementations.csproj" />
     <ProjectReference Include="..\OrleansDemo.Interfaces\OrleansDemo.Interfaces.csproj" />
     <ProjectReference Include="..\OrleansDemo.Models\OrleansDemo.Models.csproj" />
+    <ProjectReference Include="..\OrleansDemo.Services\OrleansDemo.Services.csproj" />
     <ProjectReference Include="..\OrleansDemo\OrleansDemo.csproj" />
   </ItemGroup>
 

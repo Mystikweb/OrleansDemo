@@ -15,11 +15,11 @@ namespace OrleansDemo.Models.Runtime
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"Data Source=MAK000027;Initial Catalog=OrleansDemoDb;Integrated Security=True");
-//            }
+            //            if (!optionsBuilder.IsConfigured)
+            //            {
+            //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+            //                optionsBuilder.UseSqlServer(@"Data Source=MAK000069;Initial Catalog=OrleansDemoDb;Integrated Security=True");
+            //            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,13 +38,6 @@ namespace OrleansDemo.Models.Runtime
             modelBuilder.Entity<Device>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            });
-
-            modelBuilder.Entity<Reading>(entity =>
-            {
-                entity.HasAnnotation("SqlServer:MemoryOptimized", true);
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿using OrleansDemo.Models.ViewModels;
+﻿using OrleansDemo.Models.ViewModels.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

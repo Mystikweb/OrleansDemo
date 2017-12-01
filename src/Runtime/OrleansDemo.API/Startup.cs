@@ -19,11 +19,13 @@ namespace OrleansDemo.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            HostingEnvironment = env;
         }
 
+        public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -42,9 +44,9 @@ namespace OrleansDemo.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (HostingEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -67,7 +69,10 @@ namespace OrleansDemo.API
                 .AddApplicationPartsFromBasePath()
                 .ConfigureLogging(logger =>
                 {
-                    
+                    if (HostingEnvironment.IsDevelopment())
+                    {
+                        logger.AddConsole();
+                    }
                 }).Build();
         }
     }

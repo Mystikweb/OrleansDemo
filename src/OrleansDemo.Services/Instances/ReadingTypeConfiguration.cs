@@ -1,12 +1,10 @@
-﻿using OrleansDemo.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using OrleansDemo.Models.ViewModels;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using OrleansDemo.Models.Configuration;
-using Microsoft.EntityFrameworkCore;
+using OrleansDemo.Models.ViewModels.Configuration;
+using OrleansDemo.Services.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OrleansDemo.Services.Instances
 {

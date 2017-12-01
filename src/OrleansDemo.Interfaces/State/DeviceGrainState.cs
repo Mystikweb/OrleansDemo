@@ -9,5 +9,8 @@ namespace OrleansDemo.Interfaces.State
         public Guid Id { get; set; }
         public string Name { get; set; }
         public bool IsRunning { get; set; }
+        public int Attempts { get; set; } = 0;
+        public int Successes { get; set; } = 0;
+        public int Failures { get; set; } = 0;
     }
 }

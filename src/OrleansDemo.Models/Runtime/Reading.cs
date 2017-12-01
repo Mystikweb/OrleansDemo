@@ -25,5 +25,6 @@ namespace OrleansDemo.Models.Runtime
         [Required]
         [Column(TypeName = "nchar(10)")]
         public string Value { get; set; }
+        public DateTime InsertedAt { get; set; }
     }
 }

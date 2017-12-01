@@ -1,5 +1,6 @@
 ﻿using Orleans;
 using OrleansDemo.Models.Transfer;
+using OrleansDemo.Models.ViewModels.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,5 +14,6 @@ namespace OrleansDemo.Interfaces
         Task Initialize(DeviceConfiguration configuration);
         Task Start();
         Task Stop();
+        Task RecordValue(string value);
     }
 }
