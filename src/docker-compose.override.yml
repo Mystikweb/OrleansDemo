@@ -1,8 +1,7 @@
 version: '3'
 
 services:
-
-  orleansdemo.api:
+  hostapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:

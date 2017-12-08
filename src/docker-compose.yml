@@ -1,15 +1,16 @@
 version: '3'
 
 services:
-
-  orleansdemo.commandline:
-    image: orleansdemo.commandline
-    build:
-      context: ./Runtime/OrleansDemo.CommandLine
-      dockerfile: Dockerfile
-
-  orleansdemo.api:
+  hostapi:
     image: orleansdemo.api
     build:
       context: ./Runtime/OrleansDemo.API
       dockerfile: Dockerfile
+
+  hostsilo:
+    image: orleansdemo.commandline
+    build:
+      context: ./Runtime/OrleansDemo.CommandLine
+      dockerfile: Dockerfile
+    depends_on:
+      - hostapi

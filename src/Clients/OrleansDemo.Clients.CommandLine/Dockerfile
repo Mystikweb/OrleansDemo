@@ -1,7 +1,5 @@
 FROM microsoft/dotnet:2.0-runtime
 ARG source
 WORKDIR /app
-EXPOSE 11111
-EXPOSE 30000
 COPY ${source:-obj/Docker/publish} .
-ENTRYPOINT ["dotnet", "OrleansDemo.CommandLine.dll"]
+ENTRYPOINT ["dotnet", "OrleansDemo.Clients.CommandLine.dll"]

@@ -38,14 +38,14 @@ namespace OrleansDemo.Server.Providers
             List<DeviceConfiguration> configurations = await configManager.GetDeviceConfigurations();
             foreach (DeviceConfiguration configuredDevice in configurations)
             {
-                bool deviceExists = await deviceRegistry.HasDevice(configuredDevice.DeviceId);
-                if (!deviceExists)
-                {
-                    var device = providerRuntime.GrainFactory.GetGrain<IDeviceGrain>(configuredDevice.DeviceId);
-                    await device.Initialize(configuredDevice);
+                //bool deviceExists = await deviceRegistry.HasDevice(configuredDevice.DeviceId);
+                //if (!deviceExists)
+                //{
+                //    var device = providerRuntime.GrainFactory.GetGrain<IDeviceGrain>(configuredDevice.DeviceId);
+                //    await device.Initialize(configuredDevice);
 
-                    await deviceRegistry.RegisterGrain(device);
-                }
+                //    await deviceRegistry.RegisterGrain(device);
+                //}
             }
         }
     }

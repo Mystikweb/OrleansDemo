@@ -15,6 +15,8 @@ namespace OrleansDemo.Implementations
     public class DeviceGrain : Grain<DeviceGrainState>, IDeviceGrain
     {
         private readonly IRuntimeReading readings;
+
+        private IDeviceRegistryGrain registryGrain;
         private DeviceConfiguration config;
 
         public DeviceGrain(IRuntimeReading runtimeReading)
@@ -25,6 +27,18 @@ namespace OrleansDemo.Implementations
         public Task<Guid> GetDeviceId()
         {
             return Task.FromResult(State.Id);
+        }
+
+        public override Task OnActivateAsync()
+        {
+            registryGrain = GrainFactory.GetGrain<IDeviceRegistryGrain>(Constants.DeviceRegistryId);
+
+            return base.OnActivateAsync();
+        }
+
+        public override Task OnDeactivateAsync()
+        {
+            return base.OnDeactivateAsync();
         }
 
         public Task Initialize(DeviceConfiguration configuration)
@@ -38,23 +52,16 @@ namespace OrleansDemo.Implementations
             return Task.CompletedTask;
         }
 
-        public Task Start()
+        public async Task StartAsync()
         {
             State.IsRunning = true;
-            return Task.CompletedTask;
+            await registryGrain.RegisterGrain(this);
         }
 
-        public Task Stop()
+        public async Task StopAsync()
         {
             State.IsRunning = false;
-            return Task.CompletedTask;
-        }
-
-        public override Task OnActivateAsync()
-        {
-            
-
-            return base.OnActivateAsync();
+            await registryGrain.RemoveGrain(this);
         }
 
         public async Task RecordValue(string value)

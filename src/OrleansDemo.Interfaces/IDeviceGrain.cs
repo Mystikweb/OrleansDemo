@@ -12,8 +12,8 @@ namespace OrleansDemo.Interfaces
     {
         Task<Guid> GetDeviceId();
         Task Initialize(DeviceConfiguration configuration);
-        Task Start();
-        Task Stop();
+        Task StartAsync();
+        Task StopAsync();
         Task RecordValue(string value);
     }
 }

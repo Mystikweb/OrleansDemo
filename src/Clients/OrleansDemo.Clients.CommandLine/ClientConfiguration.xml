@@ -2,6 +2,6 @@
 <ClientConfiguration xmlns="urn:orleans">
   <SystemStore SystemStoreType="SqlServer"
                DeploymentId="OrleansDemo"
-               DataConnectionString="Server=localhost;Database=OrleansDemoDb;User Id=ClusterClient;Password=Pa55w0rd1234;MultipleActiveResultSets=True"/>
+               DataConnectionString="Server=MAK000069;Database=OrleansDemoDb;User Id=ClusterClient;Password=Pa55w0rd1234;MultipleActiveResultSets=True"/>
   <Statistics MetricsTableWriteInterval="30s" PerfCounterWriteInterval="30s" LogWriteInterval="300s" WriteLogStatisticsToTable="true" StatisticsCollectionLevel="Info"/>
 </ClientConfiguration>

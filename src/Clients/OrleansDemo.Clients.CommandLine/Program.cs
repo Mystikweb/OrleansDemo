@@ -26,13 +26,25 @@ namespace OrleansDemo.Clients.CommandLine
                 .AddJsonFile("appsettings.json")
                 .Build();
 
+            Console.CancelKeyPress += Console_CancelKeyPress;
+
             RunMainAsync(args).GetAwaiter().GetResult();
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
 
-        static async Task RunMainAsync(string[] args)
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            stopped = true;
+            Console.WriteLine("Stopping process");
+        }
+
+        private static async Task RunMainAsync(string[] args)
         {
             var config = await GetDeviceConfiguration();
 
+            Console.WriteLine("Waiting for server to start");
             await Task.Delay(TimeSpan.FromSeconds(15));
 
             using (var clusterClient = await StartClientWithRetries())
@@ -41,7 +53,8 @@ namespace OrleansDemo.Clients.CommandLine
 
                 await deviceGrain.Initialize(config);
 
-                await deviceGrain.Start();
+                await deviceGrain.StartAsync();
+                Console.WriteLine($"Started {config.Name} successfully");
 
                 Task.Run(async () =>
                 {
@@ -50,10 +63,25 @@ namespace OrleansDemo.Clients.CommandLine
                     {
                         int randomValue = randomGenerator.Next(1, 10);
 
-                        await deviceGrain.RecordValue(randomValue.ToString());
+                        try
+                        {
+                            await deviceGrain.RecordValue(randomValue.ToString());
 
-                        await Task.Delay(TimeSpan.FromSeconds(5));
+                            Console.WriteLine($"Wrote {randomValue} to client.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Problems writing {randomValue} to client. Error is {ex.Message}");
+                        }
+                        finally
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(5));
+                        }
                     }
+
+                    await deviceGrain.StopAsync();
+
+                    await clusterClient.Close();
                 }).GetAwaiter().GetResult();
             }
         }
@@ -66,7 +94,6 @@ namespace OrleansDemo.Clients.CommandLine
             {
                 try
                 {
-                    var config = ClientConfiguration.LocalhostSilo();
                     client = BuildClient();
 
                     await client.Connect();
@@ -118,13 +145,8 @@ namespace OrleansDemo.Clients.CommandLine
             return new ClientBuilder()
                 .UseConfiguration(configuration)
                 .AddApplicationPartsFromBasePath()
-                .ConfigureLogging(logger =>
-                {
-                    if (Environment.UserInteractive)
-                    {
-                        logger.AddConsole();
-                    }
-                }).Build();
+                .ConfigureLogging(logger => logger.AddConsole())
+                .Build();
         }
     }
 }

@@ -2,6 +2,7 @@
 using OrleansDemo.Interfaces;
 using OrleansDemo.Patterns.Registry;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OrleansDemo.Implementations
@@ -12,7 +13,7 @@ namespace OrleansDemo.Implementations
         public async Task<bool> HasDevice(Guid deviceId)
         {
             bool result = false;
-            foreach (var device in State.RegisteredGrains)
+            foreach (var device in State.RegisteredGrains.ToList())
             {
                 var currentDeviceId = await device.GetDeviceId();
 

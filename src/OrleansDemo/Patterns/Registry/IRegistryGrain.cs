@@ -10,5 +10,7 @@ namespace OrleansDemo.Patterns.Registry
         Task<TRegisteredGrain> RegisterGrain(TRegisteredGrain item);
 
         Task<List<TRegisteredGrain>> GetRegisteredGrains();
+
+        Task<TRegisteredGrain> RemoveGrain(TRegisteredGrain item);
     }
 }

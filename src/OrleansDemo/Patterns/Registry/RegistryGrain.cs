@@ -27,5 +27,12 @@ namespace OrleansDemo.Patterns.Registry
             await WriteStateAsync();
             return item;
         }
+
+        public async Task<TRegisteredGrain> RemoveGrain(TRegisteredGrain item)
+        {
+            State.RegisteredGrains.Remove(item);
+            await WriteStateAsync();
+            return item;
+        }
     }
 }
