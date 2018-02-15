@@ -13,6 +13,9 @@
   <ItemGroup>
     <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
     <ProjectReference Include="..\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj" />
+    <ProjectReference Include="..\Orleans.Providers.RabbitMQ\Orleans.Providers.RabbitMQ.csproj" />
+    <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
+    <ProjectReference Include="..\OrleansDashboard\OrleansDashboard.csproj" />
   </ItemGroup>
 
   <ItemGroup>

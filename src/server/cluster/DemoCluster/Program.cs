@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Hosting;
+using Orleans.Providers.RabbitMQ.Streams;
 using Orleans.Runtime.Configuration;
+using Orleans.Storage.Redis;
 
 namespace DemoCluster
 {
@@ -44,6 +46,8 @@ namespace DemoCluster
                 .Build();
 
             var connectionString = appConfig.GetConnectionString("Default");
+            var rabbitOptions = appConfig.GetSection(RabbitMQStreamProviderOptions.SECTION_NAME).Get<RabbitMQStreamProviderOptions>();
+            var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
 
             var config = ClusterConfiguration.LocalhostPrimarySilo();
             config.Globals.ClusterId = appConfig["ClusterId"];
@@ -59,17 +63,28 @@ namespace DemoCluster
 
             config.AddMemoryStorageProvider("PubSubStore");
             config.AddAdoNetStorageProvider("SqlBase", connectionString, AdoNetSerializationFormat.Json);
+            config.AddRedisStorageProvider("RedisBase", redisOptions);
+
+            config.AddRabbitMQStreamProvider("Rabbit");
+
+            config.RegisterDashboard();
 
             var builder = new SiloHostBuilder()
                 .UseConfiguration(config)
+                .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())                
+                .ConfigureLogging(log => log.AddConsole())
                 .UseSqlMembership(opts => opts.Configure(mbr =>
                 {
                     mbr.ConnectionString = connectionString;
                     mbr.AdoInvariant = "System.Data.SqlClient";
 
                 }))
-                .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
-                .ConfigureLogging(log => log.AddConsole());
+                .ConfigureRabbitMQStreamProvider(rabbitOptions)
+                .UseDashboard(options =>
+                {
+                    options.HostSelf = true;
+                    options.HideTrace = false;
+                });
 
             var host = builder.Build();
             await host.StartAsync();
