@@ -38,6 +38,18 @@ CREATE TABLE [Config].[EventType] (
 )
 GO
 
+CREATE TABLE [Config].[DeviceEventType] (
+    [DeviceEventTypeId] INT NOT NULL IDENTITY(1,1),
+    [DeviceId] UNIQUEIDENTIFIER NOT NULL,
+    [EventTypeId] INT NOT NULL,
+    [IsEnabled] BIT NOT NULL,
+
+    CONSTRAINT [PK_DeviceEventTypeId] PRIMARY KEY CLUSTERED ([DeviceEventTypeId]),
+    CONSTRAINT [FK_DeviceEventType_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId]),
+    CONSTRAINT [FK_DeviceEventType_EventType] FOREIGN KEY ([EventTypeId]) REFERENCES [Config].[EventType]([EventTypeId])
+)
+GO
+
 /* Runtime Schema Tables */
 CREATE TABLE [Runtime].[DeviceEvent] (
     [Device] NVARCHAR(100) NOT NULL,
