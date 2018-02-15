@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Orleans.Providers.RabbitMQ\Orleans.Providers.RabbitMQ.csproj" />
     <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
     <ProjectReference Include="..\OrleansDashboard\OrleansDashboard.csproj" />
+    <ProjectReference Include="..\DemoCluster.Api\DemoCluster.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
