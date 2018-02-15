@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/server/cluster/DemoCluster/bin/Debug/netcoreapp2.0/DemoCluster.dll",
+            "program": "${workspaceFolder}/src/server/DemoCluster/bin/Debug/netcoreapp2.0/DemoCluster.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/server/cluster/DemoCluster",
+            "cwd": "${workspaceFolder}/src/server/DemoCluster",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,

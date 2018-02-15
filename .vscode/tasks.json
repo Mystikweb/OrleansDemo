@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/server/cluster/DemoCluster.sln"
+                "${workspaceFolder}/src/server/DemoCluster.sln"
             ],
             "problemMatcher": "$msCompile",
             "group": {
