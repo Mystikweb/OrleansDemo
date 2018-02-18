@@ -9,7 +9,9 @@ namespace Orleans.Storage.Redis
         {
             return new Dictionary<string, string>
             {
-                { RedisProviderConstants.REDIS_CONNECTION_STRING, options.RedisConnectionString },
+                { RedisProviderConstants.REDIS_HOSTNAME, options.Hostname },
+                { RedisProviderConstants.REDIS_PORT, options.Port.ToString() },
+                { RedisProviderConstants.REDIS_PASSWORD, options.Password },
                 { RedisProviderConstants.REDIS_DATABASE_NUMBER, options.DatabaseNumber.ToString() },
                 { RedisProviderConstants.USE_JSON_FORMAT_PROPERTY, options.UseJsonFormat.ToString() }
             };

@@ -6,7 +6,9 @@ namespace Orleans.Storage.Redis
 {
     internal class RedisProviderConstants
     {
-        public const string REDIS_CONNECTION_STRING = "RedisConnectionString";
+        public const string REDIS_HOSTNAME = "Hostname";
+        public const string REDIS_PORT = "Port";
+        public const string REDIS_PASSWORD = "Password";
         public const string REDIS_DATABASE_NUMBER = "DatabaseNumber";
         public const string USE_JSON_FORMAT_PROPERTY = "UseJsonFormat";
     }

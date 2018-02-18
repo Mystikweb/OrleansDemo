@@ -46,7 +46,7 @@ namespace DemoCluster
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            var connectionString = appConfig.GetConnectionString("Default");
+            var connectionString = appConfig.GetConnectionString("Cluster");
             var rabbitOptions = appConfig.GetSection(RabbitMQStreamProviderOptions.SECTION_NAME).Get<RabbitMQStreamProviderOptions>();
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
 

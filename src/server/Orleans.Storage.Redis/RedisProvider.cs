@@ -28,12 +28,17 @@ namespace Orleans.Storage.Redis
 
             serializationManager = providerRuntime.ServiceProvider.GetRequiredService<SerializationManager>();
 
-            if (!ConfigurationExists(config, RedisProviderConstants.REDIS_CONNECTION_STRING))
+            ConfigurationOptions options = new ConfigurationOptions
             {
-                throw new ApplicationException("Redis Connection String Missing!");
-            }
+                ClientName = Name,
+                EndPoints = 
+                {
+                    { config.Properties[RedisProviderConstants.REDIS_HOSTNAME], Convert.ToInt32(config.Properties[RedisProviderConstants.REDIS_PORT]) }
+                },
+                Password = config.Properties[RedisProviderConstants.REDIS_PASSWORD]
+            };
 
-            connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(config.Properties[RedisProviderConstants.REDIS_CONNECTION_STRING]);
+            connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(options);
 
             if (ConfigurationExists(config, RedisProviderConstants.REDIS_DATABASE_NUMBER))
             {
