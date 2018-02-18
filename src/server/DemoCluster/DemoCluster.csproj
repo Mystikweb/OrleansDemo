@@ -17,9 +17,11 @@
     <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
     <ProjectReference Include="..\OrleansDashboard\OrleansDashboard.csproj" />
     <ProjectReference Include="..\DemoCluster.Api\DemoCluster.Api.csproj" />
+    <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
@@ -30,6 +32,10 @@
     <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.0.0-beta3" />
     <PackageReference Include="Microsoft.Orleans.Statistics.AdoNet" Version="2.0.0-beta3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
