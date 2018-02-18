@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using DemoCluster.Api;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -68,6 +69,7 @@ namespace DemoCluster
             config.AddRabbitMQStreamProvider("Rabbit");
 
             config.RegisterDashboard();
+            config.RegisterApi();
 
             var builder = new SiloHostBuilder()
                 .UseConfiguration(config)
@@ -84,7 +86,8 @@ namespace DemoCluster
                 {
                     options.HostSelf = true;
                     options.HideTrace = false;
-                });
+                })
+                .UseApi();
 
             var host = builder.Build();
             await host.StartAsync();
