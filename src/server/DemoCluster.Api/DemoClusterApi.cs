@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DemoCluster.DAL;
 using DemoCluster.DAL.Configuration;
 using DemoCluster.DAL.Runtime;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +47,7 @@ namespace DemoCluster.Api
                         services.AddDbContextPool<RuntimeContext>(opts =>
                             opts.UseSqlServer(runtimeConnectionString));
 
+                        services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
                         services.AddMvc();
                     })
