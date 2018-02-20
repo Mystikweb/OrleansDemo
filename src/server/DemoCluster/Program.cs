@@ -46,7 +46,9 @@ namespace DemoCluster
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            var connectionString = appConfig.GetConnectionString("Cluster");
+            var clusterConnectionString = appConfig.GetConnectionString("Cluster");
+            var configConnectionString = appConfig.GetConnectionString("Config");
+            var runtimeConnectionString = appConfig.GetConnectionString("Runtime");
             var rabbitOptions = appConfig.GetSection(RabbitMQStreamProviderOptions.SECTION_NAME).Get<RabbitMQStreamProviderOptions>();
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
 
@@ -54,22 +56,23 @@ namespace DemoCluster
             config.Globals.ClusterId = appConfig["ClusterId"];
 
             config.Globals.AdoInvariant = "System.Data.SqlClient";
-            config.Globals.DataConnectionString = connectionString;
+            config.Globals.DataConnectionString = clusterConnectionString;
             config.Globals.LivenessEnabled = true;
             config.Globals.LivenessType = GlobalConfiguration.LivenessProviderType.SqlServer;
 
             config.Globals.AdoInvariantForReminders = "System.Data.SqlClient";
-            config.Globals.DataConnectionStringForReminders = connectionString;
+            config.Globals.DataConnectionStringForReminders = clusterConnectionString;
             config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.SqlServer;
 
             config.AddMemoryStorageProvider("PubSubStore");
-            config.AddAdoNetStorageProvider("SqlBase", connectionString, AdoNetSerializationFormat.Json);
+            config.AddAdoNetStorageProvider("SqlBase", clusterConnectionString, AdoNetSerializationFormat.Json);
             config.AddRedisStorageProvider("RedisBase", redisOptions);
 
             config.AddRabbitMQStreamProvider("Rabbit");
 
             config.RegisterDashboard();
-            config.RegisterApi();
+            config.RegisterApi(configConnectionString: configConnectionString,
+                runtimeConnectionString: runtimeConnectionString);
 
             var builder = new SiloHostBuilder()
                 .UseConfiguration(config)
@@ -77,7 +80,7 @@ namespace DemoCluster
                 .ConfigureLogging(log => log.AddConsole())
                 .UseSqlMembership(opts => opts.Configure(mbr =>
                 {
-                    mbr.ConnectionString = connectionString;
+                    mbr.ConnectionString = clusterConnectionString;
                     mbr.AdoInvariant = "System.Data.SqlClient";
 
                 }))

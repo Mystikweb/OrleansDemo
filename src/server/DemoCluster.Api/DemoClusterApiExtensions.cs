@@ -14,14 +14,20 @@ namespace DemoCluster.Api
         {
             return new Dictionary<string, string>
             {
+                { DemoClusterApiConstants.DEMOCLUSTER_CONFIGURATION_CONNNECTIONSTRING, options.ConfigurationConnectionString },
+                { DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING, options.RuntimeConnnectionString },
                 { DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME, options.HostName },
                 { DemoClusterApiConstants.DEMOCLUSTER_API_PORT, options.Port.ToString() }
             };
         }
 
-        public static ClusterConfiguration RegisterApi(this ClusterConfiguration config)
+        public static ClusterConfiguration RegisterApi(this ClusterConfiguration config, string configConnectionString, string runtimeConnectionString)
         {
-            DemoClusterApiOptions options = new DemoClusterApiOptions();
+            DemoClusterApiOptions options = new DemoClusterApiOptions
+            {
+                ConfigurationConnectionString = configConnectionString,
+                RuntimeConnnectionString = runtimeConnectionString
+            };
 
             return config.RegisterApi(options);
         }

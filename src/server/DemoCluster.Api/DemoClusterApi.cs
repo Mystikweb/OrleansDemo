@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DemoCluster.DAL.Configuration;
+using DemoCluster.DAL.Runtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,6 +25,14 @@ namespace DemoCluster.Api
             Name = name;
             logger = providerRuntime.ServiceProvider.GetRequiredService<ILogger<DemoClusterApi>>();
 
+            string configConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_CONFIGURATION_CONNNECTIONSTRING];
+            string runtimeConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING];
+
+            if (string.IsNullOrEmpty(configConnectionString) || string.IsNullOrEmpty(runtimeConnectionString))
+            {
+                throw new ApplicationException("Configuration or runtime connection string not provided");
+            }
+
             string hostName = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME) ? config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME] : "*";
             int port = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_PORT) ? Convert.ToInt32(config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_PORT]) : 5000;
             
@@ -30,6 +41,11 @@ namespace DemoCluster.Api
                 host = new WebHostBuilder()
                     .ConfigureServices(services =>
                     {
+                        services.AddDbContextPool<ConfigurationContext>(opts =>
+                            opts.UseSqlServer(configConnectionString));
+                        services.AddDbContextPool<RuntimeContext>(opts =>
+                            opts.UseSqlServer(runtimeConnectionString));
+
                         services.AddSingleton(providerRuntime.GrainFactory);
                         services.AddMvc();
                     })
