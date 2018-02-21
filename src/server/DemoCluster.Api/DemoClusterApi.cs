@@ -42,9 +42,9 @@ namespace DemoCluster.Api
                 host = new WebHostBuilder()
                     .ConfigureServices(services =>
                     {
-                        services.AddDbContextPool<ConfigurationContext>(opts =>
+                        services.AddDbContext<ConfigurationContext>(opts =>
                             opts.UseSqlServer(configConnectionString));
-                        services.AddDbContextPool<RuntimeContext>(opts =>
+                        services.AddDbContext<RuntimeContext>(opts =>
                             opts.UseSqlServer(runtimeConnectionString));
 
                         services.AddTransient<IConfigurationStorage, ConfigurationStorage>();

@@ -6,6 +6,9 @@ namespace DemoCluster.DAL.Runtime
 {
     public partial class RuntimeContext : DbContext
     {
+        public RuntimeContext(DbContextOptions<RuntimeContext> options)
+            : base(options) { }
+
         public virtual DbSet<DeviceEvent> DeviceEvent { get; set; }
         public virtual DbSet<DeviceSensorValue> DeviceSensorValue { get; set; }
 
