@@ -1,0 +1,7 @@
+.app-container {
+  height: calc(100vh - 64px);
+}
+
+.app-content {
+  padding: 4px 8px;
+}
