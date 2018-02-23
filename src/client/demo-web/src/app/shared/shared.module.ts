@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../material/material.module';
 import { NavHeaderComponent } from './nav-header/nav-header.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @NgModule({
   imports: [
@@ -11,13 +10,11 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     MaterialModule
   ],
   declarations: [
-    NavHeaderComponent,
-    NavMenuComponent
+    NavHeaderComponent
   ],
   exports: [
     MaterialModule,
-    NavHeaderComponent,
-    NavMenuComponent
+    NavHeaderComponent
   ]
 })
 export class SharedModule { }

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Event, NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-header',
@@ -10,9 +11,14 @@ export class NavHeaderComponent implements OnInit {
 
   opened = false;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        this.opened = false;
+      }
+    });
   }
 
   toggle() {
