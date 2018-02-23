@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   navOpened = false;
-  title = 'app';
 
   toggleNavMenu(opened: boolean) {
     this.navOpened = opened;

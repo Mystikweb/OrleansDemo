@@ -15,6 +15,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     NavMenuComponent
   ],
   exports: [
+    MaterialModule,
     NavHeaderComponent,
     NavMenuComponent
   ]
