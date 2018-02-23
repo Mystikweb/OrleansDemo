@@ -1,9 +1,3 @@
-.app-nav-container {
-  display: flex;
-  flex-direction: column;
-  min-width: 15vw !important;
-}
-
 .app-nav {
   padding-top: 0;
 }

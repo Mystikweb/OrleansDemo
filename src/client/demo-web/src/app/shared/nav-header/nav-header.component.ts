@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-nav-header',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-header.component.css']
 })
 export class NavHeaderComponent implements OnInit {
+  @Output() toggleNavMenu = new EventEmitter<boolean>();
+
+  opened = false;
 
   constructor() { }
 
@@ -13,6 +16,7 @@ export class NavHeaderComponent implements OnInit {
   }
 
   toggle() {
-
+    this.opened = !this.opened;
+    this.toggleNavMenu.emit(this.opened);
   }
 }
