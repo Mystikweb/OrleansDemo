@@ -53,6 +53,13 @@ namespace DemoCluster.Api
                     })
                     .Configure(app =>
                     {
+                        app.UseCors(pol =>
+                        {
+                            pol.AllowAnyOrigin();
+                            pol.AllowAnyHeader();
+                            pol.AllowAnyMethod();
+                        });
+
                         app.UseMvc();
                     })
                     .UseKestrel()

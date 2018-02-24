@@ -1,3 +1,29 @@
-<p>
-  device-list works!
-</p>
+<mat-grid-list cols="4" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let device of devices$ | async">
+    <mat-card class="device-card">
+      <mat-card-header>
+        <mat-card-title>{{device.name}}</mat-card-title>
+        <!-- <mat-card-subtitle>{{device.deviceType}}</mat-card-subtitle> -->
+      </mat-card-header>
+      <mat-card-content>
+        <!-- <mat-card-title-group>
+          <mat-card-subtitle class="reading-list-title">Readings</mat-card-subtitle>
+        </mat-card-title-group>
+        <mat-list class="reading-list">
+          <mat-list-item *ngFor="let reading of device.readings">
+            <span>{{reading.readingType}}</span>&nbsp;
+            (<em>{{reading.readingUom}}</em>)
+          </mat-list-item>
+        </mat-list> -->
+      </mat-card-content>
+      <!-- <mat-card-actions class="device-card-actions">
+        <button mat-icon-button (click)="openEditor(device)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-card-actions> -->
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<button mat-fab class="add-button-fab" (click)="openEditor(null)">
+  <mat-icon>add</mat-icon>
+</button>

@@ -1,0 +1,16 @@
+.device-card {
+  width: 300px;
+}
+
+.reading-list {
+  padding-top: 0;
+}
+
+.reading-list-title {
+  margin-bottom: 0 !important;
+}
+
+.device-card-actions {
+  display: flex !important;
+  flex-direction: row-reverse;
+}

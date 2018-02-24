@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ConfigurationModule } from './configuration/configuration.module';
+import { ServicesModule } from './services/services.module';
 
 @NgModule({
   declarations: [
@@ -17,8 +18,9 @@ import { ConfigurationModule } from './configuration/configuration.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    ServicesModule,
     SharedModule,
+    AppRoutingModule,
     DashboardModule,
     ConfigurationModule
   ],
