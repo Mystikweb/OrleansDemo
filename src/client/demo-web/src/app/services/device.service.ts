@@ -11,6 +11,13 @@ const httpOptions = {
 export class DeviceConfig {
   deviceId: string;
   name: string;
+  sensors: Array<DeveiceSensorConfig>;
+  events: Array<DeviceEventConfig>;
+
+  constructor() {
+    this.sensors = new Array<DeveiceSensorConfig>();
+    this.events = new Array<DeviceEventConfig>();
+  }
 }
 
 export class DeveiceSensorConfig {
