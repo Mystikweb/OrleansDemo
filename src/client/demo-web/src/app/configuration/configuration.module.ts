@@ -15,6 +15,8 @@ import { EventListComponent } from './event-list/event-list.component';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     ConfigurationRoutingModule,
     SharedModule,
     ServicesModule

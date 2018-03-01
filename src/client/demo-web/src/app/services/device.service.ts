@@ -44,4 +44,13 @@ export class DeviceService {
   getDeviceList(): Observable<DeviceConfig[]> {
     return this.http.get<DeviceConfig[]>(this.deviceUri);
   }
+
+  getDevice(deviceId): Observable<DeviceConfig> {
+    const requestUrl = `${this.deviceUri}/${deviceId}`;
+    return this.http.get<DeviceConfig>(requestUrl);
+  }
+
+  save(device: DeviceConfig): Observable<DeviceConfig> {
+    return this.http.post<DeviceConfig>(this.deviceUri, device, httpOptions);
+  }
 }
