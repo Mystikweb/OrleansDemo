@@ -59,7 +59,7 @@ namespace DemoCluster.DAL
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task SaveDeviceAsync(DeviceConfig device)
+        public async Task<Guid> SaveDeviceAsync(DeviceConfig device)
         {
             Device dbDevice = null;
 
@@ -85,6 +85,8 @@ namespace DemoCluster.DAL
             }
 
             await configDb.SaveChangesAsync();
+
+            return dbDevice.DeviceId;
         }
     }
 }

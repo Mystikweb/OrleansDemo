@@ -37,6 +37,8 @@ namespace DemoCluster.Api
             string hostName = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME) ? config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME] : "*";
             int port = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_PORT) ? Convert.ToInt32(config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_PORT]) : 5000;
             
+            string listeningUri = $"http://{hostName}:{port}";
+
             try
             {
                 host = new WebHostBuilder()
@@ -53,6 +55,8 @@ namespace DemoCluster.Api
                     })
                     .Configure(app =>
                     {
+                        //app.ConfigureLogging()
+
                         app.UseCors(pol =>
                         {
                             pol.AllowAnyOrigin();
@@ -63,10 +67,12 @@ namespace DemoCluster.Api
                         app.UseMvc();
                     })
                     .UseKestrel()
-                    .UseUrls($"http://{hostName}:{port}")
+                    .UseUrls(listeningUri)
                     .Build();
 
                 await host.StartAsync();
+
+                logger.LogInformation($"DemoCluster API listening on {listeningUri}");
             }
             catch (Exception ex)
             {

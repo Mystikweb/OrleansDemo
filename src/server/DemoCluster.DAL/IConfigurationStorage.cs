@@ -9,6 +9,6 @@ namespace DemoCluster.DAL
     {
         Task<List<DeviceConfig>> GetDeviceListAsync();
         Task<DeviceConfig> GetDeviceAsync(Guid deviceId);
-        Task SaveDeviceAsync(DeviceConfig device);
+        Task<Guid> SaveDeviceAsync(DeviceConfig device);
     }
 }

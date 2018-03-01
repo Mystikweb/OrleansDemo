@@ -1,6 +1,7 @@
 using DemoCluster.DAL;
 using DemoCluster.DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,5 +23,25 @@ namespace DemoCluster.Api.Controllers
             return await configurationStorage.GetDeviceListAsync();
         }
 
+        [HttpGet("{deviceId}")]
+        public async Task<IActionResult> Get(Guid deviceId)
+        {
+            return Ok(await configurationStorage.GetDeviceAsync(deviceId));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(DeviceConfig config)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Guid deviceId = await configurationStorage.SaveDeviceAsync(config);
+
+            DeviceConfig result = await configurationStorage.GetDeviceAsync(deviceId);
+
+            return CreatedAtAction("GetDevice", new { id = deviceId }, result);
+        }
     }
 }
