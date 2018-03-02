@@ -46,8 +46,8 @@ export class DeviceService {
   }
 
   getDevice(deviceId): Observable<DeviceConfig> {
-    const requestUrl = `${this.deviceUri}/${deviceId}`;
-    return this.http.get<DeviceConfig>(requestUrl);
+    const request = `${this.deviceUri}/${deviceId}`;
+    return this.http.get<DeviceConfig>(request);
   }
 
   save(device: DeviceConfig): Observable<DeviceConfig> {
