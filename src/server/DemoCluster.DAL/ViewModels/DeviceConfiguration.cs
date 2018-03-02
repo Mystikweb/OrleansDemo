@@ -5,7 +5,7 @@ namespace DemoCluster.DAL.ViewModels
 {
     public class DeviceConfig
     {
-        public Guid DeviceId { get; set; }
+        public string DeviceId { get; set; }
         public string Name { get; set; }
         public List<DeviceSensorConfig> Sensors { get; set; } = new List<DeviceSensorConfig>();
         public List<DeviceEventConfig> Events { get; set; } = new List<DeviceEventConfig>();

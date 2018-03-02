@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.Api.Controllers
 {
-    [Route("api/[controller]")]    
+    [Route("api/[controller]")]
+    [Produces("application/json")]
     public class DeviceController : Controller
     {
         private readonly IConfigurationStorage configurationStorage;
@@ -36,12 +37,10 @@ namespace DemoCluster.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+                
+            DeviceConfig device = await configurationStorage.SaveDeviceAsync(config);
 
-            Guid deviceId = await configurationStorage.SaveDeviceAsync(config);
-
-            DeviceConfig result = await configurationStorage.GetDeviceAsync(deviceId);
-
-            return CreatedAtAction("GetDevice", new { id = deviceId }, result);
+            return CreatedAtAction("GetDevice", new { id = device.DeviceId }, device);
         }
     }
 }

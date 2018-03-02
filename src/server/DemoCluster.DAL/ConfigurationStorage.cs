@@ -1,6 +1,7 @@
 using DemoCluster.DAL.Configuration;
 using DemoCluster.DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace DemoCluster.DAL
     public class ConfigurationStorage : IConfigurationStorage
     {
         private readonly ConfigurationContext configDb;
+        private readonly ILogger logger;
 
-        public ConfigurationStorage(ConfigurationContext context)
+        public ConfigurationStorage(ConfigurationContext context, ILogger log)
         {
             configDb = context;
+            logger = log;
         }
 
         public async Task<List<DeviceConfig>> GetDeviceListAsync()
@@ -22,7 +25,7 @@ namespace DemoCluster.DAL
             return await configDb.Device
                 .Select(d => new DeviceConfig
                 {
-                    DeviceId = d.DeviceId,
+                    DeviceId = d.DeviceId.ToString(),
                     Name = d.Name,
                     Sensors = configDb.Sensor.Select(s => new DeviceSensorConfig
                     {
@@ -40,7 +43,7 @@ namespace DemoCluster.DAL
                 .Where(d => d.DeviceId == deviceId)
                 .Select(d => new DeviceConfig
                 {
-                    DeviceId = d.DeviceId,
+                    DeviceId = d.DeviceId.ToString(),
                     Name = d.Name,
                     Sensors = configDb.Sensor.Select(s => new DeviceSensorConfig
                     {
@@ -59,20 +62,20 @@ namespace DemoCluster.DAL
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> SaveDeviceAsync(DeviceConfig device)
+        public async Task<DeviceConfig> SaveDeviceAsync(DeviceConfig device)
         {
             Device dbDevice = null;
 
-            if (device.DeviceId == null || device.DeviceId == Guid.Empty)
+            if (string.IsNullOrEmpty(device.DeviceId))
             {
                 dbDevice = new Device();
                 dbDevice.Name = device.Name;
-                
+
                 await configDb.Device.AddAsync(dbDevice);
             }
             else
             {
-                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == device.DeviceId);
+                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(device.DeviceId));
 
                 if (dbDevice == null)
                 {
@@ -84,9 +87,17 @@ namespace DemoCluster.DAL
                 configDb.Device.Update(dbDevice);
             }
 
-            await configDb.SaveChangesAsync();
+            try
+            {
+                await configDb.SaveChangesAsync();
+            }
+            catch (System.Exception ex)
+            {
+                logger.LogError(new EventId(5001), ex, string.Empty);
+                throw;
+            }
 
-            return dbDevice.DeviceId;
+            return await GetDeviceAsync(dbDevice.DeviceId);
         }
     }
 }

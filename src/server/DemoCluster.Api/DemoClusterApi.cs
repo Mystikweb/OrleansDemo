@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.Providers;
 using Orleans.Runtime;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace DemoCluster.Api
 {
@@ -36,7 +37,7 @@ namespace DemoCluster.Api
 
             string hostName = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME) ? config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME] : "*";
             int port = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_PORT) ? Convert.ToInt32(config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_PORT]) : 5000;
-            
+
             string listeningUri = $"http://{hostName}:{port}";
 
             try
@@ -52,10 +53,24 @@ namespace DemoCluster.Api
                         services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
                         services.AddMvc();
+
+                        // Register the Swagger generator, defining one or more Swagger documents
+                        services.AddSwaggerGen(c =>
+                        {
+                            c.SwaggerDoc("v1", new Info { Title = "DemoCluster API", Version = "v1" });
+                        });
+
                     })
                     .Configure(app =>
                     {
-                        //app.ConfigureLogging()
+                        // Enable middleware to serve generated Swagger as a JSON endpoint.
+                        app.UseSwagger();
+
+                        // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+                        app.UseSwaggerUI(c =>
+                        {
+                            c.SwaggerEndpoint("/swagger/v1/swagger.json", "DemoCluster API V1");
+                        });
 
                         app.UseCors(pol =>
                         {
@@ -89,7 +104,7 @@ namespace DemoCluster.Api
             }
             catch
             {
-                
+
             }
         }
 
