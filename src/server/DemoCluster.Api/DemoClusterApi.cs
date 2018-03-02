@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Configuration;
 using DemoCluster.DAL.Runtime;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,9 @@ namespace DemoCluster.Api
 
             try
             {
-                host = new WebHostBuilder()
+                ;
+
+                host = WebHost.CreateDefaultBuilder()
                     .ConfigureServices(services =>
                     {
                         services.AddDbContext<ConfigurationContext>(opts =>
@@ -59,7 +62,6 @@ namespace DemoCluster.Api
                         {
                             c.SwaggerDoc("v1", new Info { Title = "DemoCluster API", Version = "v1" });
                         });
-
                     })
                     .Configure(app =>
                     {

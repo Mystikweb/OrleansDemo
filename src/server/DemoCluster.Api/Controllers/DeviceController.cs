@@ -31,7 +31,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(DeviceConfig config)
+        public async Task<IActionResult> Post([FromBody] DeviceConfig config)
         {
             if (!ModelState.IsValid)
             {
