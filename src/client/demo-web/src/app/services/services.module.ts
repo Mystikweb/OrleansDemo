@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { DeviceService } from './device.service';
+import { SensorService } from './sensor.service';
 
 @NgModule({
   imports: [
@@ -10,7 +11,8 @@ import { DeviceService } from './device.service';
     HttpClientModule
   ],
   providers: [
-    DeviceService
+    DeviceService,
+    SensorService
   ]
 })
 export class ServicesModule { }

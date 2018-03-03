@@ -10,6 +10,7 @@ import { ConfigurationComponent } from './configuration.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceEditorComponent } from './device-list/device-editor.component';
 import { SensorListComponent } from './sensor-list/sensor-list.component';
+import { SensorEditorComponent } from './sensor-list/sensor-editor.component';
 import { EventListComponent } from './event-list/event-list.component';
 
 @NgModule({
@@ -26,10 +27,12 @@ import { EventListComponent } from './event-list/event-list.component';
     DeviceListComponent,
     DeviceEditorComponent,
     SensorListComponent,
+    SensorEditorComponent,
     EventListComponent
   ],
   entryComponents: [
-    DeviceEditorComponent
+    DeviceEditorComponent,
+    SensorEditorComponent
   ]
 })
 export class ConfigurationModule { }
