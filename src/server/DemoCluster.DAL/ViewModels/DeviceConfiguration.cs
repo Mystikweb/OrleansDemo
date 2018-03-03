@@ -6,7 +6,7 @@ namespace DemoCluster.DAL.ViewModels
 {
     public class DeviceConfig
     {
-        public Guid DeviceId { get; set; }
+        public string DeviceId { get; set; }
         [Required]
         [StringLength(100)]
         public string Name { get; set; }

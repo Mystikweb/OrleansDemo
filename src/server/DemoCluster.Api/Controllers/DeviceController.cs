@@ -25,7 +25,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpGet("{deviceId}")]
-        public async Task<IActionResult> Get(Guid deviceId)
+        public async Task<IActionResult> Get(string deviceId)
         {
             return Ok(await configurationStorage.GetDeviceAsync(deviceId));
         }
@@ -40,7 +40,7 @@ namespace DemoCluster.Api.Controllers
                 
             DeviceConfig device = await configurationStorage.SaveDeviceAsync(config);
 
-            return CreatedAtAction("GetDevice", new { id = device.DeviceId }, device);
+            return CreatedAtAction("Get", new { deviceId = device.DeviceId }, device);
         }
     }
 }

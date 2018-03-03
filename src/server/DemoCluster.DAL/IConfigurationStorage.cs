@@ -8,7 +8,7 @@ namespace DemoCluster.DAL
     public interface IConfigurationStorage
     {
         Task<List<DeviceConfig>> GetDeviceListAsync();
-        Task<DeviceConfig> GetDeviceAsync(Guid deviceId);
+        Task<DeviceConfig> GetDeviceAsync(string deviceId);
         Task<DeviceConfig> SaveDeviceAsync(DeviceConfig device);
         Task<List<SensorConfig>> GetSensorListAsync();
         Task<SensorConfig> GetSensorAsync(int sensorId);

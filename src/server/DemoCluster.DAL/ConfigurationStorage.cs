@@ -21,7 +21,7 @@ namespace DemoCluster.DAL
         {
             return await configDb.Device.Select(d => new DeviceConfig
             {
-                DeviceId = d.DeviceId,
+                DeviceId = d.DeviceId.ToString(),
                 Name = d.Name,
                 Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
                 {
@@ -33,13 +33,13 @@ namespace DemoCluster.DAL
             }).ToListAsync();
         }
 
-        public async Task<DeviceConfig> GetDeviceAsync(Guid deviceId)
+        public async Task<DeviceConfig> GetDeviceAsync(string deviceId)
         {
             return await configDb.Device
-                .Where(d => d.DeviceId == deviceId)
+                .Where(d => d.DeviceId == Guid.Parse(deviceId))
                 .Select(d => new DeviceConfig
                 {
-                    DeviceId = d.DeviceId,
+                    DeviceId = d.DeviceId.ToString(),
                     Name = d.Name,
                     Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
                     {
@@ -55,7 +55,7 @@ namespace DemoCluster.DAL
         {
             Device dbDevice = null;
 
-            if (device.DeviceId == Guid.Empty || device.DeviceId == null)
+            if (string.IsNullOrEmpty(device.DeviceId))
             {
                 dbDevice = new Device();
                 dbDevice.Name = device.Name;
@@ -64,7 +64,7 @@ namespace DemoCluster.DAL
             }
             else
             {
-                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == device.DeviceId);
+                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(device.DeviceId));
 
                 if (dbDevice == null)
                 {
@@ -86,25 +86,28 @@ namespace DemoCluster.DAL
                 throw;
             }
 
-            return await GetDeviceAsync(dbDevice.DeviceId);
+            return await GetDeviceAsync(dbDevice.DeviceId.ToString());
         }
 
         public async Task<List<SensorConfig>> GetSensorListAsync()
         {
-            return await configDb.Sensor.Select(s => new SensorConfig
-            {
-                SensorId = s.SensorId,
-                Name = s.Name
-            }).ToListAsync();
+            return await configDb.Sensor
+                .Select(s => new SensorConfig
+                {
+                    SensorId = s.SensorId,
+                    Name = s.Name
+                }).ToListAsync();
         }
 
         public async Task<SensorConfig> GetSensorAsync(int sensorId)
         {
-            return await configDb.Sensor.Select(s => new SensorConfig
-            {
-                SensorId = s.SensorId,
-                Name = s.Name
-            }).FirstOrDefaultAsync(w => w.SensorId == sensorId);
+            return await configDb.Sensor
+                .Where(s => s.SensorId == sensorId)
+                .Select(s => new SensorConfig
+                {
+                    SensorId = s.SensorId,
+                    Name = s.Name
+                }).FirstOrDefaultAsync();
         }
 
         public async Task<SensorConfig> SaveSensorAsync(SensorConfig sensor)

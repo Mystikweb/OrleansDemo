@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Configuration;
@@ -7,8 +8,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
 using Orleans.Providers;
 using Orleans.Runtime;
@@ -43,11 +46,12 @@ namespace DemoCluster.Api
 
             try
             {
-                ;
-
-                host = WebHost.CreateDefaultBuilder()
+                //host = WebHost.CreateDefaultBuilder()
+                host = new WebHostBuilder()
+                    .UseContentRoot(Directory.GetCurrentDirectory())
                     .ConfigureServices(services =>
                     {
+                        
                         services.AddDbContext<ConfigurationContext>(opts =>
                             opts.UseSqlServer(configConnectionString));
                         services.AddDbContext<RuntimeContext>(opts =>
@@ -69,10 +73,10 @@ namespace DemoCluster.Api
                         app.UseSwagger();
 
                         // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-                        app.UseSwaggerUI(c =>
-                        {
-                            c.SwaggerEndpoint("/swagger/v1/swagger.json", "DemoCluster API V1");
-                        });
+                        // app.UseSwaggerUI(c =>
+                        // {
+                        //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "DemoCluster API V1");
+                        // });
 
                         app.UseCors(pol =>
                         {

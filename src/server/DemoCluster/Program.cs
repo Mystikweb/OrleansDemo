@@ -69,10 +69,10 @@ namespace DemoCluster
             config.AddRedisStorageProvider("RedisBase", redisOptions);
 
             config.AddRabbitMQStreamProvider("Rabbit");
-
-            config.RegisterDashboard();
+            
             config.RegisterApi(configConnectionString: configConnectionString,
                 runtimeConnectionString: runtimeConnectionString);
+            config.RegisterDashboard();
 
             var builder = new SiloHostBuilder()
                 .UseConfiguration(config)
@@ -85,12 +85,13 @@ namespace DemoCluster
 
                 }))
                 .ConfigureRabbitMQStreamProvider(rabbitOptions)
+                .UseApi()
                 .UseDashboard(options =>
                 {
                     options.HostSelf = true;
                     options.HideTrace = false;
-                })
-                .UseApi();
+                });
+                
 
             var host = builder.Build();
             await host.StartAsync();
