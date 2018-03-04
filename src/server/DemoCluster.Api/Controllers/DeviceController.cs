@@ -42,5 +42,12 @@ namespace DemoCluster.Api.Controllers
 
             return CreatedAtAction("Get", new { deviceId = device.DeviceId }, device);
         }
+
+        [HttpDelete("{deviceId}")]
+        public async Task<IActionResult> Delete(string deviceId)
+        {
+            await configurationStorage.RemoveDeviceAsync(deviceId);
+            return Ok();
+        }
     }
 }

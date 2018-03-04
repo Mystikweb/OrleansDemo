@@ -40,5 +40,12 @@ namespace DemoCluster.Api.Controllers
 
             return CreatedAtAction("Get", new { sensorId = result.SensorId }, result);
         }
+
+        [HttpDelete("{sensorId}")]
+        public async Task<IActionResult> Delete(int sensorId)
+        {
+            await storage.RemoveSensorAsync(sensorId);
+            return Ok();
+        }
     }
 }

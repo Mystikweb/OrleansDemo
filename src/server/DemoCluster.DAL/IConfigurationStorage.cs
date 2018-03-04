@@ -10,8 +10,10 @@ namespace DemoCluster.DAL
         Task<List<DeviceConfig>> GetDeviceListAsync();
         Task<DeviceConfig> GetDeviceAsync(string deviceId);
         Task<DeviceConfig> SaveDeviceAsync(DeviceConfig device);
+        Task RemoveDeviceAsync(string deviceId);
         Task<List<SensorConfig>> GetSensorListAsync();
         Task<SensorConfig> GetSensorAsync(int sensorId);
         Task<SensorConfig> SaveSensorAsync(SensorConfig sensor);
+        Task RemoveSensorAsync(int sensorId);
     }
 }

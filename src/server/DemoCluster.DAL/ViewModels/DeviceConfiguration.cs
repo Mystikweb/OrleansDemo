@@ -16,7 +16,7 @@ namespace DemoCluster.DAL.ViewModels
 
     public class DeviceSensorConfig
     {
-        public int DeviceSensorId { get; set; }
+        public int? DeviceSensorId { get; set; }
         public int SensorId { get; set; }
         [Required]
         [StringLength(100)]
@@ -26,7 +26,7 @@ namespace DemoCluster.DAL.ViewModels
 
     public class DeviceEventConfig
     {
-        public int DeviceEventTypeId { get; set; }
+        public int? DeviceEventTypeId { get; set; }
         public int EventTypeId { get; set; }
         [Required]
         [StringLength(100)]

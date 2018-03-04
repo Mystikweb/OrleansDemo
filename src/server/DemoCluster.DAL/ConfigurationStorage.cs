@@ -82,11 +82,56 @@ namespace DemoCluster.DAL
             }
             catch (System.Exception)
             {
-                //logger.LogError(new EventId(5001), ex, string.Empty);
+                throw;
+            }
+
+            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => !device.Sensors.Any(s => s.DeviceSensorId == ds.DeviceSensorId)));
+            await configDb.SaveChangesAsync();
+
+            foreach (var sensor in device.Sensors)
+            {
+                DeviceSensor dbDeviceSensor = null;
+                if (sensor.DeviceSensorId.HasValue)
+                {
+                    dbDeviceSensor = await configDb.DeviceSensor.FirstOrDefaultAsync(ds => ds.DeviceSensorId == sensor.DeviceSensorId);
+                    dbDeviceSensor.IsEnabled = sensor.IsEnabled;
+                    configDb.DeviceSensor.Update(dbDeviceSensor);
+                }
+                else
+                {
+                    dbDeviceSensor = new DeviceSensor();
+                    dbDeviceSensor.DeviceId = dbDevice.DeviceId;
+                    dbDeviceSensor.SensorId = sensor.SensorId;
+                    dbDeviceSensor.IsEnabled = sensor.IsEnabled;
+                    await configDb.DeviceSensor.AddAsync(dbDeviceSensor);
+                }
+            }
+
+            try
+            {
+                await configDb.SaveChangesAsync();
+            }
+            catch (System.Exception)
+            {
                 throw;
             }
 
             return await GetDeviceAsync(dbDevice.DeviceId.ToString());
+        }
+
+        public async Task RemoveDeviceAsync(string deviceId)
+        {
+            Device device = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(deviceId));
+            if (device == null)
+            {
+                throw new ApplicationException($"Device {deviceId} was not found.");
+            }
+
+            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => ds.DeviceId == device.DeviceId));
+            await configDb.SaveChangesAsync();
+
+            configDb.Device.Remove(device);
+            await configDb.SaveChangesAsync();
         }
 
         public async Task<List<SensorConfig>> GetSensorListAsync()
@@ -146,6 +191,21 @@ namespace DemoCluster.DAL
             }
 
             return await GetSensorAsync(dbSensor.SensorId);
+        }
+
+        public async Task RemoveSensorAsync(int sensorId)
+        {
+            Sensor sensor = await configDb.Sensor.FirstOrDefaultAsync(s => s.SensorId == sensorId);
+            if (sensor == null)
+            {
+                throw new ApplicationException($"Sensor {sensorId} was not found.");
+            }
+
+            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => ds.SensorId == sensor.SensorId));
+            await configDb.SaveChangesAsync();
+
+            configDb.Sensor.Remove(sensor);
+            await configDb.SaveChangesAsync();
         }
     }
 }
