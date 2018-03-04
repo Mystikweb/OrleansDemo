@@ -8,19 +8,19 @@
       <mat-select placeholder="Device Type" [(ngModel)]="device.deviceTypeId" tabindex="2" (selectionChange)="typeSelected()">
         <mat-option *ngFor="let deviceType of deviceTypes" [value]="deviceType.id">{{deviceType.name}}</mat-option>
       </mat-select>
-    </mat-form-field>
-    <mat-divider *ngIf="device.readings.length > 0"></mat-divider>
-    <mat-list *ngIf="device.readings.length > 0">
-      <h3 mat-subheader>Readings</h3>
-      <mat-list-item *ngFor="let reading of device.readings">
+    </mat-form-field>-->
+    <mat-divider *ngIf="device.sensors.length > 0"></mat-divider>
+    <mat-list *ngIf="device.sensors.length > 0">
+      <h3 mat-subheader>Sensors</h3>
+      <mat-list-item *ngFor="let sensor of device.sensors">
         <section class="device-control-section">
-          <mat-checkbox class="device-control-margin" [(ngModel)]="reading.enabled">
-            <span>{{reading.readingType}}</span>&nbsp;(<em>{{reading.readingUom}}</em>)
+          <mat-checkbox class="device-control-margin" [(ngModel)]="sensor.isEnabled">
+            <span>{{sensor.name}}</span>
           </mat-checkbox>
         </section>
       </mat-list-item>
     </mat-list>
-    <mat-divider></mat-divider>
+    <!-- <mat-divider></mat-divider>
     <section class="device-control-section">
       <mat-slide-toggle class="device-control-margin" [(ngModel)]="device.enabled" tabindex="3" name="active">
         Enabled

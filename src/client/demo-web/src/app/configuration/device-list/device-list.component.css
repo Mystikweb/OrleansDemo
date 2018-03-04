@@ -1,13 +1,13 @@
 .device-card {
-  width: 300px;
+  width: 240px;
 }
 
-.reading-list {
+.sensor-list {
   padding-top: 0;
 }
 
-.reading-list-title {
-  margin-bottom: 0 !important;
+.sensor-list .mat-list-item {
+  height: 24px !important;
 }
 
 .device-card-actions {

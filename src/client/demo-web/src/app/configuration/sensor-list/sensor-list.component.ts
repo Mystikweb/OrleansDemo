@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSnackBar, MatSort } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -24,7 +24,8 @@ export class SensorListComponent implements OnInit, AfterViewInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(private sensorService: SensorService,
-    private detailsService: DetailsHostService) { }
+    private detailsService: DetailsHostService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.dataSource = new SensorDataSource(this.sensorService, this.paginator, this.sort);
@@ -50,6 +51,8 @@ export class SensorListComponent implements OnInit, AfterViewInit {
   }
 
   delete(sensor: SensorConfig) {
-    console.log(sensor);
+    this.sensorService.remove(sensor.sensorId).subscribe(result => {
+      this.snackBar.open('Removed successfully', 'Close', { duration: 1500 });
+    });
   }
 }

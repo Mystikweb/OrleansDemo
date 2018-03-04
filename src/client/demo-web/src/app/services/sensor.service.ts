@@ -61,6 +61,19 @@ export class SensorService {
         })
       );
   }
+
+  remove(sensorId: number) {
+    const request = `${this.sensorUri}/${sensorId}`;
+    return this.http.delete(request)
+      .pipe(
+        tap(t => {
+          const copiedData = this.data.slice();
+          const removed = copiedData.find(s => s.sensorId === sensorId);
+          copiedData.splice(copiedData.indexOf(removed), 1);
+          this.dataChange.next(copiedData);
+        })
+      );
+  }
 }
 
 export class SensorDataSource extends DataSource<SensorConfig> {

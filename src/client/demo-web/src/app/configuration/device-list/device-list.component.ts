@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -16,9 +17,15 @@ export class DeviceListComponent implements OnInit, AfterViewInit {
   devices$: Observable<DeviceConfig[]>;
 
   constructor(private deviceService: DeviceService,
-    private detailsService: DetailsHostService) { }
+    private detailsService: DetailsHostService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.detailsService.detailsOpen$.subscribe(opened => {
+      if (opened === false) {
+        this.loadData();
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -26,6 +33,13 @@ export class DeviceListComponent implements OnInit, AfterViewInit {
   }
   openEditor(device: DeviceConfig) {
     this.detailsService.openItem(new DetailsHostItem(DeviceEditorComponent, device === null ? new DeviceConfig() : device));
+  }
+
+  removeDevice(deviceId: string) {
+    this.deviceService.remove(deviceId).subscribe(result => {
+      this.snackBar.open('Removed successfully', 'Close', { duration: 1500 });
+      this.loadData();
+    });
   }
 
   private loadData() {

@@ -29,7 +29,17 @@ export class DeviceEditorComponent implements IDetailsHostComponent, OnInit {
     }
 
     this.sensorService.getSensorList().subscribe(results => {
-      console.log(results);
+      results.forEach(element => {
+        if (this.device.sensors.findIndex(s => s.sensorId === element.sensorId) === -1) {
+          const devSensor = new DeveiceSensorConfig();
+          devSensor.deviceSensorId = null;
+          devSensor.sensorId = element.sensorId;
+          devSensor.name = element.name;
+          devSensor.isEnabled = false;
+
+          this.device.sensors.push(devSensor);
+        }
+      });
     });
   }
 
