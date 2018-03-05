@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DemoCluster.DAL.Configuration
+namespace DemoCluster.DAL.Database
 {
     public partial class DeviceSensor
     {

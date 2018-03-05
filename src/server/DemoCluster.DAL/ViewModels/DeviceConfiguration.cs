@@ -10,6 +10,7 @@ namespace DemoCluster.DAL.ViewModels
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
+        public bool IsEnabled { get; set; } = false;
         public IEnumerable<DeviceSensorConfig> Sensors { get; set; } = new List<DeviceSensorConfig>();
         public IEnumerable<DeviceEventConfig> Events { get; set; } = new List<DeviceEventConfig>();
     }

@@ -2,8 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
-using DemoCluster.DAL.Configuration;
-using DemoCluster.DAL.Runtime;
+using DemoCluster.DAL.Database;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,10 +30,9 @@ namespace DemoCluster.Api
             Name = name;
             logger = providerRuntime.ServiceProvider.GetRequiredService<ILogger<DemoClusterApi>>();
 
-            string configConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_CONFIGURATION_CONNNECTIONSTRING];
             string runtimeConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING];
 
-            if (string.IsNullOrEmpty(configConnectionString) || string.IsNullOrEmpty(runtimeConnectionString))
+            if (string.IsNullOrEmpty(runtimeConnectionString))
             {
                 throw new ApplicationException("Configuration or runtime connection string not provided");
             }
@@ -52,8 +50,6 @@ namespace DemoCluster.Api
                     .ConfigureServices(services =>
                     {
                         
-                        services.AddDbContext<ConfigurationContext>(opts =>
-                            opts.UseSqlServer(configConnectionString));
                         services.AddDbContext<RuntimeContext>(opts =>
                             opts.UseSqlServer(runtimeConnectionString));
 

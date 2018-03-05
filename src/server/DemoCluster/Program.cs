@@ -47,7 +47,6 @@ namespace DemoCluster
                 .Build();
 
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
-            var configConnectionString = appConfig.GetConnectionString("Config");
             var runtimeConnectionString = appConfig.GetConnectionString("Runtime");
             var rabbitOptions = appConfig.GetSection(RabbitMQStreamProviderOptions.SECTION_NAME).Get<RabbitMQStreamProviderOptions>();
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
@@ -70,8 +69,7 @@ namespace DemoCluster
 
             config.AddRabbitMQStreamProvider("Rabbit");
             
-            config.RegisterApi(configConnectionString: configConnectionString,
-                runtimeConnectionString: runtimeConnectionString);
+            config.RegisterApi(runtimeConnectionString: runtimeConnectionString);
             config.RegisterDashboard();
 
             var builder = new SiloHostBuilder()

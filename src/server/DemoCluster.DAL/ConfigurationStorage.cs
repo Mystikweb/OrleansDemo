@@ -1,4 +1,4 @@
-using DemoCluster.DAL.Configuration;
+using DemoCluster.DAL.Database;
 using DemoCluster.DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,8 +11,8 @@ namespace DemoCluster.DAL
 {
     public class ConfigurationStorage : IConfigurationStorage
     {
-        private readonly ConfigurationContext configDb;
-        public ConfigurationStorage(ConfigurationContext context)
+        private readonly RuntimeContext configDb;
+        public ConfigurationStorage(RuntimeContext context)
         {
             configDb = context;
         }
@@ -23,6 +23,7 @@ namespace DemoCluster.DAL
             {
                 DeviceId = d.DeviceId.ToString(),
                 Name = d.Name,
+                IsEnabled = d.IsEnabled,
                 Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
                 {
                     DeviceSensorId = ds.DeviceSensorId,
@@ -41,6 +42,7 @@ namespace DemoCluster.DAL
                 {
                     DeviceId = d.DeviceId.ToString(),
                     Name = d.Name,
+                    IsEnabled = d.IsEnabled,
                     Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
                     {
                         DeviceSensorId = ds.DeviceSensorId,
@@ -59,6 +61,7 @@ namespace DemoCluster.DAL
             {
                 dbDevice = new Device();
                 dbDevice.Name = device.Name;
+                dbDevice.IsEnabled = device.IsEnabled;
 
                 await configDb.Device.AddAsync(dbDevice);
             }
@@ -72,6 +75,7 @@ namespace DemoCluster.DAL
                 }
 
                 dbDevice.Name = device.Name;
+                dbDevice.IsEnabled = device.IsEnabled;
 
                 configDb.Device.Update(dbDevice);
             }

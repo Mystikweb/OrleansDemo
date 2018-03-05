@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DemoCluster.DAL.Runtime
+namespace DemoCluster.DAL.Database
 {
+    [Table("DeviceEvent", Schema = "Runtime")]
     public partial class DeviceEvent
     {
         [StringLength(100)]
