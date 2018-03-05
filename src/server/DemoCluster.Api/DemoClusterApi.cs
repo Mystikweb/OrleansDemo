@@ -54,6 +54,7 @@ namespace DemoCluster.Api
                             opts.UseSqlServer(runtimeConnectionString));
 
                         services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
+                        services.AddTransient<IRuntimeStorage, RuntimeStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
                         services.AddMvc();
 

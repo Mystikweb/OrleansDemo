@@ -12,9 +12,7 @@ namespace DemoCluster.DAL.Database
         public int SensorId { get; set; }
         [Column(TypeName = "datetime2(3)")]
         public DateTime Timestamp { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Value { get; set; }
+        public double Value { get; set; }
 
         [ForeignKey("DeviceId")]
         [InverseProperty("DeviceSensorValue")]

@@ -72,7 +72,7 @@ CREATE TABLE [Runtime].[DeviceSensorValue] (
     [DeviceId] UNIQUEIDENTIFIER NOT NULL,
     [SensorId] INT NOT NULL IDENTITY(1,1),
     [Timestamp] DATETIME2(3) NOT NULL,
-    [Value] NVARCHAR(100) NOT NULL,
+    [Value] FLOAT NOT NULL,
 
     CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceId], [SensorId], [Timestamp]),
     CONSTRAINT [FK_DeviceSensorValue_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId]),
