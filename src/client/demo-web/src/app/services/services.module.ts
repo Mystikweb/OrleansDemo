@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { DeviceService } from './device.service';
 import { SensorService } from './sensor.service';
+import { GrainService } from './grain.service';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { SensorService } from './sensor.service';
   ],
   providers: [
     DeviceService,
-    SensorService
+    SensorService,
+    GrainService
   ]
 })
 export class ServicesModule { }

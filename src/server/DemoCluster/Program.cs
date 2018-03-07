@@ -67,6 +67,7 @@ namespace DemoCluster
             config.AddAdoNetStorageProvider("SqlBase", clusterConnectionString, AdoNetSerializationFormat.Json);
             config.AddRedisStorageProvider("RedisBase", redisOptions);
 
+            config.AddSimpleMessageStreamProvider("PubSub");
             config.AddRabbitMQStreamProvider("Rabbit");
             
             config.RegisterApi(runtimeConnectionString: runtimeConnectionString);

@@ -1,5 +1,6 @@
 using DemoCluster.DAL;
 using Microsoft.AspNetCore.Mvc;
+using Orleans;
 
 namespace DemoCluster.Api.Controllers
 {
@@ -8,10 +9,12 @@ namespace DemoCluster.Api.Controllers
     public class DashboardController : Controller
     {
         private readonly IRuntimeStorage runtime;
+        private readonly IGrainFactory grainClient;
 
-        public DashboardController(IRuntimeStorage runtimeStorage)
+        public DashboardController(IRuntimeStorage runtimeStorage, IGrainFactory grainFactory)
         {
             runtime = runtimeStorage;
+            grainClient = grainFactory;
         }
     }
 }

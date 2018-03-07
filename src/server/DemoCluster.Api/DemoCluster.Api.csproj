@@ -13,5 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj"/>
+    <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj"/>
   </ItemGroup>
 </Project>
