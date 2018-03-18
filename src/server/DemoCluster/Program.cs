@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.Api;
@@ -63,7 +63,7 @@ namespace DemoCluster
             config.Globals.DataConnectionStringForReminders = clusterConnectionString;
             config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.SqlServer;
 
-            config.AddMemoryStorageProvider("PubSubStore");
+            config.AddMemoryStorageProvider("MemoryStorage");
             config.AddAdoNetStorageProvider("SqlBase", clusterConnectionString, AdoNetSerializationFormat.Json);
             config.AddRedisStorageProvider("RedisBase", redisOptions);
 

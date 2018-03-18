@@ -8,7 +8,7 @@ using Orleans.Providers;
 
 namespace DemoCluster.GrainImplementations.Patterms
 {
-    [StorageProvider(ProviderName = "RegistryStore")]
+    [StorageProvider(ProviderName = "MemoryStorage")]
     public abstract class RegistryGrain<TRegisteredGrain> : Grain<RegistryState<TRegisteredGrain>>,
         IRegistryGrain<TRegisteredGrain> where TRegisteredGrain : IGrain
     {
