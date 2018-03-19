@@ -8,6 +8,7 @@ using DemoCluster.GrainInterfaces;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.EventSourcing.CustomStorage;
+using Orleans.Runtime;
 
 namespace DemoCluster.GrainImplementations
 {
@@ -17,6 +18,7 @@ namespace DemoCluster.GrainImplementations
         IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
+        private Logger logger;
 
         public DeviceGrain(IRuntimeStorage storage)
         {
@@ -25,11 +27,15 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
+            logger = GetLogger($"Device_{this.GetPrimaryKey().ToString()}");
+
             return base.OnActivateAsync();
         }
 
         public Task Start()
         {
+            logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
+
             return Task.CompletedTask;
         }
 

@@ -35,5 +35,15 @@ namespace DemoCluster.GrainImplementations
                 await RegisterGrain(deviceGrain);
             }
         }
+
+        public async Task StartDevice(Guid deviceId)
+        {
+            var device = await storage.GetDeviceAsync(deviceId.ToString());
+
+            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(device.DeviceId);
+            await deviceGrain.Start();
+
+            await RegisterGrain(deviceGrain);
+        }
     }
 }
