@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
-using DemoCluster.DAL.ViewModels;
+using DemoCluster.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoCluster.Api.Controllers

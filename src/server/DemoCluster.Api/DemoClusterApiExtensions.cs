@@ -40,7 +40,7 @@ namespace DemoCluster.Api
         public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder)
         {
             builder.ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(DemoClusterApi).Assembly));
-            
+
             return builder;
         }
     }

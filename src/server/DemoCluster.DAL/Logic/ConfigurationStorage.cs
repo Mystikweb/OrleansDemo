@@ -1,5 +1,5 @@
 using DemoCluster.DAL.Database;
-using DemoCluster.DAL.ViewModels;
+using DemoCluster.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;

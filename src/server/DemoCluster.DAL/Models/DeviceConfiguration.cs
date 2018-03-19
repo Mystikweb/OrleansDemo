@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DemoCluster.DAL.ViewModels
+namespace DemoCluster.DAL.Models
 {
     public class DeviceConfig
     {

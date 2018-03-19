@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.Api;
+using DemoCluster.DAL;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -84,6 +85,7 @@ namespace DemoCluster
 
                 }))
                 .ConfigureRabbitMQStreamProvider(rabbitOptions)
+                .RegisterStorageLogic(runtimeConnectionString)
                 .UseApi()
                 .UseDashboard(options =>
                 {
