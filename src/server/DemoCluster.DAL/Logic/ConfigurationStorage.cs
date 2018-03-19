@@ -21,7 +21,7 @@ namespace DemoCluster.DAL
         {
             return await configDb.Device.Select(d => new DeviceConfig
             {
-                DeviceId = d.DeviceId.ToString(),
+                DeviceId = d.DeviceId,
                 Name = d.Name,
                 IsEnabled = d.IsEnabled,
                 Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
@@ -40,7 +40,7 @@ namespace DemoCluster.DAL
                 .Where(d => d.DeviceId == Guid.Parse(deviceId))
                 .Select(d => new DeviceConfig
                 {
-                    DeviceId = d.DeviceId.ToString(),
+                    DeviceId = d.DeviceId,
                     Name = d.Name,
                     IsEnabled = d.IsEnabled,
                     Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
@@ -57,17 +57,19 @@ namespace DemoCluster.DAL
         {
             Device dbDevice = null;
 
-            if (string.IsNullOrEmpty(device.DeviceId))
+            if (device.DeviceId == Guid.Empty)
             {
-                dbDevice = new Device();
-                dbDevice.Name = device.Name;
-                dbDevice.IsEnabled = device.IsEnabled;
+                dbDevice = new Device
+                {
+                    Name = device.Name,
+                    IsEnabled = device.IsEnabled
+                };
 
                 await configDb.Device.AddAsync(dbDevice);
             }
             else
             {
-                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(device.DeviceId));
+                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == device.DeviceId);
 
                 if (dbDevice == null)
                 {

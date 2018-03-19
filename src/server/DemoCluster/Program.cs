@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.Api;
 using DemoCluster.DAL;
+using DemoCluster.GrainImplementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -72,6 +73,7 @@ namespace DemoCluster
             config.AddRabbitMQStreamProvider("Rabbit");
             
             config.RegisterApi(runtimeConnectionString: runtimeConnectionString);
+            config.RegisterBootstrapGrains();
             config.RegisterDashboard();
 
             var builder = new SiloHostBuilder()

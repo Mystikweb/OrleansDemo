@@ -12,8 +12,8 @@ using Orleans.EventSourcing.CustomStorage;
 namespace DemoCluster.GrainImplementations
 {
     public class DeviceGrain :
-        JournaledGrain<DeviceHistory, DeviceState>,
-        ICustomStorageInterface<DeviceHistory, DeviceState>,
+        JournaledGrain<DeviceHistory, DeviceHistoryState>,
+        ICustomStorageInterface<DeviceHistory, DeviceHistoryState>,
         IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
@@ -25,9 +25,12 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
-
-
             return base.OnActivateAsync();
+        }
+
+        public Task Start()
+        {
+            return Task.CompletedTask;
         }
 
         public async Task<KeyValuePair<int, DeviceHistory>> ReadStateFromStorage()
@@ -46,9 +49,9 @@ namespace DemoCluster.GrainImplementations
             return new KeyValuePair<int, DeviceHistory>(version, state);
         }
 
-        public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceState> updates, int expectedversion)
+        public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(true);
         }
     }
 }

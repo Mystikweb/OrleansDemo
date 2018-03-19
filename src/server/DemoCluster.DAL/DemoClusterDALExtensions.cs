@@ -21,14 +21,15 @@ namespace DemoCluster.DAL
                     opts.UseSqlServer(runtimeConnectionString));
 
                 services.AddTransient<IRuntimeStorage, RuntimeStorage>();
+                services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
             });
 
             return builder;
         }
 
-        public static DeviceState ToState(this DeviceStateItem item)
+        public static DeviceHistoryState ToState(this DeviceStateItem item)
         {
-            return new DeviceState
+            return new DeviceHistoryState
             {
                 DeviceId = item.DeviceId,
                 Timestamp = item.TimeStamp,
@@ -37,7 +38,7 @@ namespace DemoCluster.DAL
             };
         }
 
-        public static DeviceStateItem ToItem(this DeviceState state, string name)
+        public static DeviceStateItem ToItem(this DeviceHistoryState state, string name)
         {
             return new DeviceStateItem
             {
