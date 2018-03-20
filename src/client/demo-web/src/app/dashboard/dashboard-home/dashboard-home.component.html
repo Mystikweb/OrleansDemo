@@ -1,0 +1,23 @@
+<mat-grid-list cols="4" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let device of dashboard$ | async">
+    <mat-card class="device-card">
+      <mat-card-header>
+        <mat-card-title>{{device.name}}</mat-card-title>
+        <!-- <mat-card-subtitle>{{device.deviceType}}</mat-card-subtitle> -->
+      </mat-card-header>
+      <mat-card-content>
+        <mat-card-title-group>
+          <mat-card-subtitle>Sensors</mat-card-subtitle>
+        </mat-card-title-group>
+        <mat-list class="sensor-list">
+          <mat-list-item *ngFor="let sensor of device.sensorSummaries">
+            <span>{{sensor.name}}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<button mat-fab class="add-button-fab" (click)="showDevices()" matTooltip="Show Device List" [matTooltipPosition]="'before'">
+  <mat-icon>list</mat-icon>
+</button>

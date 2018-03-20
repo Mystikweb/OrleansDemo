@@ -29,18 +29,18 @@ namespace DemoCluster.GrainImplementations
 
             foreach (var device in activeDevices)
             {
-                var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(device.DeviceId);
+                var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await deviceGrain.Start();
 
                 await RegisterGrain(deviceGrain);
             }
         }
 
-        public async Task StartDevice(Guid deviceId)
+        public async Task StartDevice(string deviceId)
         {
-            var device = await storage.GetDeviceAsync(deviceId.ToString());
+            var device = await storage.GetDeviceAsync(deviceId);
 
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(device.DeviceId);
+            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await deviceGrain.Start();
 
             await RegisterGrain(deviceGrain);

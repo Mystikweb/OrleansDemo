@@ -21,7 +21,7 @@ namespace DemoCluster.DAL
         {
             return await configDb.Device.Select(d => new DeviceConfig
             {
-                DeviceId = d.DeviceId,
+                DeviceId = d.DeviceId.ToString(),
                 Name = d.Name,
                 IsEnabled = d.IsEnabled,
                 Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
@@ -40,7 +40,7 @@ namespace DemoCluster.DAL
                 .Where(d => d.DeviceId == Guid.Parse(deviceId))
                 .Select(d => new DeviceConfig
                 {
-                    DeviceId = d.DeviceId,
+                    DeviceId = d.DeviceId.ToString(),
                     Name = d.Name,
                     IsEnabled = d.IsEnabled,
                     Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
@@ -57,7 +57,7 @@ namespace DemoCluster.DAL
         {
             Device dbDevice = null;
 
-            if (device.DeviceId == Guid.Empty)
+            if (string.IsNullOrEmpty(device.DeviceId))
             {
                 dbDevice = new Device
                 {
@@ -69,7 +69,7 @@ namespace DemoCluster.DAL
             }
             else
             {
-                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == device.DeviceId);
+                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(device.DeviceId));
 
                 if (dbDevice == null)
                 {
@@ -146,7 +146,8 @@ namespace DemoCluster.DAL
                 .Select(s => new SensorConfig
                 {
                     SensorId = s.SensorId,
-                    Name = s.Name
+                    Name = s.Name,
+                    Uom = s.Uom
                 }).ToListAsync();
         }
 
@@ -157,7 +158,8 @@ namespace DemoCluster.DAL
                 .Select(s => new SensorConfig
                 {
                     SensorId = s.SensorId,
-                    Name = s.Name
+                    Name = s.Name,
+                    Uom = s.Uom
                 }).FirstOrDefaultAsync();
         }
 
@@ -167,8 +169,11 @@ namespace DemoCluster.DAL
 
             if (!sensor.SensorId.HasValue)
             {
-                dbSensor = new Sensor();
-                dbSensor.Name = sensor.Name;
+                dbSensor = new Sensor
+                {
+                    Name = sensor.Name,
+                    Uom = sensor.Uom
+                };
 
                 await configDb.Sensor.AddAsync(dbSensor);
             }
@@ -182,6 +187,7 @@ namespace DemoCluster.DAL
                 }
 
                 dbSensor.Name = sensor.Name;
+                dbSensor.Uom = sensor.Uom;
 
                 configDb.Sensor.Update(dbSensor);
             }

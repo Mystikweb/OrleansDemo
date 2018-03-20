@@ -8,6 +8,6 @@ namespace DemoCluster.GrainInterfaces
     public interface IDeviceRegistry : IRegistryGrain<IDeviceGrain>
     {
         Task Initialize();
-        Task StartDevice(Guid deviceId);
+        Task StartDevice(string deviceId);
     }
 }
