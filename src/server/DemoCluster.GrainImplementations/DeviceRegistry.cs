@@ -3,6 +3,7 @@ using DemoCluster.DAL.States;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
 using Orleans;
+using Orleans.MultiCluster;
 using Orleans.Providers;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
+    [OneInstancePerCluster]
     [StorageProvider(ProviderName = "MemoryStorage")]
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
@@ -34,6 +36,21 @@ namespace DemoCluster.GrainImplementations
 
                 await RegisterGrain(deviceGrain);
             }
+        }
+
+        public async Task<bool> GetLoadedDeviceState(string deviceId)
+        {
+            bool result = false;
+
+            var device = await storage.GetDeviceAsync(deviceId);
+            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+
+            if (deviceGrain != null)
+            {
+                result = await deviceGrain.GetIsRunning();
+            }
+
+            return result;
         }
 
         public async Task StartDevice(string deviceId)

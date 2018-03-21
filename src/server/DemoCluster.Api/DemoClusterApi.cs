@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
@@ -21,14 +21,14 @@ namespace DemoCluster.Api
     public class DemoClusterApi : IBootstrapProvider
     {
         private IWebHost host;
-        private ILogger logger;
+        private Logger logger;
 
         public string Name { get; private set; }
 
         public async Task Init(string name, IProviderRuntime providerRuntime, IProviderConfiguration config)
         {
             Name = name;
-            logger = providerRuntime.ServiceProvider.GetRequiredService<ILogger<DemoClusterApi>>();
+            logger = providerRuntime.GetLogger("DemoClusterApi");
 
             string runtimeConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING];
 
@@ -56,6 +56,7 @@ namespace DemoCluster.Api
                         services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
                         services.AddTransient<IRuntimeStorage, RuntimeStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
+                        services.AddSingleton(logger);
                         services.AddMvc();
 
                         // Register the Swagger generator, defining one or more Swagger documents
@@ -90,11 +91,11 @@ namespace DemoCluster.Api
 
                 await host.StartAsync();
 
-                logger.LogInformation($"DemoCluster API listening on {listeningUri}");
+                logger.Info($"DemoCluster API listening on {listeningUri}");
             }
             catch (Exception ex)
             {
-                logger.LogError(new EventId(1001), ex, ex.Message);
+                logger.Error(1001, ex.Message, ex);
             }
         }
 

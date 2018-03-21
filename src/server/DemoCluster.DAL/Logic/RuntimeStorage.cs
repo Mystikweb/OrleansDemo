@@ -24,7 +24,7 @@ namespace DemoCluster.DAL
                           group sv by sv.Device into dg
                           select new DeviceSummary
                           {
-                              DeviceId = dg.Key.DeviceId,
+                              DeviceId = dg.Key.DeviceId.ToString(),
                               Name = dg.Key.Name,
                               SensorSummaries = (from s in dg
                                                  group s by s.Sensor into vs
@@ -36,6 +36,15 @@ namespace DemoCluster.DAL
                                                  }).ToList()
 
                           }).ToListAsync();
+        }
+
+        public async Task<List<DeviceState>> GetDeviceStates()
+        {
+            return await db.Device.Select(d => new DeviceState
+            {
+                DeviceId = d.DeviceId.ToString(),
+                Name = d.Name
+            }).ToListAsync();
         }
 
         public async Task<List<DeviceStateItem>> GetDeviceHistory(Guid deviceId)

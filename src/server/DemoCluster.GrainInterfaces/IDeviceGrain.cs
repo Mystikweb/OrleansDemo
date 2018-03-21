@@ -7,6 +7,7 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceGrain : IGrainWithGuidKey
     {
+        Task<bool> GetIsRunning();
         Task Start();
     }
 }

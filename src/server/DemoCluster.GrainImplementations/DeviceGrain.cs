@@ -18,7 +18,9 @@ namespace DemoCluster.GrainImplementations
         IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
+
         private Logger logger;
+        private bool isRunning = false;
 
         public DeviceGrain(IRuntimeStorage storage)
         {
@@ -32,9 +34,15 @@ namespace DemoCluster.GrainImplementations
             return base.OnActivateAsync();
         }
 
+        public Task<bool> GetIsRunning()
+        {
+            return Task.FromResult(isRunning);
+        }
+
         public Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
+            isRunning = true;
 
             return Task.CompletedTask;
         }

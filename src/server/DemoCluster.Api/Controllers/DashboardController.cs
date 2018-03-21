@@ -29,16 +29,5 @@ namespace DemoCluster.Api.Controllers
         {
             return await runtime.GetDashboardSummary();
         }
-
-        [HttpPost("start/{deviceId}")]
-        public async Task<IActionResult> PostStartDevice(string deviceId)
-        {
-            var device = await configuration.GetDeviceAsync(deviceId);
-            var registryGrain = factory.GetGrain<IDeviceRegistry>(0);
-
-            await registryGrain.StartDevice(device.DeviceId);
-
-            return Ok();
-        }
     }
 }

@@ -8,6 +8,12 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+export class DeviceStatus {
+  deviceId: string;
+  name: string;
+  isRunning: boolean;
+}
+
 export class DeviceSummary {
   deviceId: string;
   name: string;
@@ -29,10 +35,15 @@ export class SensorSummary {
 export class DashboardService {
 
   private dashboardUri = environment.rootUri + '/api/dashboard';
+  private runtimeUri = environment.rootUri + '/api/runtime';
 
   constructor(private http: HttpClient) { }
 
   getDashboardSummary(): Observable<DeviceSummary[]> {
     return this.http.get<DeviceSummary[]>(this.dashboardUri);
+  }
+
+  getRuntimeList(): Observable<DeviceStatus[]> {
+    return this.http.get<DeviceStatus[]>(this.runtimeUri);
   }
 }
