@@ -58,6 +58,17 @@ CREATE TABLE [Config].[DeviceEventType] (
 GO
 
 /* Runtime Schema Tables */
+CREATE TABLE [Runtime].[DeviceHistory] (
+    [DeviceId] UNIQUEIDENTIFIER NOT NULL,
+    [Timestamp] DATETIME2(3) NOT NULL,
+    [SensorCount] INT NOT NULL,
+    [EventTypeCount] INT NOT NULL,
+
+    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceId]),
+    CONSTRAINT [FK_DeviceHistory_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId])
+)
+GO
+
 CREATE TABLE [Runtime].[DeviceEvent] (
     [Device] NVARCHAR(100) NOT NULL,
     [Event] NVARCHAR(100) NOT NULL,

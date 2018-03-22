@@ -1,5 +1,5 @@
 using DemoCluster.DAL.Database;
-using DemoCluster.DAL.ViewModels;
+using DemoCluster.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -59,9 +59,11 @@ namespace DemoCluster.DAL
 
             if (string.IsNullOrEmpty(device.DeviceId))
             {
-                dbDevice = new Device();
-                dbDevice.Name = device.Name;
-                dbDevice.IsEnabled = device.IsEnabled;
+                dbDevice = new Device
+                {
+                    Name = device.Name,
+                    IsEnabled = device.IsEnabled
+                };
 
                 await configDb.Device.AddAsync(dbDevice);
             }
@@ -144,7 +146,8 @@ namespace DemoCluster.DAL
                 .Select(s => new SensorConfig
                 {
                     SensorId = s.SensorId,
-                    Name = s.Name
+                    Name = s.Name,
+                    Uom = s.Uom
                 }).ToListAsync();
         }
 
@@ -155,7 +158,8 @@ namespace DemoCluster.DAL
                 .Select(s => new SensorConfig
                 {
                     SensorId = s.SensorId,
-                    Name = s.Name
+                    Name = s.Name,
+                    Uom = s.Uom
                 }).FirstOrDefaultAsync();
         }
 
@@ -165,8 +169,11 @@ namespace DemoCluster.DAL
 
             if (!sensor.SensorId.HasValue)
             {
-                dbSensor = new Sensor();
-                dbSensor.Name = sensor.Name;
+                dbSensor = new Sensor
+                {
+                    Name = sensor.Name,
+                    Uom = sensor.Uom
+                };
 
                 await configDb.Sensor.AddAsync(dbSensor);
             }
@@ -180,6 +187,7 @@ namespace DemoCluster.DAL
                 }
 
                 dbSensor.Name = sensor.Name;
+                dbSensor.Uom = sensor.Uom;
 
                 configDb.Sensor.Update(dbSensor);
             }

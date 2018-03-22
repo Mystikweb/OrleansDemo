@@ -23,6 +23,7 @@ const httpOptions = {
 export class SensorConfig {
   sensorId: number;
   name: string;
+  uom: string;
 }
 
 @Injectable()

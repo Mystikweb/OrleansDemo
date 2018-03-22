@@ -21,6 +21,8 @@ namespace DemoCluster.DAL.Database
         public bool IsEnabled { get; set; }
 
         [InverseProperty("Device")]
+        public DeviceHistory DeviceHistory { get; set; }
+        [InverseProperty("Device")]
         public ICollection<DeviceEventType> DeviceEventType { get; set; }
         [InverseProperty("Device")]
         public ICollection<DeviceSensor> DeviceSensor { get; set; }

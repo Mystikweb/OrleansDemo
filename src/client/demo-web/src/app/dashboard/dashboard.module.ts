@@ -4,20 +4,28 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { ServicesModule } from '../services/services.module';
+
 import { DashboardComponent } from './dashboard.component';
-import { DashboadHomeComponent } from './dashboad-home/dashboad-home.component';
+import { DashboardHomeComponent } from './dashboard-home/dashboard-home.component';
+import { DeviceListComponent } from './dashboard-home/device-list.component';
 import { DeviceDetailsComponent } from './device-details/device-details.component';
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    ServicesModule
   ],
   declarations: [
     DashboardComponent,
-    DashboadHomeComponent,
+    DashboardHomeComponent,
+    DeviceListComponent,
     DeviceDetailsComponent
+  ],
+  entryComponents: [
+    DeviceListComponent
   ]
 })
 export class DashboardModule { }

@@ -15,7 +15,7 @@ import { SensorEditorComponent } from './sensor-editor.component';
   styleUrls: ['./sensor-list.component.css']
 })
 export class SensorListComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['edit', 'name', 'remove'];
+  displayedColumns = ['edit', 'name', 'uom', 'remove'];
   dataSource: SensorDataSource | null;
   sensorList: SensorConfig[];
 

@@ -4,6 +4,9 @@
     <mat-form-field>
       <input matInput placeholder="Name" [(ngModel)]="sensor.name" tabindex="1" name="name" />
     </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Uom" [(ngModel)]="sensor.uom" tabindex="1" name="uom" />
+    </mat-form-field>
     <!-- <mat-form-field>
       <mat-select placeholder="Device Type" [(ngModel)]="device.deviceTypeId" tabindex="2" (selectionChange)="typeSelected()">
         <mat-option *ngFor="let deviceType of deviceTypes" [value]="deviceType.id">{{deviceType.name}}</mat-option>

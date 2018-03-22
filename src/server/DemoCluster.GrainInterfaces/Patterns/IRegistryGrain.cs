@@ -4,7 +4,7 @@ using Orleans;
 
 namespace DemoCluster.GrainInterfaces.Patterns
 {
-    public interface IRegistryGrain<TRegisteredGrain> : IGrainWithGuidKey
+    public interface IRegistryGrain<TRegisteredGrain> : IGrainWithIntegerKey
         where TRegisteredGrain : IGrain
     {
         Task<TRegisteredGrain> RegisterGrain(TRegisteredGrain item);

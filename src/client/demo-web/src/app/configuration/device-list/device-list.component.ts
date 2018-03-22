@@ -31,6 +31,7 @@ export class DeviceListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.loadData();
   }
+
   openEditor(device: DeviceConfig) {
     this.detailsService.openItem(new DetailsHostItem(DeviceEditorComponent, device === null ? new DeviceConfig() : device));
   }

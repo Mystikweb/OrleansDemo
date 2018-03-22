@@ -1,5 +1,5 @@
 using DemoCluster.DAL;
-using DemoCluster.DAL.ViewModels;
+using DemoCluster.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
