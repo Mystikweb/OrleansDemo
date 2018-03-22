@@ -67,6 +67,7 @@ namespace DemoCluster
 
             config.AddMemoryStorageProvider("MemoryStorage");
             config.AddAdoNetStorageProvider("SqlBase", clusterConnectionString, AdoNetSerializationFormat.Json);
+            config.AddCustomStorageInterfaceBasedLogConsistencyProvider("CustomStorage");
             config.AddRedisStorageProvider("RedisBase", redisOptions);
 
             config.AddSimpleMessageStreamProvider("PubSub");

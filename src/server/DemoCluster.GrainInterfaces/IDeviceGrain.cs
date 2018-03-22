@@ -9,5 +9,6 @@ namespace DemoCluster.GrainInterfaces
     {
         Task<bool> GetIsRunning();
         Task Start();
+        Task Stop();
     }
 }

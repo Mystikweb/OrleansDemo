@@ -87,7 +87,7 @@ body {
 }
 
 /* Gloabl add button */
-.add-button-fab.mat-fab {
+.add-button-fab.mat-fab, .add-button-fab.mat-mini-fab {
   position: absolute;
   right: 20px;
   bottom: 20px;

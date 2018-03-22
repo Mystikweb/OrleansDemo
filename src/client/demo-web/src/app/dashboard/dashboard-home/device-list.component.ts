@@ -19,10 +19,24 @@ export class DeviceListComponent implements IDetailsHostComponent, AfterViewInit
     private detailsHostService: DetailsHostService) { }
 
   ngAfterViewInit() {
-    this.deviceList$ = this.dashboardService.getRuntimeList();
+    this.loadData();
+  }
+
+  startDevice(device: DeviceStatus) {
+    this.dashboardService.startDevice(device)
+      .subscribe(() => this.loadData());
+  }
+
+  stopDevice(device: DeviceStatus) {
+    this.dashboardService.stopDevice(device)
+      .subscribe(() => this.loadData());
   }
 
   close() {
     this.detailsHostService.closeItem();
+  }
+
+  private loadData() {
+    this.deviceList$ = this.dashboardService.getRuntimeList();
   }
 }

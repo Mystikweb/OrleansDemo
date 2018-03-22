@@ -56,6 +56,7 @@ namespace DemoCluster.Api
                         services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
                         services.AddTransient<IRuntimeStorage, RuntimeStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
+                        services.AddSingleton<IActionDispatcher>(new ActionDispatcher(TaskScheduler.Current));
                         services.AddSingleton(logger);
                         services.AddMvc();
 

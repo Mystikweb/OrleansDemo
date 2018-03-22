@@ -8,10 +8,13 @@ using DemoCluster.GrainInterfaces;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.EventSourcing.CustomStorage;
+using Orleans.Providers;
 using Orleans.Runtime;
 
 namespace DemoCluster.GrainImplementations
 {
+    [StorageProvider(ProviderName="MemoryStorage")]
+    [LogConsistencyProvider(ProviderName = "CustomStorage")]
     public class DeviceGrain :
         JournaledGrain<DeviceHistory, DeviceHistoryState>,
         ICustomStorageInterface<DeviceHistory, DeviceHistoryState>,
@@ -43,6 +46,14 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
             isRunning = true;
+
+            return Task.CompletedTask;
+        }
+
+        public Task Stop()
+        {
+            logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
+            isRunning = false;
 
             return Task.CompletedTask;
         }

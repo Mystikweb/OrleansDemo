@@ -46,4 +46,14 @@ export class DashboardService {
   getRuntimeList(): Observable<DeviceStatus[]> {
     return this.http.get<DeviceStatus[]>(this.runtimeUri);
   }
+
+  startDevice(device: DeviceStatus) {
+    const requestUri = `${this.runtimeUri}/start`;
+    return this.http.post(requestUri, device, httpOptions);
+  }
+
+  stopDevice(device: DeviceStatus) {
+    const requestUri = `${this.runtimeUri}/stop`;
+    return this.http.post(requestUri, device, httpOptions);
+  }
 }

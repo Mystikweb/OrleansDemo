@@ -16,12 +16,17 @@ namespace DemoCluster.Api.Controllers
     public class RuntimeController : Controller
     {
         private readonly IRuntimeStorage runtime;
+        private readonly IActionDispatcher dispatcher;
         private readonly IGrainFactory factory;
         private readonly Logger logger;
 
-        public RuntimeController(IRuntimeStorage runtime, IGrainFactory factory, Logger logger)
+        public RuntimeController(IRuntimeStorage runtime, 
+            IActionDispatcher dispatcher,
+            IGrainFactory factory, 
+            Logger logger)
         {
             this.runtime = runtime;
+            this.dispatcher = dispatcher;
             this.factory = factory;
             this.logger = logger;
         }
@@ -29,24 +34,14 @@ namespace DemoCluster.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<DeviceState>> Get()
         {
-            
             var configuredDevices = await runtime.GetDeviceStates();
+            var registry = factory.GetGrain<IDeviceRegistry>(0);
 
             foreach (var device in configuredDevices)
             {
                 try
                 {
-                    Task<bool> runningTask = Task.Run(async () =>
-                    {
-                        bool response = false;
-
-                        var registry = factory.GetGrain<IDeviceRegistry>(0);
-                        response = await registry.GetLoadedDeviceState(device.DeviceId);
-
-                        return response;
-                    });
-
-                    device.IsRunning = await runningTask;
+                    device.IsRunning = await dispatcher.DispatchAsync(() => registry.GetLoadedDeviceState(device.DeviceId)).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -57,11 +52,38 @@ namespace DemoCluster.Api.Controllers
             return configuredDevices;
         }
 
-        [HttpPost("start/{deviceId}")]
-        public async Task<IActionResult> PostStartDevice(string deviceId)
+        [HttpPost("start")]
+        public async Task<IActionResult> PostStartDevice([FromBody] DeviceState device)
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
-            await registry.StartDevice(deviceId);
+
+            try
+            {
+                await dispatcher.DispatchAsync(() => registry.StartDevice(device.DeviceId)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(1001, "Error starting device grain.", ex);
+                return BadRequest(ex);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("stop")]
+        public async Task<IActionResult> PostStopDevice([FromBody] DeviceState device)
+        {
+            var registry = factory.GetGrain<IDeviceRegistry>(0);
+
+            try
+            {
+                await dispatcher.DispatchAsync(() => registry.StopDevice(device.DeviceId)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(1001, "Error starting device grain.", ex);
+                return BadRequest(ex);
+            }
 
             return Ok();
         }

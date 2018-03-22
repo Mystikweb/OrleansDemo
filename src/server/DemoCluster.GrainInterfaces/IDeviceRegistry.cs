@@ -10,5 +10,6 @@ namespace DemoCluster.GrainInterfaces
         Task Initialize();
         Task<bool> GetLoadedDeviceState(string deviceId);
         Task StartDevice(string deviceId);
+        Task StopDevice(string deviceId);
     }
 }

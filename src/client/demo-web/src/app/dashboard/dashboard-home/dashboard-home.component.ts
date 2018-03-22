@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -12,11 +12,19 @@ import { DeviceSummary, SensorSummary, DashboardService } from '../../services/d
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.css']
 })
-export class DashboardHomeComponent implements AfterViewInit {
+export class DashboardHomeComponent implements AfterViewInit, OnInit {
   dashboard$: Observable<DeviceSummary[]>;
 
   constructor(private dashboardService: DashboardService,
     private detailsHostService: DetailsHostService) { }
+
+  ngOnInit() {
+    this.detailsHostService.detailsOpen$.subscribe(opened => {
+      if (opened === false) {
+        this.loadData();
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.loadData();
