@@ -12,7 +12,7 @@
         <button *ngIf="!element.isRunning" mat-icon-button color="primary" (click)="startDevice(element)">
           <mat-icon>play_arrow</mat-icon>
         </button>
-        <button *ngIf="element.isRunning" mat-icon-button color="accent" (click)="stopDevice(element)">
+        <button *ngIf="element.isRunning" mat-icon-button color="warn" (click)="stopDevice(element)">
           <mat-icon>stop</mat-icon>
         </button>
       </mat-cell>
@@ -22,6 +22,6 @@
     <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
   </mat-table>
 </div>
-<button mat-mini-fab class="add-button-fab" (click)="close()">
+<button mat-mini-fab color="primary" class="add-button-fab" (click)="close()">
   <mat-icon>close</mat-icon>
 </button>

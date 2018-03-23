@@ -6,77 +6,60 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.States;
 using DemoCluster.GrainInterfaces;
 using Orleans;
-using Orleans.EventSourcing;
-using Orleans.EventSourcing.CustomStorage;
 using Orleans.Providers;
 using Orleans.Runtime;
 
 namespace DemoCluster.GrainImplementations
 {
     [StorageProvider(ProviderName="MemoryStorage")]
-    [LogConsistencyProvider(ProviderName = "CustomStorage")]
-    public class DeviceGrain :
-        JournaledGrain<DeviceHistory, DeviceHistoryState>,
-        ICustomStorageInterface<DeviceHistory, DeviceHistoryState>,
-        IDeviceGrain
+    public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
 
         private Logger logger;
-        private bool isRunning = false;
+        private IDeviceHistoryJournal journal;
 
         public DeviceGrain(IRuntimeStorage storage)
         {
             this.storage = storage;
         }
 
-        public override Task OnActivateAsync()
+        public override async Task OnActivateAsync()
         {
             logger = GetLogger($"Device_{this.GetPrimaryKey().ToString()}");
+            journal = GrainFactory.GetGrain<IDeviceHistoryJournal>(this.GetPrimaryKey());
 
-            return base.OnActivateAsync();
+            State = await journal.Initialize();
         }
 
         public Task<bool> GetIsRunning()
         {
-            return Task.FromResult(isRunning);
+            return Task.FromResult(State.IsRunning);
         }
 
-        public Task Start()
+        public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            isRunning = true;
+            State.IsRunning = true;
 
-            return Task.CompletedTask;
+            await LogState();
         }
 
-        public Task Stop()
+        public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            isRunning = false;
+            State.IsRunning = false;
 
-            return Task.CompletedTask;
+            await LogState();
         }
 
-        public async Task<KeyValuePair<int, DeviceHistory>> ReadStateFromStorage()
+        private async Task LogState()
         {
-            var historyItems = await storage.GetDeviceHistory(this.GetPrimaryKey());
-
-            DeviceHistory state = new DeviceHistory();
-
-            foreach (var item in historyItems.OrderBy(i => i.TimeStamp))
+            await journal.PushState(new DeviceHistoryState
             {
-                state.Apply(item.ToState());
-            }
-
-            int version = state.StateHistory.Count;
-
-            return new KeyValuePair<int, DeviceHistory>(version, state);
-        }
-
-        public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)
-        {
-            return Task.FromResult(true);
+                DeviceId = State.DeviceId,
+                IsRunning = State.IsRunning
+            });
         }
     }
 }

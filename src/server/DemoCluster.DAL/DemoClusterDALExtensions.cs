@@ -27,23 +27,34 @@ namespace DemoCluster.DAL
             return builder;
         }
 
-        public static DeviceHistoryState ToState(this DeviceStateItem item)
+        public static DeviceState ToState(this DeviceStateItem item)
+        {
+            return new DeviceState
+            {
+                DeviceId = Guid.Parse(item.DeviceId),
+                Name = item.Name
+            };
+        }
+
+        public static DeviceHistoryState ToState(this DeviceHistoryItem item)
         {
             return new DeviceHistoryState
             {
                 DeviceId = item.DeviceId,
                 Timestamp = item.TimeStamp,
+                IsRunning = item.IsRunning,
                 SensorCount = item.SensorCount,
                 EventTypeCount = item.EventTypeCount
             };
         }
 
-        public static DeviceStateItem ToItem(this DeviceHistoryState state, string name)
+        public static DeviceHistoryItem ToItem(this DeviceHistoryState state, string name)
         {
-            return new DeviceStateItem
+            return new DeviceHistoryItem
             {
                 DeviceId = state.DeviceId,
                 Name = name,
+                IsRunning = state.IsRunning,
                 TimeStamp = state.Timestamp,
                 SensorCount = state.SensorCount,
                 EventTypeCount = state.EventTypeCount

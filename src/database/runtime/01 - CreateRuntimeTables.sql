@@ -61,10 +61,11 @@ GO
 CREATE TABLE [Runtime].[DeviceHistory] (
     [DeviceId] UNIQUEIDENTIFIER NOT NULL,
     [Timestamp] DATETIME2(3) NOT NULL,
+    [IsRunning] BIT NOT NULL,
     [SensorCount] INT NOT NULL,
     [EventTypeCount] INT NOT NULL,
 
-    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceId]),
+    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceId], [Timestamp]),
     CONSTRAINT [FK_DeviceHistory_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId])
 )
 GO

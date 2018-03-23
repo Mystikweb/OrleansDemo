@@ -58,11 +58,11 @@ namespace DemoCluster.DAL.Database
 
             modelBuilder.Entity<DeviceHistory>(entity =>
             {
-                entity.Property(e => e.DeviceId).ValueGeneratedNever();
+                entity.HasKey(e => new { e.DeviceId, e.Timestamp });
 
                 entity.HasOne(d => d.Device)
-                    .WithOne(p => p.DeviceHistory)
-                    .HasForeignKey<DeviceHistory>(d => d.DeviceId)
+                    .WithMany(p => p.DeviceHistory)
+                    .HasForeignKey(d => d.DeviceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceHistory_Device");
             });
