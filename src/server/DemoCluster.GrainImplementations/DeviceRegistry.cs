@@ -31,9 +31,9 @@ namespace DemoCluster.GrainImplementations
             foreach (var device in activeDevices)
             {
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-                await deviceGrain.Start();
-
                 await RegisterGrain(deviceGrain);
+
+                await deviceGrain.Start(device);
             }
         }
 
@@ -65,9 +65,9 @@ namespace DemoCluster.GrainImplementations
             var device = await storage.GetDeviceAsync(deviceId);
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            await deviceGrain.Start();
-
             await RegisterGrain(deviceGrain);
+
+            await deviceGrain.Start(device);
         }
 
         public async Task StopDevice(string deviceId)

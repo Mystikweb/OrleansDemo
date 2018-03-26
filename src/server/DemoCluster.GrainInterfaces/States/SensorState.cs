@@ -10,6 +10,7 @@ namespace DemoCluster.GrainInterfaces.States
         public int DeviceSensorId { get; set; }
         public string Name { get; set; }
         public string UOM { get; set; }
+        public bool IsReceiving { get; set; } = false;
 
         public SortedDictionary<DateTime, SensorHistoryState> History { get; set; } = new SortedDictionary<DateTime, SensorHistoryState>();
 

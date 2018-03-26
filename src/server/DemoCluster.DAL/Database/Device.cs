@@ -12,7 +12,6 @@ namespace DemoCluster.DAL.Database
             DeviceEventType = new HashSet<DeviceEventType>();
             DeviceHistory = new HashSet<DeviceHistory>();
             DeviceSensor = new HashSet<DeviceSensor>();
-            DeviceSensorValue = new HashSet<DeviceSensorValue>();
         }
 
         public Guid DeviceId { get; set; }
@@ -27,7 +26,5 @@ namespace DemoCluster.DAL.Database
         public ICollection<DeviceHistory> DeviceHistory { get; set; }
         [InverseProperty("Device")]
         public ICollection<DeviceSensor> DeviceSensor { get; set; }
-        [InverseProperty("Device")]
-        public ICollection<DeviceSensorValue> DeviceSensorValue { get; set; }
     }
 }

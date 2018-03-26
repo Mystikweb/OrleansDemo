@@ -81,13 +81,11 @@ CREATE TABLE [Runtime].[DeviceEvent] (
 GO
 
 CREATE TABLE [Runtime].[DeviceSensorValue] (
-    [DeviceId] UNIQUEIDENTIFIER NOT NULL,
-    [SensorId] INT NOT NULL IDENTITY(1,1),
+    [DeviceSensorId] INT NOT NULL,
     [Timestamp] DATETIME2(3) NOT NULL,
     [Value] FLOAT NOT NULL,
 
-    CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceId], [SensorId], [Timestamp]),
-    CONSTRAINT [FK_DeviceSensorValue_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId]),
-    CONSTRAINT [FK_DeviceSensorValue_Sensor] FOREIGN KEY ([SensorId]) REFERENCES [Config].[Sensor]([SensorId])
+    CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceSensorId], [Timestamp]),
+    CONSTRAINT [FK_DeviceSensorValue_DeviceSensor] FOREIGN KEY ([DeviceSensorId]) REFERENCES [Config].[DeviceSensor]([DeviceSensorId])
 )
 GO

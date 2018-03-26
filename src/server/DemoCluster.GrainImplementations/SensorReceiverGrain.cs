@@ -1,3 +1,4 @@
+using DemoCluster.DAL;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Orleans;
@@ -10,16 +11,25 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    public class SensorMessageJournal : Grain, 
+    public class SensorReceiverGrain : Grain, 
         IAsyncObserver<SensorMessage>, 
-        ISensorMessageJournal
+        ISensorReceiverGrain
     {
+        private readonly IRuntimeStorage storage;
+
+        private bool isReceving = false;
         private Logger logger;
         private IStreamProvider provider;
         private StreamSubscriptionHandle<SensorMessage> subscription;
 
+        public SensorReceiverGrain(IRuntimeStorage storage)
+        {
+            this.storage = storage;
+        }
+
         public override Task OnActivateAsync()
         {
+            logger = GetLogger($"SensorMessageQueue_{this.GetPrimaryKeyLong()}");
             provider = GetStreamProvider("Rabbit");
 
             return base.OnActivateAsync();
@@ -54,7 +64,5 @@ namespace DemoCluster.GrainImplementations
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

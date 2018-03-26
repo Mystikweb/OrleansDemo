@@ -14,18 +14,18 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [StorageProvider(ProviderName = "MemoryStorage")]
     [LogConsistencyProvider(ProviderName = "CustomStorage")]
-    public class DeviceHistoryJournal :
+    public class DeviceJournalGrain :
         JournaledGrain<DeviceState, DeviceHistoryState>,
         ICustomStorageInterface<DeviceState, DeviceHistoryState>,
-        IDeviceHistoryJournal
+        IDeviceJournalGrain
     {
         private readonly IRuntimeStorage storage;
 
         private Logger logger;
+        private DeviceState internalState;
 
-        public DeviceHistoryJournal(IRuntimeStorage storage)
+        public DeviceJournalGrain(IRuntimeStorage storage)
         {
             this.storage = storage;
         }
@@ -42,8 +42,10 @@ namespace DemoCluster.GrainImplementations
             state.Apply(delta);
         }
 
-        public async Task<DeviceState> Initialize()
+        public async Task<DeviceState> Initialize(DeviceState initialState)
         {
+            internalState = initialState;
+
             await RefreshNow();
 
             return State;
@@ -59,18 +61,16 @@ namespace DemoCluster.GrainImplementations
 
         public async Task<KeyValuePair<int, DeviceState>> ReadStateFromStorage()
         {
-            var initialState = await storage.GetInitialState(this.GetPrimaryKey());
-            var state = initialState.ToState();
             var historyItems = await storage.GetDeviceHistory(this.GetPrimaryKey());
 
             foreach (var item in historyItems.OrderBy(i => i.TimeStamp))
             {
-                state.Apply(item.ToState());
+                internalState.Apply(item.ToState());
             }
 
-            int version = state.History.Count;
+            int version = internalState.History.Count;
 
-            return new KeyValuePair<int, DeviceState>(version, state);
+            return new KeyValuePair<int, DeviceState>(version, internalState);
         }
 
         public async Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)

@@ -4,9 +4,11 @@ using System.Text;
 
 namespace DemoCluster.GrainInterfaces.States
 {
+    [Serializable]
     public class SensorValueState
     {
         public int DeviceSensorId { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public double Value { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 }

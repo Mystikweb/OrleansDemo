@@ -18,19 +18,19 @@ namespace DemoCluster.GrainImplementations
         private readonly IRuntimeStorage storage;
 
         private Logger logger;
-        private IDeviceHistoryJournal journal;
+        private IDeviceJournalGrain journalGrain;
 
         public DeviceGrain(IRuntimeStorage storage)
         {
             this.storage = storage;
         }
 
-        public override async Task OnActivateAsync()
+        public override Task OnActivateAsync()
         {
             logger = GetLogger($"Device_{this.GetPrimaryKey().ToString()}");
-            journal = GrainFactory.GetGrain<IDeviceHistoryJournal>(this.GetPrimaryKey());
+            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
 
-            State = await journal.Initialize();
+            return base.OnActivateAsync();
         }
 
         public Task<bool> GetIsRunning()
@@ -38,16 +38,20 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(State.IsRunning);
         }
 
-        public async Task Start()
+        public async Task Start(DeviceConfig config)
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
+
+            State = await journalGrain.Initialize(config.ToState());
             State.IsRunning = true;
 
-            foreach (var sensor in State.Sensors)
+            foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))
             {
-
+                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>(sensor.DeviceSensorId.Value);
+                State.RegisteredSensors.Add(sensorGrain);
             }
 
+            await WriteStateAsync();
             await LogState();
         }
 
@@ -61,10 +65,11 @@ namespace DemoCluster.GrainImplementations
 
         private async Task LogState()
         {
-            await journal.PushState(new DeviceHistoryState
+            await journalGrain.PushState(new DeviceHistoryState
             {
                 DeviceId = State.DeviceId,
-                IsRunning = State.IsRunning
+                IsRunning = State.IsRunning,
+                SensorCount = State.RegisteredSensors.Count
             });
         }
     }

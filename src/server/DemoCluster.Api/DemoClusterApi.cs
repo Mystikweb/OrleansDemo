@@ -47,14 +47,9 @@ namespace DemoCluster.Api
                 //host = WebHost.CreateDefaultBuilder()
                 host = new WebHostBuilder()
                     .UseContentRoot(Directory.GetCurrentDirectory())
+                    .RegisterStorageLogic(runtimeConnectionString)
                     .ConfigureServices(services =>
                     {
-                        
-                        services.AddDbContext<RuntimeContext>(opts =>
-                            opts.UseSqlServer(runtimeConnectionString));
-
-                        services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
-                        services.AddTransient<IRuntimeStorage, RuntimeStorage>();
                         services.AddSingleton(providerRuntime.GrainFactory);
                         services.AddSingleton<IActionDispatcher>(new ActionDispatcher(TaskScheduler.Current));
                         services.AddSingleton(logger);

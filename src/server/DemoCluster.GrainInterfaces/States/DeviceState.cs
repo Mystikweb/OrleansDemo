@@ -10,8 +10,8 @@ namespace DemoCluster.GrainInterfaces.States
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
         public bool IsRunning { get; set; } = false;
-        public List<SensorState> Sensors { get; set; } = new List<SensorState>();
 
+        public HashSet<ISensorGrain> RegisteredSensors { get; set; } = new HashSet<ISensorGrain>();
         public SortedDictionary<DateTime, DeviceHistoryState> History { get; set; } = new SortedDictionary<DateTime, DeviceHistoryState>();
 
         public void Apply(DeviceHistoryState historyState)

@@ -17,24 +17,9 @@ namespace DemoCluster.DAL
             db = context;
         }
 
-        public async Task<List<DeviceSummary>> GetDashboardSummary()
+        public Task<List<DeviceSummary>> GetDashboardSummary()
         {
-            return await (from sv in db.DeviceSensorValue
-                          where sv.Device.IsEnabled
-                          group sv by sv.Device into dg
-                          select new DeviceSummary
-                          {
-                              DeviceId = dg.Key.DeviceId.ToString(),
-                              Name = dg.Key.Name,
-                              SensorSummaries = (from s in dg
-                                                 group s by s.Sensor into vs
-                                                 select new SensorSummary
-                                                 {
-                                                     Name = vs.Key.Name,
-                                                     Uom = vs.Key.Uom
-                                                 }).ToList()
-
-                          }).ToListAsync();
+            return Task.FromResult(new List<DeviceSummary>());
         }
 
         public async Task<List<DeviceStateItem>> GetDeviceStates()

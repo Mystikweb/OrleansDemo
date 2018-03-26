@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
-    public interface ISensorMessageJournal : IGrainWithIntegerKey
+    public interface ISensorReceiverGrain : IGrainWithIntegerKey
     {
         Task Initialiaze();
         Task<bool> StartReceiver();

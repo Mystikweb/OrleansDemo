@@ -29,6 +29,7 @@ namespace DemoCluster.DAL
                     DeviceSensorId = ds.DeviceSensorId,
                     SensorId = ds.SensorId,
                     Name = ds.Sensor.Name,
+                    UOM = ds.Sensor.Uom,
                     IsEnabled = ds.IsEnabled
                 }).ToList()
             }).ToListAsync();
@@ -48,6 +49,7 @@ namespace DemoCluster.DAL
                         DeviceSensorId = ds.DeviceSensorId,
                         SensorId = ds.SensorId,
                         Name = ds.Sensor.Name,
+                        UOM = ds.Sensor.Uom,
                         IsEnabled = ds.IsEnabled
                     }).ToList()
                 }).FirstOrDefaultAsync();

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
-    public interface IDeviceHistoryJournal : IGrainWithGuidKey
+    public interface ISensorJournalGrain : IGrainWithIntegerKey
     {
-        Task<DeviceState> Initialize();
-        Task PushState(DeviceHistoryState state);
+        Task<SensorState> Initialize(SensorState initialState);
+        Task PushState(SensorHistoryState state);
     }
 }
