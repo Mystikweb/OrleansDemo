@@ -1,6 +1,6 @@
 using DemoCluster.DAL;
-using DemoCluster.DAL.States;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.EventSourcing.CustomStorage;
@@ -30,22 +30,6 @@ namespace DemoCluster.GrainImplementations
             this.storage = storage;
         }
 
-        public async Task<DeviceState> Initialize()
-        {
-            await RefreshNow();
-
-            return State;
-        }
-
-        public async Task PushState(DeviceHistoryState historyState)
-        {
-            logger.Info($"Adding history for {State.Name} at {historyState.Timestamp.ToString()}");
-
-            RaiseEvent(historyState);
-
-            await ConfirmEvents();
-        }
-
         public override Task OnActivateAsync()
         {
             logger = GetLogger($"DeviceJournal_{this.GetPrimaryKey().ToString()}");
@@ -56,6 +40,21 @@ namespace DemoCluster.GrainImplementations
         protected override void TransitionState(DeviceState state, DeviceHistoryState delta)
         {
             state.Apply(delta);
+        }
+
+        public async Task<DeviceState> Initialize()
+        {
+            await RefreshNow();
+
+            return State;
+        }
+
+        public async Task PushState(DeviceHistoryState historyState)
+        {
+            logger.Info($"Adding history for {State.Name} at {historyState.Timestamp.ToString()}");
+            RaiseEvent(historyState);
+
+            await ConfirmEvents();
         }
 
         public async Task<KeyValuePair<int, DeviceState>> ReadStateFromStorage()

@@ -1,4 +1,4 @@
-using DemoCluster.DAL.States;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
 using System.Collections.Generic;

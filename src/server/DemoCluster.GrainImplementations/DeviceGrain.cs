@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
-using DemoCluster.DAL.States;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using Orleans.Providers;
 using Orleans.Runtime;
@@ -41,6 +42,11 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
             State.IsRunning = true;
+
+            foreach (var sensor in State.Sensors)
+            {
+
+            }
 
             await LogState();
         }

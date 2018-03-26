@@ -1,5 +1,15 @@
 .device-card {
   width: 240px;
+  padding: 16px;
+}
+
+.device-card .mat-card-header {
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.device-card .mat-card-header .mat-card-title {
+  padding-top: 4px;
 }
 
 .sensor-list {

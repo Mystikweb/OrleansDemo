@@ -31,8 +31,7 @@ namespace DemoCluster.DAL
                                                  select new SensorSummary
                                                  {
                                                      Name = vs.Key.Name,
-                                                     Uom = vs.Key.Uom,
-                                                     Average = vs.Sum(v => v.Value) / vs.Count()
+                                                     Uom = vs.Key.Uom
                                                  }).ToList()
 
                           }).ToListAsync();
@@ -43,7 +42,13 @@ namespace DemoCluster.DAL
             return await db.Device.Select(d => new DeviceStateItem
             {
                 DeviceId = d.DeviceId.ToString(),
-                Name = d.Name
+                Name = d.Name,
+                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
+                {
+                    DeviceSensorId = s.DeviceSensorId,
+                    Name = s.Sensor.Name,
+                    UOM = s.Sensor.Uom
+                }).ToList()
             }).ToListAsync();
         }
 
@@ -52,7 +57,13 @@ namespace DemoCluster.DAL
             return await db.Device.Select(d => new DeviceStateItem
             {
                 DeviceId = d.DeviceId.ToString(),
-                Name = d.Name
+                Name = d.Name,
+                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
+                {
+                    DeviceSensorId = s.DeviceSensorId,
+                    Name = s.Sensor.Name,
+                    UOM = s.Sensor.Uom
+                }).ToList()
             }).FirstOrDefaultAsync(x => x.DeviceId == deviceId.ToString());
         }
 

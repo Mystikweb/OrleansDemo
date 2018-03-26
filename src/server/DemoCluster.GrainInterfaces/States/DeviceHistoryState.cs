@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DemoCluster.DAL.States
+namespace DemoCluster.GrainInterfaces.States
 {
     [Serializable]
     public class DeviceHistoryState

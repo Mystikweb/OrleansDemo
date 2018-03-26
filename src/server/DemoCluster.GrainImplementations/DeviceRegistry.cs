@@ -1,5 +1,4 @@
 using DemoCluster.DAL;
-using DemoCluster.DAL.States;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
 using Orleans;
@@ -35,6 +34,14 @@ namespace DemoCluster.GrainImplementations
                 await deviceGrain.Start();
 
                 await RegisterGrain(deviceGrain);
+            }
+        }
+
+        public async Task Teardown()
+        {
+            foreach (var device in State.RegisteredGrains)
+            {
+                await device.Stop();
             }
         }
 

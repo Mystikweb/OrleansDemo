@@ -117,7 +117,7 @@ namespace DemoCluster.DAL
             {
                 await configDb.SaveChangesAsync();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -196,7 +196,7 @@ namespace DemoCluster.DAL
             {
                 await configDb.SaveChangesAsync();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 //logger.LogError(new EventId(5001), ex, string.Empty);
                 throw;

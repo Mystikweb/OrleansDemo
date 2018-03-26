@@ -1,8 +1,10 @@
-<mat-grid-list cols="4" rowHeight="2:1">
+<mat-grid-list cols="6" rowHeight="2:1">
   <mat-grid-tile *ngFor="let device of devices$ | async">
     <mat-card class="device-card">
       <mat-card-header>
         <mat-card-title>{{device.name}}</mat-card-title>
+        <mat-icon *ngIf="device.isEnabled">check</mat-icon>
+        <mat-icon *ngIf="!device.isEnabled">block</mat-icon>
         <!-- <mat-card-subtitle>{{device.deviceType}}</mat-card-subtitle> -->
       </mat-card-header>
       <mat-card-content>

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DemoCluster.DAL.States
+namespace DemoCluster.GrainInterfaces.States
 {
     [Serializable]
     public class DeviceState
@@ -10,6 +10,8 @@ namespace DemoCluster.DAL.States
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
         public bool IsRunning { get; set; } = false;
+        public List<SensorState> Sensors { get; set; } = new List<SensorState>();
+
         public SortedDictionary<DateTime, DeviceHistoryState> History { get; set; } = new SortedDictionary<DateTime, DeviceHistoryState>();
 
         public void Apply(DeviceHistoryState historyState)

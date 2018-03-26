@@ -11,6 +11,7 @@ const httpOptions = {
 export class DeviceConfig {
   deviceId: string;
   name: string;
+  isEnabled: boolean;
   sensors: Array<DeveiceSensorConfig>;
   events: Array<DeviceEventConfig>;
 

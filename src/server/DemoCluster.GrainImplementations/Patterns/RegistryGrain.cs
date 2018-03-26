@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DemoCluster.DAL.States;
 using DemoCluster.GrainInterfaces.Patterns;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using Orleans.Providers;
 

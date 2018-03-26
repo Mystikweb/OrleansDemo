@@ -1,5 +1,5 @@
-using DemoCluster.DAL.States;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using Orleans.Runtime;
 using Orleans.Streams;
@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    public class SensorMessageQueue : Grain, IAsyncObserver<SensorMessage>, ISensorMessageQueue
+    public class SensorMessageJournal : Grain, 
+        IAsyncObserver<SensorMessage>, 
+        ISensorMessageJournal
     {
         private Logger logger;
         private IStreamProvider provider;
