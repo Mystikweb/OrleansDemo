@@ -59,13 +59,14 @@ GO
 
 /* Runtime Schema Tables */
 CREATE TABLE [Runtime].[DeviceHistory] (
+    [DeviceHistoryId] BIGINT NOT NULL IDENTITY(1,1),
     [DeviceId] UNIQUEIDENTIFIER NOT NULL,
     [Timestamp] DATETIME2(3) NOT NULL,
     [IsRunning] BIT NOT NULL,
     [SensorCount] INT NOT NULL,
     [EventTypeCount] INT NOT NULL,
 
-    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceId], [Timestamp]),
+    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceHistoryId]),
     CONSTRAINT [FK_DeviceHistory_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId])
 )
 GO
@@ -81,11 +82,12 @@ CREATE TABLE [Runtime].[DeviceEvent] (
 GO
 
 CREATE TABLE [Runtime].[DeviceSensorValue] (
+    [DeviceSensorValueId] BIGINT NOT NULL IDENTITY(1,1),
     [DeviceSensorId] INT NOT NULL,
     [Timestamp] DATETIME2(3) NOT NULL,
     [Value] FLOAT NOT NULL,
 
-    CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceSensorId], [Timestamp]),
+    CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceSensorValueId]),
     CONSTRAINT [FK_DeviceSensorValue_DeviceSensor] FOREIGN KEY ([DeviceSensorId]) REFERENCES [Config].[DeviceSensor]([DeviceSensorId])
 )
 GO

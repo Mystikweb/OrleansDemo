@@ -58,8 +58,6 @@ namespace DemoCluster.DAL.Database
 
             modelBuilder.Entity<DeviceHistory>(entity =>
             {
-                entity.HasKey(e => new { e.DeviceId, e.Timestamp });
-
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceHistory)
                     .HasForeignKey(d => d.DeviceId)
@@ -84,8 +82,6 @@ namespace DemoCluster.DAL.Database
 
             modelBuilder.Entity<DeviceSensorValue>(entity =>
             {
-                entity.HasKey(e => new { e.DeviceSensorId, e.Timestamp });
-
                 entity.HasOne(d => d.DeviceSensor)
                     .WithMany(p => p.DeviceSensorValue)
                     .HasForeignKey(d => d.DeviceSensorId)

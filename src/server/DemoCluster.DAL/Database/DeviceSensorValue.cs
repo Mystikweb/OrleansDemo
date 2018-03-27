@@ -8,6 +8,7 @@ namespace DemoCluster.DAL.Database
     [Table("DeviceSensorValue", Schema = "Runtime")]
     public partial class DeviceSensorValue
     {
+        public long DeviceSensorValueId { get; set; }
         public int DeviceSensorId { get; set; }
         [Column(TypeName = "datetime2(3)")]
         public DateTime Timestamp { get; set; }
