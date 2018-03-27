@@ -58,12 +58,15 @@ namespace DemoDevice
             return Task.CompletedTask;
         }
 
+        private Task StartSensorsAsync()
+        {
+
+            return Task.CompletedTask;
+        }
+
         private void MessageReceived(object model, BasicDeliverEventArgs ea)
         {
-            if (log != null)
-            {
-
-            }
+            log?.Invoke("Received new message");
         }
     }
 }
