@@ -1,7 +1,9 @@
 using DemoCluster.DAL;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Orleans;
+using Orleans.Providers;
 using Orleans.Runtime;
 using Orleans.Streams;
 using System;
@@ -11,13 +13,14 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    public class SensorReceiverGrain : Grain, 
+    [StorageProvider(ProviderName = "MemoryStorage")]
+    public class SensorReceiverGrain : Grain<SensorReceiverState>, 
         IAsyncObserver<SensorMessage>, 
         ISensorReceiverGrain
     {
         private readonly IRuntimeStorage storage;
 
-        private bool isReceving = false;
+        private Guid streamId = Guid.NewGuid();
         private Logger logger;
         private IStreamProvider provider;
         private StreamSubscriptionHandle<SensorMessage> subscription;
@@ -29,40 +32,66 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
-            logger = GetLogger($"SensorMessageQueue_{this.GetPrimaryKeyLong()}");
+            logger = GetLogger($"SensorReceiver_{this.GetPrimaryKeyLong()}");
             provider = GetStreamProvider("Rabbit");
 
             return base.OnActivateAsync();
         }
 
-        public Task Initialiaze()
+        public Task Initialize(SensorReceiverState state)
         {
-            throw new NotImplementedException();
+            State = state;
+
+            return Task.CompletedTask;
         }
 
-        public Task<bool> StartReceiver()
+        public Task<bool> IsReceiving()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(State.IsReceiving);
         }
 
-        public Task<bool> StopReceiver()
+        public async Task<bool> StartReceiver()
         {
-            throw new NotImplementedException();
+            logger.Info($"Starting stream {streamId.ToString()} for {State.Device} - {State.Name}");
+            var stream = provider.GetStream<SensorMessage>(streamId, $"{State.Device}_{State.Name}");
+
+            subscription = await stream.SubscribeAsync(this);
+
+            State.IsReceiving = true;
+
+            return State.IsReceiving;
+        }
+
+        public async Task<bool> StopReceiver()
+        {
+            logger.Info($"Stopping stream {streamId.ToString()} for {State.Device} - {State.Name}");
+            await subscription.UnsubscribeAsync();
+
+            State.IsReceiving = false;
+
+            return State.IsReceiving;
         }
 
         public Task OnCompletedAsync()
         {
-            throw new NotImplementedException();
+            logger.Info($"Completed stream {streamId.ToString()} for {State.Device} - {State.Name}");
+            return Task.CompletedTask;
         }
 
         public Task OnErrorAsync(Exception ex)
         {
-            throw new NotImplementedException();
+            logger.Error(5002, $"Error on stream {streamId.ToString()} for {State.Device} - {State.Name}", ex);
+            return Task.CompletedTask;
         }
 
-        public Task OnNextAsync(SensorMessage item, StreamSequenceToken token = null)
+        public async Task OnNextAsync(SensorMessage item, StreamSequenceToken token = null)
         {
-            throw new NotImplementedException();
+            await storage.StoreSensorValue(new SensorValueItem
+            {
+                DeviceSensorId = item.DeviceSensorId,
+                Value = item.Value,
+                TimeStamp = DateTime.UtcNow
+            });
         }
     }
 }

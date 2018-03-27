@@ -18,7 +18,7 @@ namespace DemoCluster.DAL.Models
         public string UOM { get; set; }
     }
 
-    public class SensoryValueItem
+    public class SensorValueItem
     {
         public int DeviceSensorId { get; set; }
         public DateTime TimeStamp { get; set; }

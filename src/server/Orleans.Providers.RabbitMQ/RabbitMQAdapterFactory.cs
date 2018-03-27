@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans.Providers.Streams.Common;
 using Orleans.Streams;
 using System;
 using System.Threading.Tasks;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQAdapterFactory<TMapper> : IQueueAdapterFactory where TMapper : IRabbitMQMapper
     {

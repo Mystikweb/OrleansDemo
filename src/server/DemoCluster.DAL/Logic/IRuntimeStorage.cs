@@ -12,5 +12,6 @@ namespace DemoCluster.DAL
         Task<DeviceStateItem> GetInitialState(Guid deviceId);
         Task<List<DeviceHistoryItem>> GetDeviceHistory(Guid deviceId);
         Task<int> StoreDeviceHistory(DeviceHistoryItem historyItem);
+        Task StoreSensorValue(SensorValueItem sensorValue);
     }
 }

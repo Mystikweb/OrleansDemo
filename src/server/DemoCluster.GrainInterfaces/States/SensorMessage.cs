@@ -7,5 +7,7 @@ namespace DemoCluster.GrainInterfaces.States
     [Serializable]
     public class SensorMessage
     {
+        public int DeviceSensorId { get; set; }
+        public double Value { get; set; }
     }
 }

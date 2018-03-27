@@ -25,13 +25,23 @@ namespace DemoCluster.GrainImplementations
             };
         }
 
-        public static SensorState ToState(this DeviceSensorConfig item)
+        public static SensorState ToSensorState(this DeviceSensorConfig item)
         {
             return new SensorState
             {
                 DeviceSensorId = item.DeviceSensorId.Value,
                 Name = item.Name,
                 UOM = item.UOM
+            };
+        }
+
+        public static SensorReceiverState ToReceiverState(this DeviceSensorConfig item, string deviceName)
+        {
+            return new SensorReceiverState
+            {
+                DeviceSensorId = item.DeviceSensorId.Value,
+                Device = deviceName,
+                Name = item.Name
             };
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Orleans.Providers.Streams.Common;
 using Orleans.Streams;
 using RabbitMQ.Client;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQAdapterReceiver : IQueueAdapterReceiver
     {

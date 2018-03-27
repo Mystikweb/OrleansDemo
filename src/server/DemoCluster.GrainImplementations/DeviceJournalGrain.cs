@@ -20,21 +20,24 @@ namespace DemoCluster.GrainImplementations
         ICustomStorageInterface<DeviceState, DeviceHistoryState>,
         IDeviceJournalGrain
     {
+        private readonly IConfigurationStorage config;
         private readonly IRuntimeStorage storage;
 
         private Logger logger;
         private DeviceState internalState;
 
-        public DeviceJournalGrain(IRuntimeStorage storage)
+        public DeviceJournalGrain(IConfigurationStorage config, IRuntimeStorage storage)
         {
+            this.config = config;
             this.storage = storage;
         }
 
-        public override Task OnActivateAsync()
+        public override async Task OnActivateAsync()
         {
             logger = GetLogger($"DeviceJournal_{this.GetPrimaryKey().ToString()}");
 
-            return base.OnActivateAsync();
+            var device = await config.GetDeviceAsync(this.GetPrimaryKey().ToString());
+            internalState = device.ToState();
         }
 
         protected override void TransitionState(DeviceState state, DeviceHistoryState delta)
@@ -42,10 +45,8 @@ namespace DemoCluster.GrainImplementations
             state.Apply(delta);
         }
 
-        public async Task<DeviceState> Initialize(DeviceState initialState)
+        public async Task<DeviceState> Initialize()
         {
-            internalState = initialState;
-
             await RefreshNow();
 
             return State;

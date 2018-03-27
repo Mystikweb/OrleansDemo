@@ -93,5 +93,31 @@ namespace DemoCluster.DAL
 
             return await db.DeviceHistory.Where(h => h.DeviceId == historyItem.DeviceId).CountAsync();
         }
+
+        public async Task StoreSensorValue(SensorValueItem item)
+        {
+            DeviceSensorValue value = await db.DeviceSensorValue.FirstOrDefaultAsync(s => s.DeviceSensorId == item.DeviceSensorId && s.Timestamp == item.TimeStamp);
+            if (value == null)
+            {
+                value = new DeviceSensorValue
+                {
+                    DeviceSensorId = item.DeviceSensorId,
+                    Timestamp = item.TimeStamp,
+                    Value = item.Value
+                };
+
+                db.DeviceSensorValue.Add(value);
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+        }
     }
 }

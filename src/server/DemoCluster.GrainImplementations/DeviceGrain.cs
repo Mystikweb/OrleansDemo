@@ -12,7 +12,7 @@ using Orleans.Runtime;
 
 namespace DemoCluster.GrainImplementations
 {
-    [StorageProvider(ProviderName="MemoryStorage")]
+    [StorageProvider(ProviderName = "MemoryStorage")]
     public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
@@ -42,16 +42,18 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
 
-            State = await journalGrain.Initialize(config.ToState());
+            State = await journalGrain.Initialize();
             State.IsRunning = true;
 
             foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))
             {
                 var sensorGrain = GrainFactory.GetGrain<ISensorGrain>(sensor.DeviceSensorId.Value);
                 State.RegisteredSensors.Add(sensorGrain);
+
+                await sensorGrain.Initialize(sensor, State.Name);
+                await sensorGrain.StartReceiving();
             }
 
-            await WriteStateAsync();
             await LogState();
         }
 
@@ -59,6 +61,14 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
             State.IsRunning = false;
+
+            foreach (var sensor in State.RegisteredSensors)
+            {
+                if (await sensor.GetIsReceiving())
+                {
+                    await sensor.StopReceiving();
+                }
+            }
 
             await LogState();
         }

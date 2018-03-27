@@ -1,7 +1,7 @@
-﻿//using RabbitMQ.Client;
+//using RabbitMQ.Client;
 //using System;
 
-//namespace Orleans.Providers.RabbitMQ.Streams
+//namespace Orleans.Providers.RabbitMQ
 //{
 //    public class RabbitMQStreamProviderConfig
 //    {

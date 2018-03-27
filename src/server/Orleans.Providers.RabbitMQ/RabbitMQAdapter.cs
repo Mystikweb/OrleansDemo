@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Orleans.Streams;
 using RabbitMQ.Client;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQAdapter : IQueueAdapter
     {

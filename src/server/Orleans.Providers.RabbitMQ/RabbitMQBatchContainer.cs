@@ -1,8 +1,8 @@
-﻿using Orleans.Streams;
+using Orleans.Streams;
 using System;
 using System.Collections.Generic;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQBatchContainer : IBatchContainer
     {

@@ -1,3 +1,4 @@
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface ISensorReceiverGrain : IGrainWithIntegerKey
     {
-        Task Initialiaze();
+        Task Initialize(SensorReceiverState state);
+        Task<bool> IsReceiving();
         Task<bool> StartReceiver();
         Task<bool> StopReceiver();
     }

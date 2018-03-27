@@ -9,7 +9,7 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceJournalGrain : IGrainWithGuidKey
     {
-        Task<DeviceState> Initialize(DeviceState initialState);
+        Task<DeviceState> Initialize();
         Task PushState(DeviceHistoryState state);
     }
 }
