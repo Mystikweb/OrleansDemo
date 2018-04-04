@@ -11,7 +11,8 @@ namespace DemoDevice
         public string ExchangeType { get; set; } = "direct";
         public bool ExchangeDurable { get; set; }
         public bool AutoDelete { get; set; }
-        public string Queue { get; set; }
+        public string DeviceQueue { get; set; }
+        public string SensorQueue { get; set; }
         public bool QueueDurable { get; set; }
         public string Namespace { get; set; }
         public string RoutingKey { get; set; }

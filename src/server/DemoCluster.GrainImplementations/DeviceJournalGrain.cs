@@ -1,4 +1,5 @@
 using DemoCluster.DAL;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Orleans;
@@ -20,24 +21,21 @@ namespace DemoCluster.GrainImplementations
         ICustomStorageInterface<DeviceState, DeviceHistoryState>,
         IDeviceJournalGrain
     {
-        private readonly IConfigurationStorage config;
         private readonly IRuntimeStorage storage;
 
         private Logger logger;
         private DeviceState internalState;
 
-        public DeviceJournalGrain(IConfigurationStorage config, IRuntimeStorage storage)
+        public DeviceJournalGrain(IRuntimeStorage storage)
         {
-            this.config = config;
             this.storage = storage;
         }
 
-        public override async Task OnActivateAsync()
+        public override Task OnActivateAsync()
         {
             logger = GetLogger($"DeviceJournal_{this.GetPrimaryKey().ToString()}");
 
-            var device = await config.GetDeviceAsync(this.GetPrimaryKey().ToString());
-            internalState = device.ToState();
+            return Task.CompletedTask;
         }
 
         protected override void TransitionState(DeviceState state, DeviceHistoryState delta)
@@ -45,8 +43,10 @@ namespace DemoCluster.GrainImplementations
             state.Apply(delta);
         }
 
-        public async Task<DeviceState> Initialize()
+        public async Task<DeviceState> Initialize(DeviceConfig config)
         {
+            internalState = config.ToState();
+
             await RefreshNow();
 
             return State;

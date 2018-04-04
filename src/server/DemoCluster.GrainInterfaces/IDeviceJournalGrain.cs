@@ -1,3 +1,4 @@
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
@@ -9,7 +10,7 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceJournalGrain : IGrainWithGuidKey
     {
-        Task<DeviceState> Initialize();
+        Task<DeviceState> Initialize(DeviceConfig config);
         Task PushState(DeviceHistoryState state);
     }
 }

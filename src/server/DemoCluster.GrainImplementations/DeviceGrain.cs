@@ -42,7 +42,7 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
 
-            State = await journalGrain.Initialize();
+            State = await journalGrain.Initialize(config);
             State.IsRunning = true;
 
             foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))

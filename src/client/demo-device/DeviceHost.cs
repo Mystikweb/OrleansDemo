@@ -1,5 +1,6 @@
-
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -11,13 +12,20 @@ namespace DemoDevice
         private readonly StreamConfiguration streamConfig;
         private readonly IConnection connection;
         private readonly IModel model;
-        private Action<string> log = null;
         private EventingBasicConsumer consumer = null;
-        private DeviceConfig currentConfig = null;
 
-        public DeviceHost(StreamConfiguration streamConfig)
+        private DeviceConfig currentConfig = null;
+        private string endpoint = string.Empty;
+        private Action<string> log = null;
+        private HashSet<SensorSimulation> sensorList = new HashSet<SensorSimulation>();
+
+        public bool CanRun { get; private set; }
+
+        public DeviceHost(StreamConfiguration streamConfig, string endpoint, Action<string> log)
         {
             this.streamConfig = streamConfig;
+            this.endpoint = endpoint;
+            this.log = log;
 
             var factory = new ConnectionFactory()
             {
@@ -31,42 +39,70 @@ namespace DemoDevice
             model = connection.CreateModel();
         }
 
-        public Task StartAsync(Action<string> log)
+        public async Task GetDeviceConfigAsync(string name)
         {
-            this.log = log;
+            using (var http = new HttpClient())
+            {
+                string response = await http.GetStringAsync($"{endpoint}/device/{name}");
 
+                if (string.IsNullOrEmpty(response))
+                {
+                    log?.Invoke($"Unable to locate {name}, has it been configured yet?");
+                    CanRun = false;
+                }
+                else
+                {
+                    currentConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceConfig>(response);
+                    log?.Invoke("Config availble and ready to start");
+                    CanRun = true;
+                }
+            }
+        }
+
+        public async Task StartAsync()
+        {
             model.ExchangeDeclare(streamConfig.Exchange, streamConfig.ExchangeType);
-            model.QueueDeclare(streamConfig.Queue);
+            model.QueueDeclare(streamConfig.DeviceQueue);
 
-            model.QueueBind(queue: streamConfig.Queue,
+            model.QueueBind(queue: streamConfig.DeviceQueue,
                             exchange: streamConfig.Exchange,
                             routingKey: streamConfig.RoutingKey);
 
             consumer = new EventingBasicConsumer(model);
             consumer.Received += MessageReceived;
             
-            model.BasicConsume(streamConfig.Queue, true, consumer);
+            model.BasicConsume(streamConfig.DeviceQueue, false, consumer);
 
-            return Task.CompletedTask;
+            await StartSensorsAsync();
         }
 
-        public Task StopAsync()
+        public async Task StopAsync()
         {
+            foreach (var simulator in sensorList)
+            {
+                await simulator.StopAsync();
+            }
+
             model.Dispose();
             connection.Dispose();
-
-            return Task.CompletedTask;
         }
 
-        private Task StartSensorsAsync()
+        private async Task StartSensorsAsync()
         {
+            foreach (var sensor in currentConfig.Sensors)
+            {
+                var simulator = new SensorSimulation(model, streamConfig);
+                await simulator.StartAsync(sensor);
 
-            return Task.CompletedTask;
+                sensorList.Add(simulator);
+            }
         }
 
-        private void MessageReceived(object model, BasicDeliverEventArgs ea)
+        private void MessageReceived(object sender, BasicDeliverEventArgs ea)
         {
             log?.Invoke("Received new message");
+
+            model.BasicAck(ea.DeliveryTag, false);
         }
     }
 }
