@@ -1,5 +1,4 @@
 using DemoCluster.DAL;
-using DemoCluster.DAL.States;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
 using Orleans;
@@ -32,9 +31,17 @@ namespace DemoCluster.GrainImplementations
             foreach (var device in activeDevices)
             {
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-                await deviceGrain.Start();
-
                 await RegisterGrain(deviceGrain);
+
+                await deviceGrain.Start(device);
+            }
+        }
+
+        public async Task Teardown()
+        {
+            foreach (var device in State.RegisteredGrains)
+            {
+                await device.Stop();
             }
         }
 
@@ -42,7 +49,7 @@ namespace DemoCluster.GrainImplementations
         {
             bool result = false;
 
-            var device = await storage.GetDeviceAsync(deviceId);
+            var device = await storage.GetDeviceByIdAsync(deviceId);
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
 
             if (deviceGrain != null)
@@ -55,17 +62,17 @@ namespace DemoCluster.GrainImplementations
 
         public async Task StartDevice(string deviceId)
         {
-            var device = await storage.GetDeviceAsync(deviceId);
+            var device = await storage.GetDeviceByIdAsync(deviceId);
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            await deviceGrain.Start();
-
             await RegisterGrain(deviceGrain);
+
+            await deviceGrain.Start(device);
         }
 
         public async Task StopDevice(string deviceId)
         {
-            var device = await storage.GetDeviceAsync(deviceId);
+            var device = await storage.GetDeviceByIdAsync(deviceId);
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await deviceGrain.Stop();

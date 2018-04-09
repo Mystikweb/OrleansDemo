@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Orleans.Streams;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQDefaultMapper : IRabbitMQMapper
     {

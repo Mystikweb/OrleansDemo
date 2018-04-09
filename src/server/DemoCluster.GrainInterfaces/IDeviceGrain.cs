@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using DemoCluster.DAL.States;
+using DemoCluster.DAL.Models;
 using Orleans;
 
 namespace DemoCluster.GrainInterfaces
@@ -8,7 +8,7 @@ namespace DemoCluster.GrainInterfaces
     public interface IDeviceGrain : IGrainWithGuidKey
     {
         Task<bool> GetIsRunning();
-        Task Start();
+        Task Start(DeviceConfig config);
         Task Stop();
     }
 }

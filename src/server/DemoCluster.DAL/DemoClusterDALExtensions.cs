@@ -1,13 +1,8 @@
 using DemoCluster.DAL.Database;
-using DemoCluster.DAL.Models;
-using DemoCluster.DAL.States;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Hosting;
-using Orleans.Runtime.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DemoCluster.DAL
 {
@@ -27,27 +22,18 @@ namespace DemoCluster.DAL
             return builder;
         }
 
-        public static DeviceHistoryState ToState(this DeviceStateItem item)
+        public static IWebHostBuilder RegisterStorageLogic(this IWebHostBuilder builder, string runtimeConnectionString)
         {
-            return new DeviceHistoryState
+            builder.ConfigureServices(services =>
             {
-                DeviceId = item.DeviceId,
-                Timestamp = item.TimeStamp,
-                SensorCount = item.SensorCount,
-                EventTypeCount = item.EventTypeCount
-            };
-        }
+                services.AddDbContextPool<RuntimeContext>(opts =>
+                    opts.UseSqlServer(runtimeConnectionString));
 
-        public static DeviceStateItem ToItem(this DeviceHistoryState state, string name)
-        {
-            return new DeviceStateItem
-            {
-                DeviceId = state.DeviceId,
-                Name = name,
-                TimeStamp = state.Timestamp,
-                SensorCount = state.SensorCount,
-                EventTypeCount = state.EventTypeCount
-            };
+                services.AddTransient<IRuntimeStorage, RuntimeStorage>();
+                services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
+            });
+
+            return builder;
         }
     }
 }

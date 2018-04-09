@@ -18,19 +18,17 @@ namespace DemoCluster.GrainImplementations
         public async Task Init(string name, IProviderRuntime providerRuntime, IProviderConfiguration config)
         {
             Name = name;
-
             logger = providerRuntime.GetLogger(name);
-
             registry = providerRuntime.GrainFactory.GetGrain<IDeviceRegistry>(0);
 
             logger.Info("Initializing the device registry");
-
             await registry.Initialize();
         }
 
-        public Task Close()
+        public async Task Close()
         {
-            return Task.CompletedTask;
+            await registry.Teardown();
+            logger.Info("Device registry teardown complete");
         }
     }
 }

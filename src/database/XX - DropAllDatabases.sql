@@ -16,8 +16,5 @@ GO
 DROP DATABASE [DemoRuntime]
 GO
 
-DROP LOGIN [ConfigManager]
-GO
-
 DROP LOGIN [RuntimeManager]
 GO

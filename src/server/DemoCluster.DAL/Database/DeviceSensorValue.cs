@@ -8,17 +8,14 @@ namespace DemoCluster.DAL.Database
     [Table("DeviceSensorValue", Schema = "Runtime")]
     public partial class DeviceSensorValue
     {
-        public Guid DeviceId { get; set; }
-        public int SensorId { get; set; }
+        public long DeviceSensorValueId { get; set; }
+        public int DeviceSensorId { get; set; }
         [Column(TypeName = "datetime2(3)")]
         public DateTime Timestamp { get; set; }
         public double Value { get; set; }
 
-        [ForeignKey("DeviceId")]
+        [ForeignKey("DeviceSensorId")]
         [InverseProperty("DeviceSensorValue")]
-        public Device Device { get; set; }
-        [ForeignKey("SensorId")]
-        [InverseProperty("DeviceSensorValue")]
-        public Sensor Sensor { get; set; }
+        public DeviceSensor DeviceSensor { get; set; }
     }
 }

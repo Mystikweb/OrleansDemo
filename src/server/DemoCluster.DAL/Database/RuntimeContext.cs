@@ -58,11 +58,9 @@ namespace DemoCluster.DAL.Database
 
             modelBuilder.Entity<DeviceHistory>(entity =>
             {
-                entity.Property(e => e.DeviceId).ValueGeneratedNever();
-
                 entity.HasOne(d => d.Device)
-                    .WithOne(p => p.DeviceHistory)
-                    .HasForeignKey<DeviceHistory>(d => d.DeviceId)
+                    .WithMany(p => p.DeviceHistory)
+                    .HasForeignKey(d => d.DeviceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceHistory_Device");
             });
@@ -84,21 +82,11 @@ namespace DemoCluster.DAL.Database
 
             modelBuilder.Entity<DeviceSensorValue>(entity =>
             {
-                entity.HasKey(e => new { e.DeviceId, e.SensorId, e.Timestamp });
-
-                entity.Property(e => e.SensorId).ValueGeneratedOnAdd();
-
-                entity.HasOne(d => d.Device)
+                entity.HasOne(d => d.DeviceSensor)
                     .WithMany(p => p.DeviceSensorValue)
-                    .HasForeignKey(d => d.DeviceId)
+                    .HasForeignKey(d => d.DeviceSensorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DeviceSensorValue_Device");
-
-                entity.HasOne(d => d.Sensor)
-                    .WithMany(p => p.DeviceSensorValue)
-                    .HasForeignKey(d => d.SensorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DeviceSensorValue_Sensor");
+                    .HasConstraintName("FK_DeviceSensorValue_DeviceSensor");
             });
         }
     }

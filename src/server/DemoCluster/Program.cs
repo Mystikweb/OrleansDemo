@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Hosting;
-using Orleans.Providers.RabbitMQ.Streams;
+using Orleans.Providers.RabbitMQ;
 using Orleans.Runtime.Configuration;
 using Orleans.Storage.Redis;
 
@@ -66,6 +66,7 @@ namespace DemoCluster
             config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.SqlServer;
 
             config.AddMemoryStorageProvider("MemoryStorage");
+            config.AddMemoryStorageProvider("PubSubStore");
             config.AddAdoNetStorageProvider("SqlBase", clusterConnectionString, AdoNetSerializationFormat.Json);
             config.AddCustomStorageInterfaceBasedLogConsistencyProvider("CustomStorage");
             config.AddRedisStorageProvider("RedisBase", redisOptions);

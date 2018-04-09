@@ -29,12 +29,13 @@ namespace DemoCluster.DAL
                     DeviceSensorId = ds.DeviceSensorId,
                     SensorId = ds.SensorId,
                     Name = ds.Sensor.Name,
+                    UOM = ds.Sensor.Uom,
                     IsEnabled = ds.IsEnabled
                 }).ToList()
             }).ToListAsync();
         }
 
-        public async Task<DeviceConfig> GetDeviceAsync(string deviceId)
+        public async Task<DeviceConfig> GetDeviceByIdAsync(string deviceId)
         {
             return await configDb.Device
                 .Where(d => d.DeviceId == Guid.Parse(deviceId))
@@ -48,6 +49,27 @@ namespace DemoCluster.DAL
                         DeviceSensorId = ds.DeviceSensorId,
                         SensorId = ds.SensorId,
                         Name = ds.Sensor.Name,
+                        UOM = ds.Sensor.Uom,
+                        IsEnabled = ds.IsEnabled
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+        }
+
+        public async Task<DeviceConfig> GetDeviceByNameAsync(string name)
+        {
+            return await configDb.Device
+                .Where(d => d.Name == name)
+                .Select(d => new DeviceConfig
+                {
+                    DeviceId = d.DeviceId.ToString(),
+                    Name = d.Name,
+                    IsEnabled = d.IsEnabled,
+                    Sensors = d.DeviceSensor.Select(ds => new DeviceSensorConfig
+                    {
+                        DeviceSensorId = ds.DeviceSensorId,
+                        SensorId = ds.SensorId,
+                        Name = ds.Sensor.Name,
+                        UOM = ds.Sensor.Uom,
                         IsEnabled = ds.IsEnabled
                     }).ToList()
                 }).FirstOrDefaultAsync();
@@ -117,12 +139,12 @@ namespace DemoCluster.DAL
             {
                 await configDb.SaveChangesAsync();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw;
             }
 
-            return await GetDeviceAsync(dbDevice.DeviceId.ToString());
+            return await GetDeviceByIdAsync(dbDevice.DeviceId.ToString());
         }
 
         public async Task RemoveDeviceAsync(string deviceId)
@@ -196,7 +218,7 @@ namespace DemoCluster.DAL
             {
                 await configDb.SaveChangesAsync();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 //logger.LogError(new EventId(5001), ex, string.Empty);
                 throw;

@@ -32,7 +32,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DeviceState>> Get()
+        public async Task<IEnumerable<DeviceStateItem>> Get()
         {
             var configuredDevices = await runtime.GetDeviceStates();
             var registry = factory.GetGrain<IDeviceRegistry>(0);
@@ -53,7 +53,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> PostStartDevice([FromBody] DeviceState device)
+        public async Task<IActionResult> PostStartDevice([FromBody] DeviceStateItem device)
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
 
@@ -71,7 +71,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpPost("stop")]
-        public async Task<IActionResult> PostStopDevice([FromBody] DeviceState device)
+        public async Task<IActionResult> PostStopDevice([FromBody] DeviceStateItem device)
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
 

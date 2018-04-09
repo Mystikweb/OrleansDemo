@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans.Hosting;
-using Orleans.Providers.RabbitMQ.Streams;
+using Orleans.Providers.RabbitMQ;
 
 namespace Orleans.Runtime.Configuration
 {

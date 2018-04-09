@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DemoCluster.DAL.States
+namespace DemoCluster.GrainInterfaces.States
 {
     [Serializable]
     public class RegistryState<TRegisteredGrain>

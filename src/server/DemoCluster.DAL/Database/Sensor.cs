@@ -10,7 +10,6 @@ namespace DemoCluster.DAL.Database
         public Sensor()
         {
             DeviceSensor = new HashSet<DeviceSensor>();
-            DeviceSensorValue = new HashSet<DeviceSensorValue>();
         }
 
         public int SensorId { get; set; }
@@ -24,7 +23,5 @@ namespace DemoCluster.DAL.Database
 
         [InverseProperty("Sensor")]
         public ICollection<DeviceSensor> DeviceSensor { get; set; }
-        [InverseProperty("Sensor")]
-        public ICollection<DeviceSensorValue> DeviceSensorValue { get; set; }
     }
 }

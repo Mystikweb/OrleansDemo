@@ -1,6 +1,6 @@
-﻿using Orleans.Providers.Streams.Common;
+using Orleans.Providers.Streams.Common;
 
-namespace Orleans.Providers.RabbitMQ.Streams
+namespace Orleans.Providers.RabbitMQ
 {
     public class RabbitMQStreamProvider : RabbitMQBaseStreamProvider<RabbitMQDefaultMapper>
     {

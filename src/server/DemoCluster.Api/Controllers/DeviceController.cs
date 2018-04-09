@@ -25,9 +25,15 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpGet("{deviceId}")]
-        public async Task<IActionResult> Get(string deviceId)
+        public async Task<IActionResult> GetById(string deviceId)
         {
-            return Ok(await configurationStorage.GetDeviceAsync(deviceId));
+            return Ok(await configurationStorage.GetDeviceByIdAsync(deviceId));
+        }
+
+        [HttpGet("name/{name}")]
+        public async Task<IActionResult> GetByName(string name)
+        {
+            return Ok(await configurationStorage.GetDeviceByNameAsync(name));
         }
 
         [HttpPost]

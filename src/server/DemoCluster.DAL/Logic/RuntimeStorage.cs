@@ -17,49 +17,55 @@ namespace DemoCluster.DAL
             db = context;
         }
 
-        public async Task<List<DeviceSummary>> GetDashboardSummary()
+        public Task<List<DeviceSummary>> GetDashboardSummary()
         {
-            return await (from sv in db.DeviceSensorValue
-                          where sv.Device.IsEnabled
-                          group sv by sv.Device into dg
-                          select new DeviceSummary
-                          {
-                              DeviceId = dg.Key.DeviceId.ToString(),
-                              Name = dg.Key.Name,
-                              SensorSummaries = (from s in dg
-                                                 group s by s.Sensor into vs
-                                                 select new SensorSummary
-                                                 {
-                                                     Name = vs.Key.Name,
-                                                     Uom = vs.Key.Uom,
-                                                     Average = vs.Sum(v => v.Value) / vs.Count()
-                                                 }).ToList()
-
-                          }).ToListAsync();
+            return Task.FromResult(new List<DeviceSummary>());
         }
 
-        public async Task<List<DeviceState>> GetDeviceStates()
+        public async Task<List<DeviceStateItem>> GetDeviceStates()
         {
-            return await db.Device.Select(d => new DeviceState
+            return await db.Device.Select(d => new DeviceStateItem
             {
                 DeviceId = d.DeviceId.ToString(),
-                Name = d.Name
+                Name = d.Name,
+                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
+                {
+                    DeviceSensorId = s.DeviceSensorId,
+                    Name = s.Sensor.Name,
+                    UOM = s.Sensor.Uom
+                }).ToList()
             }).ToListAsync();
         }
 
-        public async Task<List<DeviceStateItem>> GetDeviceHistory(Guid deviceId)
+        public async Task<DeviceStateItem> GetInitialState(Guid deviceId)
         {
-            return await db.DeviceHistory.Select(s => new DeviceStateItem
+            return await db.Device.Select(d => new DeviceStateItem
+            {
+                DeviceId = d.DeviceId.ToString(),
+                Name = d.Name,
+                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
+                {
+                    DeviceSensorId = s.DeviceSensorId,
+                    Name = s.Sensor.Name,
+                    UOM = s.Sensor.Uom
+                }).ToList()
+            }).FirstOrDefaultAsync(x => x.DeviceId == deviceId.ToString());
+        }
+
+        public async Task<List<DeviceHistoryItem>> GetDeviceHistory(Guid deviceId)
+        {
+            return await db.DeviceHistory.Select(s => new DeviceHistoryItem
             {
                 DeviceId = s.DeviceId,
                 Name = s.Device.Name,
+                IsRunning = s.IsRunning,
                 TimeStamp = s.Timestamp,
                 SensorCount = s.SensorCount,
                 EventTypeCount = s.EventTypeCount
             }).ToListAsync();
         }
 
-        public async Task<bool> StoreDeviceHistory(DeviceStateItem historyItem)
+        public async Task<int> StoreDeviceHistory(DeviceHistoryItem historyItem)
         {
             DeviceHistory history = await db.DeviceHistory.FirstOrDefaultAsync(h => h.DeviceId == historyItem.DeviceId && h.Timestamp == historyItem.TimeStamp);
             if (history == null)
@@ -67,31 +73,51 @@ namespace DemoCluster.DAL
                 history = new DeviceHistory
                 {
                     DeviceId = historyItem.DeviceId,
+                    IsRunning = historyItem.IsRunning,
                     Timestamp = historyItem.TimeStamp,
                     SensorCount = historyItem.SensorCount,
                     EventTypeCount = historyItem.EventTypeCount
                 };
 
                 db.DeviceHistory.Add(history);
-            }
-            else
-            {
-                history.SensorCount = historyItem.SensorCount;
-                history.EventTypeCount = historyItem.EventTypeCount;
 
-                db.DeviceHistory.Update(history);
-            }
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return false;
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
 
-            return true;
+            return await db.DeviceHistory.Where(h => h.DeviceId == historyItem.DeviceId).CountAsync();
+        }
+
+        public async Task StoreSensorValue(SensorValueItem item)
+        {
+            DeviceSensorValue value = await db.DeviceSensorValue.FirstOrDefaultAsync(s => s.DeviceSensorId == item.DeviceSensorId && s.Timestamp == item.TimeStamp);
+            if (value == null)
+            {
+                value = new DeviceSensorValue
+                {
+                    DeviceSensorId = item.DeviceSensorId,
+                    Timestamp = item.TimeStamp,
+                    Value = item.Value
+                };
+
+                db.DeviceSensorValue.Add(value);
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
         }
     }
 }
