@@ -30,7 +30,7 @@ namespace DemoCluster.Api.Controllers
             return Ok(await configurationStorage.GetDeviceByIdAsync(deviceId));
         }
 
-        [HttpGet("{name}")]
+        [HttpGet("name/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
             return Ok(await configurationStorage.GetDeviceByNameAsync(name));

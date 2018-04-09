@@ -43,7 +43,7 @@ namespace DemoDevice
         {
             using (var http = new HttpClient())
             {
-                string response = await http.GetStringAsync($"{endpoint}/device/{name}");
+                string response = await http.GetStringAsync($"{endpoint}/device/name/{name}");
 
                 if (string.IsNullOrEmpty(response))
                 {

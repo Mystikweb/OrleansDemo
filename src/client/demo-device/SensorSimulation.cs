@@ -29,6 +29,11 @@ namespace DemoDevice
             {
                 return Newtonsoft.Json.JsonConvert.SerializeObject(this);
             }
+
+            public override string ToString()
+            {
+                return $"Sending {Value} to {DeviceSensorId}";
+            }
         }
 
         private CancellationTokenSource cancellationToken = new CancellationTokenSource();
@@ -46,7 +51,7 @@ namespace DemoDevice
         {
             currentConfig = config;
 
-            RunSimulator();
+            Task.Run(RunSimulator);
 
             return Task.FromResult(true);
         }
@@ -58,7 +63,7 @@ namespace DemoDevice
             return Task.FromResult(true);
         }
 
-        private void RunSimulator()
+        private async Task RunSimulator()
         {
             Random generator = new Random();
 
@@ -74,6 +79,9 @@ namespace DemoDevice
                     streamConfig.SensorQueue,
                     props,
                     message.ToRabbitMessage());
+
+                Console.WriteLine(message.ToString());
+                await Task.Delay(5000);
             }
         }
     }
