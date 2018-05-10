@@ -8,7 +8,7 @@ namespace DemoCluster.DAL
 {
     public static class DemoClusterDALExtensions
     {
-        public static ISiloHostBuilder RegisterStorageLogic(this ISiloHostBuilder builder, string runtimeConnectionString)
+        public static ISiloHostBuilder UseStorageLogic(this ISiloHostBuilder builder, string runtimeConnectionString)
         {
             builder.ConfigureServices(services =>
             {

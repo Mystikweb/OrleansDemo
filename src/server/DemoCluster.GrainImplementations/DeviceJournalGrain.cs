@@ -2,6 +2,7 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.EventSourcing.CustomStorage;
@@ -10,7 +11,6 @@ using Orleans.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
@@ -22,20 +22,14 @@ namespace DemoCluster.GrainImplementations
         IDeviceJournalGrain
     {
         private readonly IRuntimeStorage storage;
+        private readonly ILogger logger;
 
-        private Logger logger;
         private DeviceState internalState;
 
-        public DeviceJournalGrain(IRuntimeStorage storage)
+        public DeviceJournalGrain(IRuntimeStorage storage, ILogger<DeviceJournalGrain> logger)
         {
             this.storage = storage;
-        }
-
-        public override Task OnActivateAsync()
-        {
-            logger = GetLogger($"DeviceJournal_{this.GetPrimaryKey().ToString()}");
-
-            return Task.CompletedTask;
+            this.logger = logger;
         }
 
         protected override void TransitionState(DeviceState state, DeviceHistoryState delta)

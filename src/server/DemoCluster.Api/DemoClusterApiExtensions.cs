@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
@@ -20,26 +21,18 @@ namespace DemoCluster.Api
             };
         }
 
-        public static ClusterConfiguration RegisterApi(this ClusterConfiguration config, string runtimeConnectionString)
+        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder, Action<DemoClusterApiOptions> options)
         {
-            DemoClusterApiOptions options = new DemoClusterApiOptions
+            builder.ConfigureServices(services =>
             {
-                RuntimeConnnectionString = runtimeConnectionString
-            };
+                if (options != null)
+                {
+                    services.Configure(options);
+                }
+            });
 
-            return config.RegisterApi(options);
-        }
-
-        public static ClusterConfiguration RegisterApi(this ClusterConfiguration config, DemoClusterApiOptions options)
-        {
-            config.Globals.RegisterBootstrapProvider<DemoClusterApi>("DemoApi", options.ToDictionary());
-
-            return config;
-        }
-
-        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder)
-        {
             builder.ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(DemoClusterApi).Assembly));
+            builder.AddStartupTask<DemoClusterApi>();
 
             return builder;
         }

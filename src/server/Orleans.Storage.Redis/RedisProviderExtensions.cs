@@ -1,4 +1,6 @@
-﻿using Orleans.Runtime.Configuration;
+using Orleans.Hosting;
+using Orleans.Runtime.Configuration;
+using System;
 using System.Collections.Generic;
 
 namespace Orleans.Storage.Redis
@@ -17,16 +19,26 @@ namespace Orleans.Storage.Redis
             };
         }
 
-        public static void AddRedisStorageProvider(this ClusterConfiguration config, string name)
+        public static ISiloHostBuilder ConfigureRediStorageProvider(this ISiloHostBuilder builder, string name)
         {
-            RedisProviderOptions options = new RedisProviderOptions();
-
-            AddRedisStorageProvider(config, name, options);
+            return builder;
         }
 
-        public static void AddRedisStorageProvider(this ClusterConfiguration config, string name, RedisProviderOptions options)
+        public static ISiloHostBuilder ConfigureRediStorageProvider(this ISiloHostBuilder builder, string name, Action<RedisProviderOptions> options)
         {
-            config.Globals.RegisterStorageProvider<RedisProvider>(name, options.ToDictionary());
+            return builder;
         }
+
+        //public static void AddRedisStorageProvider(this ClusterConfiguration config, string name)
+        //{
+        //    RedisProviderOptions options = new RedisProviderOptions();
+
+        //    AddRedisStorageProvider(config, name, options);
+        //}
+
+        //public static void AddRedisStorageProvider(this ClusterConfiguration config, string name, RedisProviderOptions options)
+        //{
+        //    config.Globals.RegisterStorageProvider<RedisProvider>(name, options.ToDictionary());
+        //}
     }
 }
