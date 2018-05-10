@@ -2,12 +2,9 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Providers;
-using Orleans.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
@@ -16,18 +13,18 @@ namespace DemoCluster.GrainImplementations
     public class SensorGrain : Grain<SensorState>, ISensorGrain
     {
         private readonly IRuntimeStorage storage;
+        private readonly ILogger logger;
 
-        private Logger logger;
         private ISensorReceiverGrain receiver;
 
-        public SensorGrain(IRuntimeStorage storage)
+        public SensorGrain(IRuntimeStorage storage, ILogger<SensorGrain> logger)
         {
             this.storage = storage;
+            this.logger = logger;
         }
 
         public override Task OnActivateAsync()
         {
-            logger = GetLogger($"Sensor_{this.GetPrimaryKeyLong()}");
             receiver = GrainFactory.GetGrain<ISensorReceiverGrain>(this.GetPrimaryKeyLong());
 
             return base.OnActivateAsync();

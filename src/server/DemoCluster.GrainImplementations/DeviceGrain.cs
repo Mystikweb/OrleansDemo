@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Providers;
 using Orleans.Runtime;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
@@ -16,19 +15,19 @@ namespace DemoCluster.GrainImplementations
     public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
     {
         private readonly IRuntimeStorage storage;
+        private ILogger logger;
 
-        private Logger logger;
         private IDeviceJournalGrain journalGrain;
 
-        public DeviceGrain(IRuntimeStorage storage)
+        public DeviceGrain(IRuntimeStorage storage, ILogger<DeviceGrain> logger)
         {
             this.storage = storage;
+            this.logger = logger;
         }
 
         public override Task OnActivateAsync()
         {
-            logger = GetLogger($"Device_{this.GetPrimaryKey().ToString()}");
-            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
+            
 
             return base.OnActivateAsync();
         }
@@ -42,6 +41,7 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
 
+            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
             State = await journalGrain.Initialize(config);
             State.IsRunning = true;
 

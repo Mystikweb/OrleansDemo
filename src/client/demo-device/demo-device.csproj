@@ -7,9 +7,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
   <ItemGroup>

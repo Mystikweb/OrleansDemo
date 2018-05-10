@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Orleans.Providers;
@@ -6,6 +6,7 @@ using Orleans.Runtime;
 using Orleans.Serialization;
 using StackExchange.Redis;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Orleans.Storage.Redis
 {
@@ -17,14 +18,18 @@ namespace Orleans.Storage.Redis
         private JsonSerializerSettings jsonSettings;
         private bool useJsonFormat = true;
 
-        public Logger Log { get; private set; }
+        public ILogger Log { get; private set; }
 
         public string Name { get; private set; }
+
+        public RedisProvider(ILogger<RedisProvider> logger)
+        {
+            Log = logger;
+        }
 
         public async Task Init(string name, IProviderRuntime providerRuntime, IProviderConfiguration config)
         {
             Name = name;
-            Log = providerRuntime.GetLogger("Orleans.Storage.Redis." + providerRuntime.ServiceId.ToString());
 
             serializationManager = providerRuntime.ServiceProvider.GetRequiredService<SerializationManager>();
 
@@ -76,11 +81,8 @@ namespace Orleans.Storage.Redis
         {
             string key = grainReference.ToKeyString();
 
-            if (Log.IsVerbose3)
-            {
-                Log.Verbose3((int)RedisProviderLogCode.ReadingRedisData, "Reading: GrainType={0} Pk={1} Grainid={2} from Database={3}",
-                    grainType, key, grainReference, redisDatabase.Database);
-            }
+            Log.Debug((int)RedisProviderLogCode.ReadingRedisData, "Reading: GrainType={0} Pk={1} Grainid={2} from Database={3}",
+                grainType, key, grainReference, redisDatabase.Database);
 
             RedisValue value = await redisDatabase.StringGetAsync(key);
             if (value.HasValue)
@@ -101,11 +103,9 @@ namespace Orleans.Storage.Redis
         public async Task WriteStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
             var primaryKey = grainReference.ToKeyString();
-            if (Log.IsVerbose3)
-            {
-                Log.Verbose3((int)RedisProviderLogCode.WritingRedisData, "Writing: GrainType={0} PrimaryKey={1} Grainid={2} ETag={3} to Database={4}",
-                    grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
-            }
+            Log.Debug((int)RedisProviderLogCode.WritingRedisData, "Writing: GrainType={0} PrimaryKey={1} Grainid={2} ETag={3} to Database={4}",
+                grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
+
             var data = grainState.State;
 
             if (useJsonFormat)
@@ -123,12 +123,9 @@ namespace Orleans.Storage.Redis
         public Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
             var primaryKey = grainReference.ToKeyString();
-            if (Log.IsVerbose3)
-            {
-                Log.Verbose3((int)RedisProviderLogCode.ClearingRedisData, "Clearing: GrainType={0} Pk={1} Grainid={2} ETag={3} to Database={4}",
-                    grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
-            }
-            
+            Log.Debug((int)RedisProviderLogCode.ClearingRedisData, "Clearing: GrainType={0} Pk={1} Grainid={2} ETag={3} to Database={4}",
+                grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
+
             return redisDatabase.KeyDeleteAsync(primaryKey);
         }
 

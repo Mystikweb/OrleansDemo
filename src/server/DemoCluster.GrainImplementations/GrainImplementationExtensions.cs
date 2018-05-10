@@ -1,21 +1,11 @@
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces.States;
-using Orleans.Runtime.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DemoCluster.GrainImplementations
 {
     public static class GrainImplementationExtensions
     {
-        public static ClusterConfiguration RegisterBootstrapGrains(this ClusterConfiguration config)
-        {
-            config.Globals.RegisterBootstrapProvider<DeviceRegistryBootstrap>("RegistryBootstrap");
-
-            return config;
-        }
-
         public static DeviceState ToState(this DeviceConfig item)
         {
             return new DeviceState

@@ -2,13 +2,12 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Providers;
 using Orleans.Runtime;
 using Orleans.Streams;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
@@ -19,20 +18,20 @@ namespace DemoCluster.GrainImplementations
         ISensorReceiverGrain
     {
         private readonly IRuntimeStorage storage;
+        private readonly ILogger logger;
 
         private Guid streamId = Guid.NewGuid();
-        private Logger logger;
         private IStreamProvider provider;
         private StreamSubscriptionHandle<SensorMessage> subscription;
 
-        public SensorReceiverGrain(IRuntimeStorage storage)
+        public SensorReceiverGrain(IRuntimeStorage storage, ILogger<SensorReceiverGrain> logger)
         {
             this.storage = storage;
+            this.logger = logger;
         }
 
         public override Task OnActivateAsync()
         {
-            logger = GetLogger($"SensorReceiver_{this.GetPrimaryKeyLong()}");
             provider = GetStreamProvider("Rabbit");
 
             return base.OnActivateAsync();

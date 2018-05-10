@@ -1,46 +1,44 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
-using DemoCluster.DAL.Database;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
-using Orleans.Providers;
+using Orleans;
 using Orleans.Runtime;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace DemoCluster.Api
 {
-    public class DemoClusterApi : IBootstrapProvider
+    public class DemoClusterApi : IStartupTask, IDisposable
     {
+        private readonly DemoClusterApiOptions options;
+        private readonly ILogger logger;
+        private readonly IGrainFactory grainFactory;
+
         private IWebHost host;
-        private Logger logger;
 
-        public string Name { get; private set; }
-
-        public async Task Init(string name, IProviderRuntime providerRuntime, IProviderConfiguration config)
+        public DemoClusterApi(IOptions<DemoClusterApiOptions> options, ILogger<DemoClusterApi> logger, IGrainFactory grainFactory)
         {
-            Name = name;
-            logger = providerRuntime.GetLogger("DemoClusterApi");
+            this.options = options.Value;
+            this.logger = logger;
+            this.grainFactory = grainFactory;
+        }
 
-            string runtimeConnectionString = config.Properties[DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING];
+        public async Task Execute(CancellationToken cancellationToken)
+        {
+            string runtimeConnectionString = options.RuntimeConnnectionString;
 
             if (string.IsNullOrEmpty(runtimeConnectionString))
             {
                 throw new ApplicationException("Configuration or runtime connection string not provided");
             }
 
-            string hostName = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME) ? config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME] : "*";
-            int port = ConfigurationExists(config, DemoClusterApiConstants.DEMOCLUSTER_API_PORT) ? Convert.ToInt32(config.Properties[DemoClusterApiConstants.DEMOCLUSTER_API_PORT]) : 5000;
-
-            string listeningUri = $"http://{hostName}:{port}";
+            string listeningUri = $"http://{options.HostName}:{options.Port}";
 
             try
             {
@@ -50,7 +48,7 @@ namespace DemoCluster.Api
                     .RegisterStorageLogic(runtimeConnectionString)
                     .ConfigureServices(services =>
                     {
-                        services.AddSingleton(providerRuntime.GrainFactory);
+                        services.AddSingleton(grainFactory);
                         services.AddSingleton<IActionDispatcher>(new ActionDispatcher(TaskScheduler.Current));
                         services.AddSingleton(logger);
                         services.AddMvc();
@@ -95,22 +93,9 @@ namespace DemoCluster.Api
             }
         }
 
-        public async Task Close()
+        public void Dispose()
         {
-            try
-            {
-                await host?.StopAsync();
-                host?.Dispose();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private bool ConfigurationExists(IProviderConfiguration config, string key)
-        {
-            return config.Properties.ContainsKey(key) && !string.IsNullOrEmpty(config.Properties[key]);
+            host?.Dispose();
         }
     }
 }

@@ -2,11 +2,11 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Runtime;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoCluster.Api.Controllers
@@ -18,12 +18,12 @@ namespace DemoCluster.Api.Controllers
         private readonly IRuntimeStorage runtime;
         private readonly IActionDispatcher dispatcher;
         private readonly IGrainFactory factory;
-        private readonly Logger logger;
+        private readonly ILogger logger;
 
         public RuntimeController(IRuntimeStorage runtime, 
             IActionDispatcher dispatcher,
             IGrainFactory factory, 
-            Logger logger)
+            ILogger<RuntimeController> logger)
         {
             this.runtime = runtime;
             this.dispatcher = dispatcher;

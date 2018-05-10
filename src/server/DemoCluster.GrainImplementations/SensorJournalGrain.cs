@@ -1,5 +1,6 @@
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.EventSourcing.CustomStorage;
@@ -18,13 +19,11 @@ namespace DemoCluster.GrainImplementations
         ICustomStorageInterface<SensorState, SensorHistoryState>,
         ISensorJournalGrain
     {
-        private Logger logger;
+        private readonly ILogger logger;
 
-        public override Task OnActivateAsync()
+        public SensorJournalGrain(ILogger<SensorJournalGrain> logger)
         {
-            logger = GetLogger($"SensorJournal_{this.GetPrimaryKeyLong()}");
-
-            return base.OnActivateAsync();
+            this.logger = logger;
         }
 
         public Task<SensorState> Initialize(SensorState initialState)
