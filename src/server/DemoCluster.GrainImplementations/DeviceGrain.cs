@@ -27,7 +27,7 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
-            
+            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
 
             return base.OnActivateAsync();
         }
@@ -40,9 +40,9 @@ namespace DemoCluster.GrainImplementations
         public async Task Start(DeviceConfig config)
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-
-            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
+            
             State = await journalGrain.Initialize(config);
+            State = config.ToState();
             State.IsRunning = true;
 
             foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))

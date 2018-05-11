@@ -56,16 +56,21 @@ namespace DemoCluster.GrainImplementations
 
         public async Task<KeyValuePair<int, DeviceState>> ReadStateFromStorage()
         {
-            var historyItems = await storage.GetDeviceHistory(this.GetPrimaryKey());
-
-            foreach (var item in historyItems.OrderBy(i => i.TimeStamp))
+            if (internalState != null)
             {
-                internalState.Apply(item.ToState());
+                var historyItems = await storage.GetDeviceHistory(this.GetPrimaryKey());
+
+                foreach (var item in historyItems.OrderBy(i => i.TimeStamp))
+                {
+                    internalState.Apply(item.ToState());
+                }
+
+                int version = internalState.History.Count;
+
+                return new KeyValuePair<int, DeviceState>(version, internalState);
             }
 
-            int version = internalState.History.Count;
-
-            return new KeyValuePair<int, DeviceState>(version, internalState);
+            return new KeyValuePair<int, DeviceState>(0, new DeviceState());
         }
 
         public async Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)

@@ -32,7 +32,7 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
-            provider = GetStreamProvider("Rabbit");
+            //provider = GetStreamProvider("Rabbit");
 
             return base.OnActivateAsync();
         }
@@ -49,16 +49,16 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(State.IsReceiving);
         }
 
-        public async Task<bool> StartReceiver()
+        public Task<bool> StartReceiver()
         {
             logger.Info($"Starting stream {streamId.ToString()} for {State.Device} - {State.Name}");
-            var stream = provider.GetStream<SensorMessage>(streamId, $"{State.Device}_{State.Name}");
+            //var stream = provider.GetStream<SensorMessage>(streamId, $"{State.Device}_{State.Name}");
 
-            subscription = await stream.SubscribeAsync(this);
+            //subscription = await stream.SubscribeAsync(this);
 
             State.IsReceiving = true;
 
-            return State.IsReceiving;
+            return Task.FromResult(State.IsReceiving);
         }
 
         public async Task<bool> StopReceiver()
