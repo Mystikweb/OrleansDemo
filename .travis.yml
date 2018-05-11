@@ -1,4 +1,16 @@
 language: csharp
-solution: ./src/server/DemoCluster.sln
+sudo: required
 mono: none
 dotnet: 2.1.200
+branches:
+  only:
+    - master
+    - develop
+before_script:
+  - chmod a+x ./build-server.sh
+script:
+  - ./build-server.sh
+notifications:
+  email:
+    on_success: never
+    on_failure: always
