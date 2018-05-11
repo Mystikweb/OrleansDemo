@@ -1,4 +1,4 @@
 language: csharp
-solution: src/server/DemoCluster.sln
+solution: DemoCluster.sln
 mono: none
 dotnet: 2.1.200
