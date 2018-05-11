@@ -5,10 +5,10 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch Server",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build server",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/server/DemoCluster/bin/Debug/netcoreapp2.0/DemoCluster.dll",
             "args": [],
