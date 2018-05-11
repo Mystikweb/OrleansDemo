@@ -1,5 +1,7 @@
 {
     "github.repositories": [
         "OrleansDemo"
-    ]
+    ],
+    "travis.username": "Mystikweb",
+    "travis.repository": "OrleansDemo"
 }
