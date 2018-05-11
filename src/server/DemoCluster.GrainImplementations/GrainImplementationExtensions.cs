@@ -6,7 +6,7 @@ namespace DemoCluster.GrainImplementations
 {
     public static class GrainImplementationExtensions
     {
-        public static DeviceState ToState(this DeviceConfig item)
+        public static DeviceState ToDeviceState(this DeviceConfig item)
         {
             return new DeviceState
             {

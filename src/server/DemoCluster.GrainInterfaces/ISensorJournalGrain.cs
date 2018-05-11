@@ -1,3 +1,4 @@
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
@@ -9,7 +10,7 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface ISensorJournalGrain : IGrainWithIntegerKey
     {
-        Task<SensorState> Initialize(SensorState initialState);
+        Task<SensorState> Initialize(DeviceSensorConfig config);
         Task PushState(SensorHistoryState state);
     }
 }

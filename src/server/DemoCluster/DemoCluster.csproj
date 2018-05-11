@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
     <ProjectReference Include="..\DemoCluster.Api\DemoCluster.Api.csproj" />
     <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
+    <ProjectReference Include="..\DemoCluster.Util\DemoCluster.Util.csproj" />
   </ItemGroup>
 
   <ItemGroup>

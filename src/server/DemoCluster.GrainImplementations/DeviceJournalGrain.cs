@@ -39,7 +39,7 @@ namespace DemoCluster.GrainImplementations
 
         public async Task<DeviceState> Initialize(DeviceConfig config)
         {
-            internalState = config.ToState();
+            internalState = config.ToDeviceState();
 
             await RefreshNow();
 

@@ -15,8 +15,6 @@ namespace DemoCluster.GrainImplementations
         private readonly IRuntimeStorage storage;
         private readonly ILogger logger;
 
-        private ISensorReceiverGrain receiver;
-
         public SensorGrain(IRuntimeStorage storage, ILogger<SensorGrain> logger)
         {
             this.storage = storage;
@@ -25,7 +23,6 @@ namespace DemoCluster.GrainImplementations
 
         public override Task OnActivateAsync()
         {
-            receiver = GrainFactory.GetGrain<ISensorReceiverGrain>(this.GetPrimaryKeyLong());
 
             return base.OnActivateAsync();
         }
@@ -33,24 +30,23 @@ namespace DemoCluster.GrainImplementations
         public Task Initialize(DeviceSensorConfig config, string deviceName)
         {
             State = config.ToSensorState();
-            receiver.Initialize(config.ToReceiverState(deviceName));
 
             return Task.CompletedTask;
         }
 
-        public async Task<bool> GetIsReceiving()
+        public Task<bool> GetIsReceiving()
         {
-            return await receiver.IsReceiving();
+            return Task.FromResult(true);
         }
 
-        public async Task StartReceiving()
+        public Task StartReceiving()
         {
-            bool didStart = await receiver.StartReceiver();
+            return Task.CompletedTask;
         }
 
-        public async Task StopReceiving()
+        public Task StopReceiving()
         {
-            bool didStop = await receiver.StopReceiver();
+            return Task.CompletedTask;
         }
     }
 }
