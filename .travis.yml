@@ -2,6 +2,3 @@ language: csharp
 solution: src/server/DemoCluster.sln
 mono: none
 dotnet: 2.1.200
-script:
- - dotnet restore
- - dotnet build
