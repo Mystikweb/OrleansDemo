@@ -1,11 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { MatPaginator, MatSnackBar, MatSort } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/debounceTime';
+import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
+import { MatPaginator, MatSort, MatTableDataSource, MatSnackBar } from '@angular/material';
+import { merge, Observable, of as observableOf } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
-import { SensorConfig, SensorService, SensorDataSource } from '../../services/sensor.service';
+import { SensorConfig, SensorService } from '../../services/sensor.service';
 import { DetailsHostItem, DetailsHostService } from '../../shared/details-host/details-host.service';
 import { SensorEditorComponent } from './sensor-editor.component';
 
@@ -14,9 +12,9 @@ import { SensorEditorComponent } from './sensor-editor.component';
   templateUrl: './sensor-list.component.html',
   styleUrls: ['./sensor-list.component.css']
 })
-export class SensorListComponent implements OnInit, AfterViewInit {
+export class SensorListComponent implements AfterViewInit {
   displayedColumns = ['edit', 'name', 'uom', 'remove'];
-  dataSource: SensorDataSource | null;
+  dataSource: MatTableDataSource<SensorConfig>;
   sensorList: SensorConfig[];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -27,23 +25,22 @@ export class SensorListComponent implements OnInit, AfterViewInit {
     private detailsService: DetailsHostService,
     private snackBar: MatSnackBar) { }
 
-  ngOnInit() {
-    this.dataSource = new SensorDataSource(this.sensorService, this.paginator, this.sort);
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
-      .distinctUntilChanged()
-      .subscribe(() => {
-        if (!this.dataSource) { return; }
-        this.dataSource.filter = this.filter.nativeElement.value;
-      });
-  }
-
   ngAfterViewInit() {
-    this.refreshList();
-  }
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-  refreshList() {
-    this.sensorService.getSensorList().subscribe();
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          return this.sensorService.getSensorList(this.sort.active, this.sort.direction, this.paginator.pageIndex, '');
+        }),
+        map(data => {
+          return data;
+        }),
+        catchError(() => {
+          return observableOf([]);
+        })
+      ).subscribe(data => this.dataSource.data = data);
   }
 
   openEditor(sensor: SensorConfig) {

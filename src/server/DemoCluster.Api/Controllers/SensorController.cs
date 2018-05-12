@@ -17,9 +17,9 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SensorConfig>> Get()
+        public async Task<IEnumerable<SensorConfig>> Get(string sort, int index, string filter)
         {
-            return await storage.GetSensorListAsync();
+            return await storage.GetSensorListAsync(sort, index, filter);
         }
 
         [HttpGet("{sensorId}")]

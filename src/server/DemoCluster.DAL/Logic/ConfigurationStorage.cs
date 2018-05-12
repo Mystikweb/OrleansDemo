@@ -162,9 +162,32 @@ namespace DemoCluster.DAL
             await configDb.SaveChangesAsync();
         }
 
-        public async Task<List<SensorConfig>> GetSensorListAsync()
+        public async Task<List<SensorConfig>> GetSensorListAsync(string sort, int index, string search)
         {
-            return await configDb.Sensor
+            var baseList = configDb.Sensor.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search)) 
+            {
+                baseList = baseList.Where(s => s.Name.ToLower().Contains(search.ToLower()));
+            }
+
+            switch (sort)
+            {
+                case "uom_asc":
+                    baseList = baseList.OrderBy(s => s.Uom);
+                    break;
+                case "uom_desc":
+                    baseList = baseList.OrderByDescending(s => s.Uom);
+                    break;
+                case "name_desc":
+                    baseList = baseList.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    baseList = baseList.OrderBy(s => s.Name);
+                    break;
+            }
+
+            return await baseList.AsNoTracking()
                 .Select(s => new SensorConfig
                 {
                     SensorId = s.SensorId,

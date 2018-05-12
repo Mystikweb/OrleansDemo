@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { IDetailsHostComponent, DetailsHostService } from '../../shared/details-host/details-host.service';
 

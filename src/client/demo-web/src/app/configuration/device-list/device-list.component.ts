@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { DetailsHostItem, DetailsHostService } from '../../shared/details-host/details-host.service';
 import { DeviceEditorComponent } from './device-editor.component';

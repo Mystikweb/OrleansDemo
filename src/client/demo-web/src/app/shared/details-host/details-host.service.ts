@@ -1,6 +1,6 @@
 import { Injectable, Type } from '@angular/core';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 export interface IDetailsHostComponent {
   data: any;

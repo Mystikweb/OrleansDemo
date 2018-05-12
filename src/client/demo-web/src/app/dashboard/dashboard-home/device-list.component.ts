@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { IDetailsHostComponent, DetailsHostService } from '../../shared/details-host/details-host.service';
 import { DeviceStatus, DashboardService } from '../../services/dashboard.service';
