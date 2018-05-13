@@ -31,26 +31,26 @@ namespace DemoCluster.Api.Controllers
             this.logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<DeviceStateItem>> Get()
-        {
-            var configuredDevices = await runtime.GetDeviceStates();
-            var registry = factory.GetGrain<IDeviceRegistry>(0);
+        // [HttpGet]
+        // public async Task<IEnumerable<DeviceStateItem>> Get()
+        // {
+        //     var configuredDevices = await runtime.GetDeviceStates();
+        //     var registry = factory.GetGrain<IDeviceRegistry>(0);
 
-            foreach (var device in configuredDevices)
-            {
-                try
-                {
-                    device.IsRunning = await dispatcher.DispatchAsync(() => registry.GetLoadedDeviceState(device.DeviceId)).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(1001, "Error calling Registry Grain.", ex);
-                }
-            }
+        //     foreach (var device in configuredDevices)
+        //     {
+        //         try
+        //         {
+        //             device.IsRunning = await dispatcher.DispatchAsync(() => registry.GetLoadedDeviceState(device.DeviceId)).ConfigureAwait(false);
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             logger.Error(1001, "Error calling Registry Grain.", ex);
+        //         }
+        //     }
 
-            return configuredDevices;
-        }
+        //     return configuredDevices;
+        // }
 
         [HttpPost("start")]
         public async Task<IActionResult> PostStartDevice([FromBody] DeviceStateItem device)

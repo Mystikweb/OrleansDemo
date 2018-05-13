@@ -40,7 +40,7 @@ namespace DemoCluster.GrainImplementations
             return new DeviceHistoryState
             {
                 DeviceId = item.DeviceId,
-                Timestamp = item.TimeStamp,
+                Timestamp = item.Timestamp,
                 IsRunning = item.IsRunning,
                 SensorCount = item.SensorCount,
                 EventTypeCount = item.EventTypeCount
@@ -54,7 +54,7 @@ namespace DemoCluster.GrainImplementations
                 DeviceId = state.DeviceId,
                 Name = name,
                 IsRunning = state.IsRunning,
-                TimeStamp = state.Timestamp,
+                Timestamp = state.Timestamp,
                 SensorCount = state.SensorCount,
                 EventTypeCount = state.EventTypeCount
             };

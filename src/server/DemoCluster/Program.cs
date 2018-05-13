@@ -51,10 +51,11 @@ namespace DemoCluster
                 .Build();
 
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
-            var runtimeConnectionString = appConfig.GetConnectionString("Runtime");
+            var configConnectionString = appConfig.GetConnectionString("Config");
 
-            var rabbitOptions = appConfig.GetSection(RabbitMessagingOptions.SECTION_NAME).Get<RabbitMessagingOptions>();
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
+            var mongoOptions = appConfig.GetSection(MongoDbOptions.SECTION_NAME).Get<MongoDbOptions>();
+            var rabbitOptions = appConfig.GetSection(RabbitMessagingOptions.SECTION_NAME).Get<RabbitMessagingOptions>();
 
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
@@ -85,11 +86,11 @@ namespace DemoCluster
                 .AddCustomStorageBasedLogConsistencyProvider("CustomStorage")
                 .AddSimpleMessageStreamProvider("PubSub")
                 .UseDashboard()
-                .UseStorageLogic(runtimeConnectionString: runtimeConnectionString)
+                .UseStorageLogic(connetionString: configConnectionString, mongoOptions: mongoOptions)
                 .UseRabbitMessaging(options: rabbitOptions)
                 .UseApi(options =>
                 {
-                    options.RuntimeConnnectionString = runtimeConnectionString;
+                    options.RuntimeConnnectionString = configConnectionString;
                 })
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .ConfigureLogging(log => log.AddConsole())

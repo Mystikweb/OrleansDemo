@@ -4,12 +4,12 @@ using System.Text;
 
 namespace DemoCluster.DAL.Models
 {
-    public class SensorSummary
-    {
-        public int DeviceSensorId { get; set; }
-        public string Name { get; set; }
-        public string Uom { get; set; }
-    }
+    // public class SensorSummary
+    // {
+    //     public int DeviceSensorId { get; set; }
+    //     public string Name { get; set; }
+    //     public string Uom { get; set; }
+    // }
 
     public class SensorStateItem
     {

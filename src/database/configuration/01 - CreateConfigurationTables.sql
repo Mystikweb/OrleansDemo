@@ -1,7 +1,6 @@
-USE [DemoRuntime]
+USE [DemoConfiguration]
 GO
 
-/* Configuration Schema Tables */
 CREATE TABLE [Config].[Device] (
     [DeviceId] UNIQUEIDENTIFIER NOT NULL
         CONSTRAINT [DF_DeviceId] DEFAULT   
@@ -54,40 +53,5 @@ CREATE TABLE [Config].[DeviceEventType] (
     CONSTRAINT [PK_DeviceEventTypeId] PRIMARY KEY CLUSTERED ([DeviceEventTypeId]),
     CONSTRAINT [FK_DeviceEventType_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId]),
     CONSTRAINT [FK_DeviceEventType_EventType] FOREIGN KEY ([EventTypeId]) REFERENCES [Config].[EventType]([EventTypeId])
-)
-GO
-
-/* Runtime Schema Tables */
-CREATE TABLE [Runtime].[DeviceHistory] (
-    [DeviceHistoryId] BIGINT NOT NULL IDENTITY(1,1),
-    [DeviceId] UNIQUEIDENTIFIER NOT NULL,
-    [Timestamp] DATETIME2(3) NOT NULL,
-    [IsRunning] BIT NOT NULL,
-    [SensorCount] INT NOT NULL,
-    [EventTypeCount] INT NOT NULL,
-
-    CONSTRAINT [PK_DevieHistory] PRIMARY KEY CLUSTERED ([DeviceHistoryId]),
-    CONSTRAINT [FK_DeviceHistory_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId])
-)
-GO
-
-CREATE TABLE [Runtime].[DeviceEvent] (
-    [Device] NVARCHAR(100) NOT NULL,
-    [Event] NVARCHAR(100) NOT NULL,
-    [StartTime] DATETIME2(3) NOT NULL,
-    [EndTime] DATETIME2(3) NULL,
-
-    CONSTRAINT [PK_DeviceEvent] PRIMARY KEY CLUSTERED ([Device], [StartTime])
-)
-GO
-
-CREATE TABLE [Runtime].[DeviceSensorValue] (
-    [DeviceSensorValueId] BIGINT NOT NULL IDENTITY(1,1),
-    [DeviceSensorId] INT NOT NULL,
-    [Timestamp] DATETIME2(3) NOT NULL,
-    [Value] FLOAT NOT NULL,
-
-    CONSTRAINT [PK_DeviceSensorValue] PRIMARY KEY CLUSTERED ([DeviceSensorValueId]),
-    CONSTRAINT [FK_DeviceSensorValue_DeviceSensor] FOREIGN KEY ([DeviceSensorId]) REFERENCES [Config].[DeviceSensor]([DeviceSensorId])
 )
 GO
