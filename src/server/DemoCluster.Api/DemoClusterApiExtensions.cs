@@ -21,13 +21,17 @@ namespace DemoCluster.Api
             };
         }
 
-        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder, Action<DemoClusterApiOptions> options)
+        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder, Action<DemoClusterApiOptions> options = null)
         {
             builder.ConfigureServices(services =>
             {
                 if (options != null)
                 {
                     services.Configure(options);
+                }
+                else
+                {
+                    services.Configure<DemoClusterApiOptions>(config => new DemoClusterApiOptions());
                 }
             });
 

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
 using System;
@@ -19,13 +20,22 @@ namespace Orleans.Storage.Redis
             };
         }
 
-        public static ISiloHostBuilder ConfigureRediStorageProvider(this ISiloHostBuilder builder, string name)
+        public static ISiloHostBuilder ConfigureRediStorageProvider(this ISiloHostBuilder builder, string name, Action<RedisProviderOptions> options = null)
         {
-            return builder;
-        }
+            builder.ConfigureServices(services =>
+            {
+                if (options != null)
+                {
+                    services.Configure(options);
+                }
+                else
+                {
+                    services.Configure<RedisProviderOptions>(config => new RedisProviderOptions());
+                }
+            });
 
-        public static ISiloHostBuilder ConfigureRediStorageProvider(this ISiloHostBuilder builder, string name, Action<RedisProviderOptions> options)
-        {
+            
+
             return builder;
         }
 

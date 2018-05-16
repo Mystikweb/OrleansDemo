@@ -14,19 +14,22 @@ namespace DemoCluster.GrainImplementations
     [StorageProvider(ProviderName = "MemoryStorage")]
     public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
     {
+        private readonly IConfigurationStorage configuration;
+        private readonly IRuntimeStorage runtime;
         private readonly ILogger logger;
         private IDeviceJournalGrain journalGrain;
 
-        public DeviceGrain(ILogger<DeviceGrain> logger)
+        public DeviceGrain(IRuntimeStorage runtime, IConfigurationStorage configuration, ILogger<DeviceGrain> logger)
         {
+            this.runtime = runtime;
+            this.configuration = configuration;
             this.logger = logger;
         }
 
-        public override Task OnActivateAsync()
+        public async override Task OnActivateAsync()
         {
+            var deviceConfig = await configuration.GetDeviceByIdAsync(this.GetPrimaryKeyString());
             journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
-
-            return base.OnActivateAsync();
         }
 
         public Task<bool> GetIsRunning()
@@ -39,7 +42,6 @@ namespace DemoCluster.GrainImplementations
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
             
             State = await journalGrain.Initialize(config);
-            State.IsRunning = true;
 
             foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))
             {
@@ -50,13 +52,13 @@ namespace DemoCluster.GrainImplementations
                 await sensorGrain.StartReceiving();
             }
 
+            State.IsRunning = true;
             await LogState();
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            State.IsRunning = false;
 
             foreach (var sensor in State.RegisteredSensors)
             {
@@ -66,6 +68,7 @@ namespace DemoCluster.GrainImplementations
                 }
             }
 
+            State.IsRunning = false;
             await LogState();
         }
 
@@ -74,6 +77,7 @@ namespace DemoCluster.GrainImplementations
             DeviceHistoryState currentState = new DeviceHistoryState
             {
                 DeviceId = State.DeviceId,
+                Name = State.Name,
                 IsRunning = State.IsRunning
             };
 
@@ -84,6 +88,8 @@ namespace DemoCluster.GrainImplementations
                 currentState.SensorStatus.Add(new SensorStatusState
                 {
                     Id = sensorStatus.DeviceSensorId,
+                    Name = sensorStatus.Name,
+                    UOM = sensorStatus.UOM,
                     IsReceiving = sensorStatus.IsReceiving
                 });   
             }
