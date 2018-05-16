@@ -6,7 +6,7 @@ namespace DemoCluster.DAL
         
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
-        public string DeviceStateCollection { get; set; }
+        public string DeviceHistoryCollection { get; set; }
         public string SensorStateCollection { get; set; }
     }
 }

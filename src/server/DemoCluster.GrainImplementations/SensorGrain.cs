@@ -30,22 +30,38 @@ namespace DemoCluster.GrainImplementations
         public Task Initialize(DeviceSensorConfig config, string deviceName)
         {
             State = config.ToSensorState();
+            State.Device = deviceName;
 
             return Task.CompletedTask;
         }
 
+        public Task<SensorStatusItem> GetCurrentStatus()
+        {
+            SensorStatusItem currentStatus = new SensorStatusItem
+            {
+                DeviceSensorId = State.DeviceSensorId,
+                Name = State.Name,
+                UOM = State.UOM,
+                IsReceiving = State.IsReceiving
+            };
+
+            return Task.FromResult(currentStatus);
+        }
+
         public Task<bool> GetIsReceiving()
         {
-            return Task.FromResult(true);
+            return Task.FromResult(State.IsReceiving);
         }
 
         public Task StartReceiving()
         {
+            State.IsReceiving = true;
             return Task.CompletedTask;
         }
 
         public Task StopReceiving()
         {
+            State.IsReceiving = false;
             return Task.CompletedTask;
         }
     }

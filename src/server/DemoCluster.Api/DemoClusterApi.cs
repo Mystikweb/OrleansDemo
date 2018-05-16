@@ -17,14 +17,16 @@ namespace DemoCluster.Api
     public class DemoClusterApi : IStartupTask, IDisposable
     {
         private readonly DemoClusterApiOptions options;
+        private readonly MongoDbOptions mongoOptions;
         private readonly ILogger logger;
         private readonly IGrainFactory grainFactory;
 
         private IWebHost host;
 
-        public DemoClusterApi(IOptions<DemoClusterApiOptions> options, ILogger<DemoClusterApi> logger, IGrainFactory grainFactory)
+        public DemoClusterApi(IOptions<DemoClusterApiOptions> options, MongoDbOptions mongoOptions, ILogger<DemoClusterApi> logger, IGrainFactory grainFactory)
         {
             this.options = options.Value;
+            this.mongoOptions = mongoOptions;
             this.logger = logger;
             this.grainFactory = grainFactory;
         }
@@ -45,7 +47,7 @@ namespace DemoCluster.Api
                 //host = WebHost.CreateDefaultBuilder()
                 host = new WebHostBuilder()
                     .UseContentRoot(Directory.GetCurrentDirectory())
-                    .RegisterStorageLogic(runtimeConnectionString)
+                    .RegisterStorageLogic(runtimeConnectionString, mongoOptions)
                     .ConfigureServices(services =>
                     {
                         services.AddSingleton(grainFactory);

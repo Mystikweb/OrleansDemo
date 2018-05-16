@@ -14,14 +14,11 @@ namespace DemoCluster.GrainImplementations
     [StorageProvider(ProviderName = "MemoryStorage")]
     public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
     {
-        private readonly IRuntimeStorage storage;
-        private ILogger logger;
-
+        private readonly ILogger logger;
         private IDeviceJournalGrain journalGrain;
 
-        public DeviceGrain(IRuntimeStorage storage, ILogger<DeviceGrain> logger)
+        public DeviceGrain(ILogger<DeviceGrain> logger)
         {
-            this.storage = storage;
             this.logger = logger;
         }
 
@@ -74,12 +71,24 @@ namespace DemoCluster.GrainImplementations
 
         private async Task LogState()
         {
-            await journalGrain.PushState(new DeviceHistoryState
+            DeviceHistoryState currentState = new DeviceHistoryState
             {
                 DeviceId = State.DeviceId,
-                IsRunning = State.IsRunning,
-                SensorCount = State.RegisteredSensors.Count
-            });
+                IsRunning = State.IsRunning
+            };
+
+            foreach (var sensor in State.RegisteredSensors)
+            {
+                var sensorStatus = await sensor.GetCurrentStatus();
+
+                currentState.SensorStatus.Add(new SensorStatusState
+                {
+                    Id = sensorStatus.DeviceSensorId,
+                    IsReceiving = sensorStatus.IsReceiving
+                });   
+            }
+
+            await journalGrain.PushState(currentState);
         }
     }
 }

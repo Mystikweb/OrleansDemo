@@ -32,12 +32,19 @@ namespace DemoCluster.DAL
             return builder;
         }
 
-        public static IWebHostBuilder RegisterStorageLogic(this IWebHostBuilder builder, string connetionString)
+        public static IWebHostBuilder RegisterStorageLogic(this IWebHostBuilder builder, string connetionString, MongoDbOptions mongoOptions)
         {
             builder.ConfigureServices(services =>
             {
                 services.AddDbContextPool<ConfigurationContext>(opts =>
                     opts.UseSqlServer(connetionString));
+
+                services.AddSingleton<MongoDbOptions>(mongoOptions);
+                services.AddSingleton<IMongoDatabase>(provider =>
+                {
+                    var connection = new MongoClient($"{mongoOptions.ConnectionString}");
+                    return connection.GetDatabase(mongoOptions.DatabaseName);
+                });
 
                 services.AddTransient<IRuntimeStorage, RuntimeStorage>();
                 services.AddTransient<IConfigurationStorage, ConfigurationStorage>();

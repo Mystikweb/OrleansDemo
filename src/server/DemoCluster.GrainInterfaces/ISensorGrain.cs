@@ -10,6 +10,7 @@ namespace DemoCluster.GrainInterfaces
     public interface ISensorGrain : IGrainWithIntegerKey
     {
         Task Initialize(DeviceSensorConfig config, string deviceName);
+        Task<SensorStatusItem> GetCurrentStatus();
         Task<bool> GetIsReceiving();
         Task StartReceiving();
         Task StopReceiving();

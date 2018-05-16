@@ -12,28 +12,32 @@ namespace DemoCluster.DAL
 {
     public class RuntimeStorage : IRuntimeStorage
     {
-        private readonly IMongoCollection<DeviceState> deviceStateCollection;
+        private readonly IMongoCollection<DeviceHistory> deviceHistoryCollection;
         private readonly IMongoCollection<SensorSummary> sensorSummaryCollection;
 
         public RuntimeStorage(IMongoDatabase db, MongoDbOptions mongoOptions)
         {
-            deviceStateCollection = db.GetCollection<DeviceState>(mongoOptions.DeviceStateCollection);
+            deviceHistoryCollection = db.GetCollection<DeviceHistory>(mongoOptions.DeviceHistoryCollection);
             sensorSummaryCollection = db.GetCollection<SensorSummary>(mongoOptions.SensorStateCollection);
         }
 
-        public async Task<List<DeviceStateItem>> GetDeviceStateHistory(Guid deviceId, int days = 14)
+        public async Task<List<DeviceHistoryItem>> GetDeviceStateHistory(Guid deviceId, int days = 14)
         {
             long earliest = DateTimeOffset.UtcNow.AddDays((days * -1)).ToUnixTimeSeconds();
-            FilterDefinition<DeviceState> filter = Builders<DeviceState>.Filter.Gte(d => d.Timestamp, earliest);
+            FilterDefinitionBuilder<DeviceHistory> builder = Builders<DeviceHistory>.Filter;
+            FilterDefinition<DeviceHistory> filter = builder.Eq(d => d.DeviceId, deviceId.ToString()) 
+                & builder.Gte(d => d.Timestamp, earliest);
 
-            List<DeviceState> findResults = await deviceStateCollection.Find(filter).ToListAsync();
+            List<DeviceHistory> findResults = await deviceHistoryCollection.Find(filter).ToListAsync();
 
-            return findResults.Select(d => d.ToDeviceStateItem()).ToList();
+            return findResults.Select(d => d.ToDeviceHistoryItem()).ToList();
         }
 
-        public Task<DeviceStateItem> SaveDeviceState(DeviceStateItem item)
+        public async Task<DeviceHistoryItem> SaveDeviceState(DeviceHistoryItem item)
         {
-            throw new NotImplementedException();
+            await deviceHistoryCollection.InsertOneAsync(item.ToDeviceHistory());
+
+            return item;
         }
     }
 }

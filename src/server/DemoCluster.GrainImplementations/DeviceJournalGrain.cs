@@ -39,7 +39,7 @@ namespace DemoCluster.GrainImplementations
 
         public async Task<DeviceState> Initialize(DeviceConfig config)
         {
-            internalState = config.ToDeviceState();
+            internalState = config.ToDeviceGrainState();
 
             await RefreshNow();
 
@@ -58,12 +58,12 @@ namespace DemoCluster.GrainImplementations
         {
             if (internalState != null)
             {
-                //var historyItems = await storage.GetDeviceHistory(this.GetPrimaryKey());
+                var historyItems = await storage.GetDeviceStateHistory(this.GetPrimaryKey());
 
-                // foreach (var item in historyItems.OrderBy(i => i.TimeStamp))
-                // {
-                //     internalState.Apply(item.ToState());
-                // }
+                foreach (var item in historyItems.OrderBy(i => i.Timestamp))
+                {
+                    internalState.Apply(item.ToDeviceHistoryState());
+                }
 
                 int version = internalState.History.Count;
 
@@ -79,7 +79,7 @@ namespace DemoCluster.GrainImplementations
             {
                 foreach (var item in updates)
                 {
-                    //await storage.StoreDeviceHistory(item.ToItem(State.Name));
+                    await storage.SaveDeviceState(item.ToDeviceHistoryItem());
                 }
 
                 return true;
