@@ -30,7 +30,7 @@ namespace Orleans.Storage.Redis
             redisOptions = new ConfigurationOptions
             {
                 ClientName = name,
-                EndPoints = 
+                EndPoints =
                 {
                     { options.Hostname, options.Port }
                 },
@@ -51,11 +51,16 @@ namespace Orleans.Storage.Redis
 
         public async Task ReadStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
+            if (redisDatabase == null)
+            {
+                await ConnectToDatabase();
+            }
+
             string key = grainReference.ToKeyString();
 
             logger.Debug((int)RedisProviderLogCode.ReadingRedisData, "Reading: GrainType={0} Pk={1} Grainid={2} from Database={3}",
                 grainType, key, grainReference, redisDatabase.Database);
-            
+
             RedisValue value = await redisDatabase.StringGetAsync(key);
             if (value.HasValue)
             {
@@ -74,6 +79,11 @@ namespace Orleans.Storage.Redis
 
         public async Task WriteStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
+            if (redisDatabase == null)
+            {
+                await ConnectToDatabase();
+            }
+
             var primaryKey = grainReference.ToKeyString();
             logger.Debug((int)RedisProviderLogCode.WritingRedisData, "Writing: GrainType={0} PrimaryKey={1} Grainid={2} ETag={3} to Database={4}",
                 grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
@@ -92,13 +102,18 @@ namespace Orleans.Storage.Redis
             }
         }
 
-        public Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
+        public async Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
+            if (redisDatabase == null)
+            {
+                await ConnectToDatabase();
+            }
+
             var primaryKey = grainReference.ToKeyString();
             logger.Debug((int)RedisProviderLogCode.ClearingRedisData, "Clearing: GrainType={0} Pk={1} Grainid={2} ETag={3} to Database={4}",
                 grainType, primaryKey, grainReference, grainState.ETag, redisDatabase.Database);
 
-            return redisDatabase.KeyDeleteAsync(primaryKey);
+            await redisDatabase.KeyDeleteAsync(primaryKey);
         }
 
         public void Dispose()

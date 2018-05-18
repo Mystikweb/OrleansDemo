@@ -5,9 +5,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
-    <PackageReference Include="Microsoft.Orleans.Core" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Core" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="2.4.0" />
   </ItemGroup>
