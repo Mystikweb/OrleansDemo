@@ -53,7 +53,6 @@ namespace DemoCluster
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
             var configConnectionString = appConfig.GetConnectionString("Config");
 
-            var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
             var mongoOptions = appConfig.GetSection(MongoDbOptions.SECTION_NAME).Get<MongoDbOptions>();
             var rabbitOptions = appConfig.GetSection(RabbitMessagingOptions.SECTION_NAME).Get<RabbitMessagingOptions>();
 
@@ -83,6 +82,16 @@ namespace DemoCluster
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
                 .AddMemoryGrainStorage("PubSubStore")
+                .AddRedisGrainStorage("DeviceStorage", options => 
+                {
+                    options = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
+                    options.DatabaseNumber = 1;
+                })
+                .AddRedisGrainStorage("SensorStorage", options => 
+                {
+                    options = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
+                    options.DatabaseNumber = 2;
+                })
                 .AddCustomStorageBasedLogConsistencyProvider("CustomStorage")
                 .AddSimpleMessageStreamProvider("PubSub")
                 .UseDashboard()
