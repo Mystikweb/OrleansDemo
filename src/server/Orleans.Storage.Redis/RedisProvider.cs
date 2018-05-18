@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orleans.Storage.Redis
 {
-    public class RedisProvider : IStorageProvider
+    public class RedisProvider : IGrainStorage
     {
         private ConnectionMultiplexer connectionMultiplexer;
         private IDatabase redisDatabase;
