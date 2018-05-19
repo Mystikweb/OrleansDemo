@@ -8,22 +8,8 @@ namespace DemoCluster.GrainInterfaces.States
     public class SensorState
     {
         public int DeviceSensorId { get; set; }
-        public string Device { get; set; }
         public string Name { get; set; }
         public string UOM { get; set; }
         public bool IsReceiving { get; set; }
-
-        public SortedDictionary<DateTime, SensorHistoryState> History { get; set; } = new SortedDictionary<DateTime, SensorHistoryState>();
-
-        public void Apply(SensorHistoryState historyState)
-        {
-            if (historyState == null)
-                throw new ArgumentNullException("historyState");
-
-            if (History.ContainsKey(historyState.Timestamp))
-                return;
-
-            History.Add(historyState.Timestamp, historyState);
-        }
     }
 }

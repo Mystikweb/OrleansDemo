@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace DemoCluster.DAL.Models
 {
+    public class DeviceStatusChange
+    {
+        public string DeviceId { get; set; }
+        public bool IsRunning { get; set; }
+    }
+
     public class DeviceHistoryItem
     {
         public string DeviceId { get; set; }

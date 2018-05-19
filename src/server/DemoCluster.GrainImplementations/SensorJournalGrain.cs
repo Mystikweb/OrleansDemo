@@ -34,7 +34,7 @@ namespace DemoCluster.GrainImplementations
 
         protected override void TransitionState(SensorState state, SensorHistoryState delta)
         {
-            state.Apply(delta);
+            //state.Apply(delta);
         }
 
         public async Task<SensorState> Initialize(DeviceSensorConfig config)

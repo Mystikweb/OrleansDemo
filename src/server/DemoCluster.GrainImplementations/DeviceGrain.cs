@@ -4,97 +4,94 @@ using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Microsoft.Extensions.Logging;
 using Orleans;
+using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Runtime;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [StorageProvider(ProviderName = "MemoryStorage")]
-    public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
+    [LogConsistencyProvider(ProviderName="StateStorage")]
+    [StorageProvider(ProviderName = "MongoStorage")]
+    public class DeviceGrain : 
+        JournaledGrain<DeviceState, DeviceUpdateEvent>,
+        IRemindable,
+        IDeviceGrain
     {
         private readonly IConfigurationStorage configuration;
-        private readonly IRuntimeStorage runtime;
-        private readonly ILogger logger;
-        private IDeviceJournalGrain journalGrain;
+        private readonly ILogger<DeviceGrain> logger;
+        private DeviceConfig config;
+        private HashSet<ISensorGrain> sensors = new HashSet<ISensorGrain>();
 
-        public DeviceGrain(IRuntimeStorage runtime, IConfigurationStorage configuration, ILogger<DeviceGrain> logger)
+        public DeviceGrain(IConfigurationStorage configuration, ILoggerFactory loggerFactory)
         {
-            this.runtime = runtime;
             this.configuration = configuration;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger<DeviceGrain>();
         }
 
-        public async override Task OnActivateAsync()
+        public override async Task OnActivateAsync()
         {
-            var deviceConfig = await configuration.GetDeviceByIdAsync(this.GetPrimaryKeyString());
-            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
+            config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
+            await RegisterOrUpdateReminder("PushState", TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
         }
 
-        public Task<bool> GetIsRunning()
+        public async Task ReceiveReminder(string reminderName, TickStatus status)
         {
-            return Task.FromResult(State.IsRunning);
+            if (reminderName == "PushState")
+            {
+                await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = State.IsRunning });
+            }
         }
 
-        public async Task Start(DeviceConfig config)
+        public Task<DeviceState> GetCurrentState()
+        {
+            return Task.FromResult(State);
+        }
+
+        public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            
-            State = await journalGrain.Initialize(config);
 
-            foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))
+            foreach (var sensor in config.Sensors)
             {
                 var sensorGrain = GrainFactory.GetGrain<ISensorGrain>(sensor.DeviceSensorId.Value);
-                State.RegisteredSensors.Add(sensorGrain);
+                sensors.Add(sensorGrain);
 
-                await sensorGrain.Initialize(sensor, State.Name);
-                await sensorGrain.StartReceiving();
+                await sensorGrain.Initialize(sensor);
+                if (sensor.IsEnabled)
+                {
+                    await sensorGrain.StartReceiving();
+                }
             }
 
-            State.IsRunning = true;
-            await LogState();
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name, IsRunning = true });
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
 
-            foreach (var sensor in State.RegisteredSensors)
+            foreach (var sensor in sensors)
             {
-                if (await sensor.GetIsReceiving())
-                {
-                    await sensor.StopReceiving();
-                }
+                await sensor.StopReceiving();
             }
 
-            State.IsRunning = false;
-            await LogState();
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = false });
         }
 
-        private async Task LogState()
+        private async Task PushState(DeviceUpdateEvent updateEvent)
         {
-            DeviceHistoryState currentState = new DeviceHistoryState
+            foreach (var sensor in sensors)
             {
-                DeviceId = State.DeviceId,
-                Name = State.Name,
-                IsRunning = State.IsRunning
-            };
-
-            foreach (var sensor in State.RegisteredSensors)
-            {
-                var sensorStatus = await sensor.GetCurrentStatus();
-
-                currentState.SensorStatus.Add(new SensorStatusState
-                {
-                    Id = sensorStatus.DeviceSensorId,
-                    Name = sensorStatus.Name,
-                    UOM = sensorStatus.UOM,
-                    IsReceiving = sensorStatus.IsReceiving
-                });   
+                updateEvent.Sensors.Add(await sensor.GetState());
             }
 
-            await journalGrain.PushState(currentState);
+            RaiseEvent(updateEvent);
+            await ConfirmEvents();
         }
+
     }
 }

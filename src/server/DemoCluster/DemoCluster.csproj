@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Orleans.Statistics.AdoNet" Version="2.0.0-beta3" />
     <PackageReference Include="OrleansDashboard" Version="2.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
+    <PackageReference Include="Orleans.Providers.MongoDB" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

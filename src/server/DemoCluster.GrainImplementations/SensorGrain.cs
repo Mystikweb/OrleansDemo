@@ -21,36 +21,17 @@ namespace DemoCluster.GrainImplementations
             this.logger = logger;
         }
 
-        public override Task OnActivateAsync()
-        {
-
-            return base.OnActivateAsync();
-        }
-
-        public Task Initialize(DeviceSensorConfig config, string deviceName)
+        public Task Initialize(DeviceSensorConfig config)
         {
             State = config.ToSensorState();
-            State.Device = deviceName;
+            //State.Device = deviceName;
 
             return Task.CompletedTask;
         }
 
-        public Task<SensorStatusItem> GetCurrentStatus()
+        public Task<SensorState> GetState()
         {
-            SensorStatusItem currentStatus = new SensorStatusItem
-            {
-                DeviceSensorId = State.DeviceSensorId,
-                Name = State.Name,
-                UOM = State.UOM,
-                IsReceiving = State.IsReceiving
-            };
-
-            return Task.FromResult(currentStatus);
-        }
-
-        public Task<bool> GetIsReceiving()
-        {
-            return Task.FromResult(State.IsReceiving);
+            return Task.FromResult(State);
         }
 
         public Task StartReceiving()

@@ -34,7 +34,7 @@ namespace DemoCluster.GrainImplementations
 
         protected override void TransitionState(DeviceState state, DeviceHistoryState delta)
         {
-            state.Apply(delta);
+            // state.Apply(delta);
         }
 
         public async Task<DeviceState> Initialize(DeviceConfig config)
@@ -54,23 +54,23 @@ namespace DemoCluster.GrainImplementations
             await ConfirmEvents();
         }
 
-        public async Task<KeyValuePair<int, DeviceState>> ReadStateFromStorage()
+        public Task<KeyValuePair<int, DeviceState>> ReadStateFromStorage()
         {
-            if (internalState != null)
-            {
-                var historyItems = await storage.GetDeviceStateHistory(this.GetPrimaryKey());
+            // if (internalState != null)
+            // {
+            //     var historyItems = await storage.GetDeviceStateHistory(this.GetPrimaryKey());
 
-                foreach (var item in historyItems.OrderBy(i => i.Timestamp))
-                {
-                    internalState.Apply(item.ToDeviceHistoryState());
-                }
+            //     foreach (var item in historyItems.OrderBy(i => i.Timestamp))
+            //     {
+            //         internalState.Apply(item.ToDeviceHistoryState());
+            //     }
 
-                int version = internalState.History.Count;
+            //     int version = internalState.History.Count;
 
-                return new KeyValuePair<int, DeviceState>(version, internalState);
-            }
+            //     return new KeyValuePair<int, DeviceState>(version, internalState);
+            // }
 
-            return new KeyValuePair<int, DeviceState>(0, new DeviceState());
+            return Task.FromResult(new KeyValuePair<int, DeviceState>(0, new DeviceState()));
         }
 
         public async Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)

@@ -1,4 +1,5 @@
 using DemoCluster.DAL.Models;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,8 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface ISensorGrain : IGrainWithIntegerKey
     {
-        Task Initialize(DeviceSensorConfig config, string deviceName);
-        Task<SensorStatusItem> GetCurrentStatus();
-        Task<bool> GetIsReceiving();
+        Task Initialize(DeviceSensorConfig config);
+        Task<SensorState> GetState();
         Task StartReceiving();
         Task StopReceiving();
     }

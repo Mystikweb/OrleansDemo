@@ -1,6 +1,7 @@
 using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -31,29 +32,26 @@ namespace DemoCluster.Api.Controllers
             this.logger = logger;
         }
 
-        // [HttpGet]
-        // public async Task<IEnumerable<DeviceStateItem>> Get()
-        // {
-        //     var configuredDevices = await runtime.GetDeviceStates();
-        //     var registry = factory.GetGrain<IDeviceRegistry>(0);
+        [HttpGet]
+        public async Task<IEnumerable<DeviceState>> Get()
+        {
+            var registry = factory.GetGrain<IDeviceRegistry>(0);
 
-        //     foreach (var device in configuredDevices)
-        //     {
-        //         try
-        //         {
-        //             device.IsRunning = await dispatcher.DispatchAsync(() => registry.GetLoadedDeviceState(device.DeviceId)).ConfigureAwait(false);
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             logger.Error(1001, "Error calling Registry Grain.", ex);
-        //         }
-        //     }
+            var devices = await dispatcher.DispatchAsync(() => registry.GetRegisteredGrains()).ConfigureAwait(false);
 
-        //     return configuredDevices;
-        // }
+            var result = new List<DeviceState>();
+
+            foreach (var device in devices)
+            {
+                var currentState = await dispatcher.DispatchAsync(() => device.GetCurrentState()).ConfigureAwait(false);
+                result.Add(currentState);
+            }
+
+            return result;
+        }
 
         [HttpPost("start")]
-        public async Task<IActionResult> PostStartDevice([FromBody] DeviceHistoryItem device)
+        public async Task<IActionResult> PostStartDevice([FromBody] DeviceStatusChange device)
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
 
@@ -71,7 +69,7 @@ namespace DemoCluster.Api.Controllers
         }
 
         [HttpPost("stop")]
-        public async Task<IActionResult> PostStopDevice([FromBody] DeviceHistoryItem device)
+        public async Task<IActionResult> PostStopDevice([FromBody] DeviceStatusChange device)
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
 

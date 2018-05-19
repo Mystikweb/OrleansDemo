@@ -10,19 +10,16 @@ namespace DemoCluster.GrainInterfaces.States
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
         public bool IsRunning { get; set; } = false;
-
-        public HashSet<ISensorGrain> RegisteredSensors { get; set; } = new HashSet<ISensorGrain>();
-        public SortedDictionary<DateTime, DeviceHistoryState> History { get; set; } = new SortedDictionary<DateTime, DeviceHistoryState>();
-
-        public void Apply(DeviceHistoryState historyState)
+        public DateTime Timestamp { get; set; }
+        public List<SensorState> Sensors { get; set; } = new List<SensorState>();
+        
+        public void Apply(DeviceUpdateEvent updateEvent)
         {
-            if (historyState == null)
-                throw new ArgumentNullException("deviceState");
-
-            if (History.ContainsKey(historyState.Timestamp))
-                return;
-
-            History.Add(historyState.Timestamp, historyState);
+            DeviceId = updateEvent.DeviceId;
+            Name = updateEvent.Name;
+            IsRunning = updateEvent.IsRunning;
+            Timestamp = updateEvent.Timestamp;
+            Sensors = updateEvent.Sensors;
         }
     }
 }
