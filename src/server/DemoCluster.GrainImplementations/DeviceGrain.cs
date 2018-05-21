@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace DemoCluster.GrainImplementations
 {
     [LogConsistencyProvider(ProviderName="StateStorage")]
-    [StorageProvider(ProviderName = "MongoStorage")]
+    [StorageProvider(ProviderName = "DeviceStorage")]
     public class DeviceGrain : 
         JournaledGrain<DeviceState, DeviceUpdateEvent>,
         IRemindable,

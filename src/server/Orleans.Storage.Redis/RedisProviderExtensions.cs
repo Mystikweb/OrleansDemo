@@ -22,19 +22,24 @@ namespace Orleans.Storage.Redis
             };
         }
 
-        public static ISiloHostBuilder AddRedisGrainStorage(this ISiloHostBuilder builder, string name, Action<RedisProviderOptions> options)
+        public static ISiloHostBuilder AddRedisGrainStorage(this ISiloHostBuilder builder, string name, Action<RedisProviderOptions> configureOptions)
         {
-            return builder.AddRedisGrainStorage(name, ob => ob.Configure(options));
+            return builder.AddRedisGrainStorage(name, ob => ob.Configure(configureOptions));
         }
 
         public static ISiloHostBuilder AddRedisGrainStorage(this ISiloHostBuilder builder, string name, Action<OptionsBuilder<RedisProviderOptions>> configureOptions = null)
         {
-            return builder.ConfigureServices(services => 
-            {
-                configureOptions?.Invoke(services.AddOptions<RedisProviderOptions>(name));
-                services.ConfigureNamedOptionForLogging<RedisProviderOptions>(name);
-                services.AddSingletonNamedService<IGrainStorage>(name, RedisStorageFactory.Create);
-            });
+            return builder.ConfigureServices(services => services.AddRedisGrainStorage(name, configureOptions));
+        }
+
+        public static IServiceCollection AddRedisGrainStorage(this IServiceCollection services, string name, Action<OptionsBuilder<RedisProviderOptions>> configureOptions = null)
+        {
+            configureOptions?.Invoke(services.AddOptions<RedisProviderOptions>(name));
+
+            services.ConfigureNamedOptionForLogging<RedisProviderOptions>(name);
+            services.AddSingletonNamedService(name, RedisStorageFactory.Create);
+
+            return services;
         }
     }
 }
