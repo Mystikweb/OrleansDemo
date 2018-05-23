@@ -1,6 +1,6 @@
 namespace DemoCluster.GrainInterfaces.Commands
 {
-    public class DeviceStateCommand : DeviceCommand
+    public class DeviceEventCommand : DeviceCommand
     {
         
     }
