@@ -55,7 +55,7 @@ namespace DemoCluster.GrainImplementations
             if (deviceGrain != null)
             {
                 var deviceState = await deviceGrain.GetCurrentState();
-                result = deviceState.IsRunning;
+                result = true;
             }
 
             return result;

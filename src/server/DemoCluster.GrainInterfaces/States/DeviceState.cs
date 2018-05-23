@@ -9,14 +9,12 @@ namespace DemoCluster.GrainInterfaces.States
     {
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
-        public bool IsRunning { get; set; } = false;
         public DateTime Timestamp { get; set; }
         
         public void Apply(DeviceUpdateEvent updateEvent)
         {
             DeviceId = updateEvent.DeviceId;
             Name = updateEvent.Name;
-            IsRunning = updateEvent.IsRunning;
             Timestamp = updateEvent.Timestamp;
         }
     }

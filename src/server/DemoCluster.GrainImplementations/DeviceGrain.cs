@@ -41,7 +41,7 @@ namespace DemoCluster.GrainImplementations
         {
             if (reminderName == "PushState")
             {
-                await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = State.IsRunning });
+                await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name });
             }
         }
 
@@ -53,13 +53,13 @@ namespace DemoCluster.GrainImplementations
         public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name, IsRunning = true });
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name });
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = false });
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name });
         }
 
         private async Task PushState(DeviceUpdateEvent updateEvent)
@@ -67,6 +67,5 @@ namespace DemoCluster.GrainImplementations
             RaiseEvent(updateEvent);
             await ConfirmEvents();
         }
-
     }
 }

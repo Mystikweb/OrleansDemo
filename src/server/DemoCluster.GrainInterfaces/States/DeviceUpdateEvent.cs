@@ -7,7 +7,6 @@ namespace DemoCluster.GrainInterfaces.States
     {
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
-        public bool IsRunning { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 }
