@@ -99,8 +99,8 @@ namespace DemoCluster
                 .AddCustomStorageBasedLogConsistencyProvider("CustomStorage")
                 .AddSimpleMessageStreamProvider("PubSub")
                 .UseDashboard()
-                .UseStorageLogic(connetionString: configConnectionString, mongoOptions: mongoOptions)
-                .UseRabbitMessaging(options: rabbitOptions)
+                .UseStorageLogic(configConnectionString, mongoOptions)
+                .UseRabbitMessaging(rabbitOptions)
                 .UseApi(options =>
                 {
                     options.RuntimeConnnectionString = configConnectionString;
