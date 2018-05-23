@@ -20,13 +20,13 @@ IF @testDeviceSensorId IS NULL
     INSERT INTO Config.DeviceSensor (DeviceId, SensorId, IsEnabled) VALUES (@testDeviceId, @testTempId, 1)
 
 DECLARE @eventTypeId INT
-DECLARE runner CURSOR LOCAL FOR (SELECT [EventTypeId] FROM Config.EventType)
+DECLARE runner CURSOR LOCAL FOR (SELECT [StateId] FROM Config.State)
 OPEN runner
 FETCH NEXT FROM runner INTO @eventTypeId
 WHILE @@FETCH_STATUS = 0
 BEGIN
-	IF NOT EXISTS (SELECT * FROM Config.DeviceEventType WHERE [DeviceId] = @testDeviceId AND [EventTypeId] = @eventTypeId)
-        INSERT INTO Config.DeviceEventType ([DeviceId], [EventTypeId], [IsEnabled]) VALUES (@testDeviceId, @eventTypeId, 1)
+	IF NOT EXISTS (SELECT * FROM Config.DeviceState WHERE [DeviceId] = @testDeviceId AND [StateId] = @eventTypeId)
+        INSERT INTO Config.DeviceState ([DeviceId], [StateId], [IsEnabled]) VALUES (@testDeviceId, @eventTypeId, 1)
 
 	FETCH NEXT FROM runner INTO @eventTypeId
 END

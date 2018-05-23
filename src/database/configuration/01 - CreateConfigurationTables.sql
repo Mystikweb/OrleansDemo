@@ -13,6 +13,27 @@ CREATE TABLE [Config].[Device] (
 )
 GO
 
+CREATE TABLE [Config].[State] (
+    [StateId] INT NOT NULL IDENTITY(1,1),
+    [Name] NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT [PK_StateId] PRIMARY KEY CLUSTERED ([StateId])
+)
+GO
+
+CREATE TABLE [Config].[DeviceState] (
+    [DeviceStateId] INT NOT NULL IDENTITY(1,1),
+    [DeviceId] UNIQUEIDENTIFIER NOT NULL,
+    [StateId] INT NOT NULL,
+    [IsEnabled] BIT NOT NULL
+        CONSTRAINT [DF_DeviceState_IsEnabled] DEFAULT 0,
+
+    CONSTRAINT [PK_DeviceStateId] PRIMARY KEY CLUSTERED ([DeviceStateId]),
+    CONSTRAINT [FK_DeviceState_Device] FOREIGN KEY ([DeviceId]) REFERENCES [Config].[Device]([DeviceId]),
+    CONSTRAINT [FK_DeviceState_State] FOREIGN KEY ([StateId]) REFERENCES [Config].[State]([StateId])
+)
+GO
+
 CREATE TABLE [Config].[Sensor] (
     [SensorId] INT NOT NULL IDENTITY(1,1),
     [Name] NVARCHAR(100) NOT NULL,
