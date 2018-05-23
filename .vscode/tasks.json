@@ -14,6 +14,17 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "clean server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/src/server/DemoCluster.sln"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "none"
         }
     ]
 }

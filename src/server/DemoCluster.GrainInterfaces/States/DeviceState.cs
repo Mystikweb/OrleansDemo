@@ -11,7 +11,6 @@ namespace DemoCluster.GrainInterfaces.States
         public string Name { get; set; }
         public bool IsRunning { get; set; } = false;
         public DateTime Timestamp { get; set; }
-        public List<SensorState> Sensors { get; set; } = new List<SensorState>();
         
         public void Apply(DeviceUpdateEvent updateEvent)
         {
@@ -19,7 +18,6 @@ namespace DemoCluster.GrainInterfaces.States
             Name = updateEvent.Name;
             IsRunning = updateEvent.IsRunning;
             Timestamp = updateEvent.Timestamp;
-            Sensors = updateEvent.Sensors;
         }
     }
 }

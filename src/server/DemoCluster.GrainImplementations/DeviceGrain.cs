@@ -24,7 +24,6 @@ namespace DemoCluster.GrainImplementations
         private readonly IConfigurationStorage configuration;
         private readonly ILogger<DeviceGrain> logger;
         private DeviceConfig config;
-        private HashSet<ISensorGrain> sensors = new HashSet<ISensorGrain>();
 
         public DeviceGrain(IConfigurationStorage configuration, ILoggerFactory loggerFactory)
         {
@@ -54,41 +53,17 @@ namespace DemoCluster.GrainImplementations
         public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-
-            foreach (var sensor in config.Sensors)
-            {
-                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>(sensor.DeviceSensorId.Value);
-                sensors.Add(sensorGrain);
-
-                await sensorGrain.Initialize(sensor);
-                if (sensor.IsEnabled)
-                {
-                    await sensorGrain.StartReceiving();
-                }
-            }
-
             await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name, IsRunning = true });
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-
-            foreach (var sensor in sensors)
-            {
-                await sensor.StopReceiving();
-            }
-
             await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = false });
         }
 
         private async Task PushState(DeviceUpdateEvent updateEvent)
         {
-            foreach (var sensor in sensors)
-            {
-                updateEvent.Sensors.Add(await sensor.GetState());
-            }
-
             RaiseEvent(updateEvent);
             await ConfirmEvents();
         }

@@ -63,26 +63,5 @@ namespace DemoCluster.GrainImplementations
                 IsReceiving = state.IsReceiving
             };
         }
-
-        public static SensorState ToSensorState(this DeviceSensorConfig item)
-        {
-            return new SensorState
-            {
-                DeviceSensorId = item.DeviceSensorId.Value,
-                Name = item.Name,
-                UOM = item.UOM,
-                IsReceiving = false
-            };
-        }
-
-        public static SensorReceiverState ToReceiverState(this DeviceSensorConfig item, string deviceName)
-        {
-            return new SensorReceiverState
-            {
-                DeviceSensorId = item.DeviceSensorId.Value,
-                Device = deviceName,
-                Name = item.Name
-            };
-        }
     }
 }

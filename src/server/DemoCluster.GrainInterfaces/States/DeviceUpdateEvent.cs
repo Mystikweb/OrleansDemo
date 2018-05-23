@@ -9,6 +9,5 @@ namespace DemoCluster.GrainInterfaces.States
         public string Name { get; set; }
         public bool IsRunning { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public List<SensorState> Sensors { get; set; } = new List<SensorState>();
     }
 }
