@@ -20,5 +20,9 @@ namespace DemoCluster.DAL
         Task<EventConfig> GetEventAsync(int eventId);
         Task<EventConfig> SaveEventAsync(EventConfig model);
         Task RemoveEventAsync(int eventId);
+        Task<List<StateConfig>> GetStateListAsync(string sort, int index, string search);
+        Task<StateConfig> GetStateAsync(int stateId);
+        Task<StateConfig> SaveStateAsync(StateConfig model);
+        Task RemoveStateAsync(int stateId);
     }
 }
