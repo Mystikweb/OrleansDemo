@@ -11,29 +11,29 @@ namespace DemoCluster.Api.Controllers
     [Produces("application/json")]
     public class DeviceController : Controller
     {
-        private readonly IConfigurationStorage configurationStorage;
+        private readonly IConfigurationStorage storage;
 
-        public DeviceController(IConfigurationStorage configStore)
+        public DeviceController(IConfigurationStorage storage)
         {
-            configurationStorage = configStore;
+            this.storage = storage;
         }
 
         [HttpGet]
         public async Task<IEnumerable<DeviceConfig>> Get()
         {
-            return await configurationStorage.GetDeviceListAsync();
+            return await storage.GetDeviceListAsync();
         }
 
         [HttpGet("{deviceId}")]
         public async Task<IActionResult> GetById(string deviceId)
         {
-            return Ok(await configurationStorage.GetDeviceByIdAsync(deviceId));
+            return Ok(await storage.GetDeviceByIdAsync(deviceId));
         }
 
         [HttpGet("name/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-            return Ok(await configurationStorage.GetDeviceByNameAsync(name));
+            return Ok(await storage.GetDeviceByNameAsync(name));
         }
 
         [HttpPost]
@@ -44,7 +44,7 @@ namespace DemoCluster.Api.Controllers
                 return BadRequest(ModelState);
             }
                 
-            DeviceConfig device = await configurationStorage.SaveDeviceAsync(config);
+            DeviceConfig device = await storage.SaveDeviceAsync(config);
 
             return CreatedAtAction("Get", new { deviceId = device.DeviceId }, device);
         }
@@ -52,7 +52,7 @@ namespace DemoCluster.Api.Controllers
         [HttpDelete("{deviceId}")]
         public async Task<IActionResult> Delete(string deviceId)
         {
-            await configurationStorage.RemoveDeviceAsync(deviceId);
+            await storage.RemoveDeviceAsync(deviceId);
             return Ok();
         }
     }

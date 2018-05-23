@@ -15,15 +15,6 @@ namespace DemoCluster.DAL.Database.Configuration
         public virtual DbSet<EventType> EventType { get; set; }
         public virtual DbSet<Sensor> Sensor { get; set; }
 
-//         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//         {
-//             if (!optionsBuilder.IsConfigured)
-//             {
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                 optionsBuilder.UseSqlServer(@"Server=mystikweb.ddns.net,1521;Database=DemoConfiguration;User Id=ConfigManager;Password=MyPa55w0rd123;");
-//             }
-//         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:DefaultSchema", "Config");

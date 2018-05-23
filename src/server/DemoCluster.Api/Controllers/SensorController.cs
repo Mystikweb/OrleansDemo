@@ -11,9 +11,9 @@ namespace DemoCluster.Api.Controllers
     public class SensorController : Controller
     {
         private readonly IConfigurationStorage storage;
-        public SensorController(IConfigurationStorage store)
+        public SensorController(IConfigurationStorage storage)
         {
-            storage = store;
+            this.storage = storage;
         }
 
         [HttpGet]
