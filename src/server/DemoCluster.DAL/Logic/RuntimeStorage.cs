@@ -12,32 +12,39 @@ namespace DemoCluster.DAL
 {
     public class RuntimeStorage : IRuntimeStorage
     {
-        private readonly IMongoCollection<DeviceHistory> deviceHistoryCollection;
+        private readonly IMongoCollection<DeviceInstanceHistory> deviceHistoryCollection;
         private readonly IMongoCollection<SensorSummary> sensorSummaryCollection;
 
         public RuntimeStorage(IMongoDatabase db, MongoDbOptions mongoOptions)
         {
-            deviceHistoryCollection = db.GetCollection<DeviceHistory>(mongoOptions.DeviceHistoryCollection);
+            deviceHistoryCollection = db.GetCollection<DeviceInstanceHistory>(mongoOptions.DeviceHistoryCollection);
             sensorSummaryCollection = db.GetCollection<SensorSummary>(mongoOptions.SensorStateCollection);
         }
 
-        public async Task<List<DeviceHistoryItem>> GetDeviceStateHistory(Guid deviceId, int days = 14)
+        public async Task<List<DeviceInstanceHistory>> GetDeviceStateHistory(Guid deviceId, int days = 30)
         {
-            long earliest = DateTimeOffset.UtcNow.AddDays((days * -1)).ToUnixTimeSeconds();
-            FilterDefinitionBuilder<DeviceHistory> builder = Builders<DeviceHistory>.Filter;
-            FilterDefinition<DeviceHistory> filter = builder.Eq(d => d.DeviceId, deviceId.ToString()) 
-                & builder.Gte(d => d.Timestamp, earliest);
+            DateTime startDateUtc = DateTime.UtcNow.AddDays((-1 * days));
+            FilterDefinitionBuilder<DeviceInstanceHistory> builder = Builders<DeviceInstanceHistory>.Filter;
+            FilterDefinition<DeviceInstanceHistory> filter = builder.Eq(d => d.DeviceId, deviceId.ToString()) 
+                & builder.Gte(d => d.Timestamp, startDateUtc);
 
-            List<DeviceHistory> findResults = await deviceHistoryCollection.Find(filter).ToListAsync();
-
-            return findResults.Select(d => d.ToDeviceHistoryItem()).ToList();
+            return await deviceHistoryCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<DeviceHistoryItem> SaveDeviceState(DeviceHistoryItem item)
+        public async Task<bool> SaveDeviceState(DeviceInstanceHistory item)
         {
-            await deviceHistoryCollection.InsertOneAsync(item.ToDeviceHistory());
+            bool result = true;
 
-            return item;
+            try
+            {
+                await deviceHistoryCollection.InsertOneAsync(item);
+            }
+            catch
+            {
+                result = false;
+            }
+
+            return result;
         }
     }
 }

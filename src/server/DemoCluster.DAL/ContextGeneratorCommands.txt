@@ -1,2 +1,2 @@
 Database Scaffold:
-dotnet ef dbcontext scaffold "Server=mystikweb.ddns.net,1521;Database=DemoConfiguration;User Id=ConfigManager;Password=R0flth1s!;" Microsoft.EntityFrameworkCore.SqlServer -d -c ConfigurationContext -o .\Database\Configuration\ --startup-project ..\DemoCluster\DemoCluster.csproj -f
+dotnet ef dbcontext scaffold "Server=mystikweb.ddns.net,1521;Database=DemoConfiguration;User Id=ConfigManager;Password=MyPa55w0rd123;" Microsoft.EntityFrameworkCore.SqlServer -d -c ConfigurationContext -o .\Database\Configuration\ --startup-project ..\DemoCluster\DemoCluster.csproj -f

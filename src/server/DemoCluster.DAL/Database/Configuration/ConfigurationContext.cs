@@ -12,8 +12,10 @@ namespace DemoCluster.DAL.Database.Configuration
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<DeviceEventType> DeviceEventType { get; set; }
         public virtual DbSet<DeviceSensor> DeviceSensor { get; set; }
+        public virtual DbSet<DeviceState> DeviceState { get; set; }
         public virtual DbSet<EventType> EventType { get; set; }
         public virtual DbSet<Sensor> Sensor { get; set; }
+        public virtual DbSet<State> State { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +54,21 @@ namespace DemoCluster.DAL.Database.Configuration
                     .HasForeignKey(d => d.SensorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceSensor_Sensor");
+            });
+
+            modelBuilder.Entity<DeviceState>(entity =>
+            {
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceState)
+                    .HasForeignKey(d => d.DeviceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceState_Device");
+
+                entity.HasOne(d => d.State)
+                    .WithMany(p => p.DeviceState)
+                    .HasForeignKey(d => d.StateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceState_State");
             });
         }
     }

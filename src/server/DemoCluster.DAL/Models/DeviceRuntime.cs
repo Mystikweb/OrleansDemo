@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace DemoCluster.DAL.Models
 {
+    public class DeviceInstanceItem
+    {
+        public string DeviceId { get; set; }
+        public string Name { get; set; }
+        public bool IsRunning { get; set; } = false;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public List<SensorStateItem> Sensors { get; set; } = new List<SensorStateItem>();
+    }
+
     public class DeviceEventItem
     {
         public int DeviceEventId { get; set; }
@@ -14,14 +23,5 @@ namespace DemoCluster.DAL.Models
     {
         public string DeviceId { get; set; }
         public bool IsRunning { get; set; }
-    }
-
-    public class DeviceHistoryItem
-    {
-        public string DeviceId { get; set; }
-        public string Name { get; set; }
-        public bool IsRunning { get; set; } = false;
-        public long Timestamp { get; set; }
-        public List<SensorStatusItem> Sensors { get; set; } = new List<SensorStatusItem>();
     }
 }

@@ -77,10 +77,10 @@ namespace DemoCluster.GrainImplementations
         {
             try
             {
-                foreach (var item in updates)
-                {
-                    await storage.SaveDeviceState(item.ToDeviceHistoryItem());
-                }
+                // foreach (var item in updates)
+                // {
+                //     await storage.SaveDeviceState(item.ToDeviceHistoryItem());
+                // }
 
                 return true;
             }
