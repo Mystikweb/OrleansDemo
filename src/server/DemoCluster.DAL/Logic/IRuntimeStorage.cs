@@ -7,7 +7,7 @@ namespace DemoCluster.DAL
 {
     public interface IRuntimeStorage
     {
-        Task<List<DeviceHistoryItem>> GetDeviceStateHistory(Guid deviceId, int days = 14);
-        Task<DeviceHistoryItem> SaveDeviceState(DeviceHistoryItem item);
+        // Task<List<DeviceHistoryItem>> GetDeviceStateHistory(Guid deviceId, int days = 14);
+        // Task<DeviceHistoryItem> SaveDeviceState(DeviceHistoryItem item);
     }
 }

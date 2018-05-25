@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DemoCluster.DAL.Models
 {
-    public class SensorStatusItem
+    public class SensorStateItem
     {
         public int DeviceSensorId { get; set; }
         public string Name { get; set; }

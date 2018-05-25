@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.Commands;
 using DemoCluster.GrainInterfaces.States;
@@ -15,6 +16,16 @@ namespace DemoCluster.GrainImplementations
         ICustomStorageInterface<DeviceInstanceState, DeviceCommand>,
         IDeviceInstanceGrain
     {
+        public Task<DeviceInstanceState> UpdateSensors(List<SensorConfig> sensorList)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<DeviceInstanceState> UpdateStatus(DeviceStateConfig newStatus)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceCommand> updates, int expectedversion)
         {
             throw new System.NotImplementedException();
