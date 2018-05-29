@@ -8,10 +8,10 @@ namespace DemoCluster.DAL.Database.Runtime
     {
         public ObjectId Id { get; set; }
         public string DeviceId { get; set; }
+        public int Version { get; set; }
         public string Name { get; set; }
         public DeviceStatus Status { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public int Version { get; set; }
         public List<SensorStatus> Sensors { get; set; } = new List<SensorStatus>();
     }
 
