@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [LogConsistencyProvider(ProviderName="CustomStorage")]
-    [StorageProvider(ProviderName = "DeviceStorage")]
+    [LogConsistencyProvider(ProviderName="StateStorage")]
+    [StorageProvider(ProviderName = "SqlBase")]
     public class DeviceGrain : 
         JournaledGrain<DeviceState, DeviceUpdateEvent>,
         IRemindable,
@@ -53,17 +53,18 @@ namespace DemoCluster.GrainImplementations
         public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name });
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name, IsRunning = true });
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name });
+            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = false });
         }
 
         private async Task PushState(DeviceUpdateEvent updateEvent)
         {
+            logger.Info($"Pushing update for {this.GetPrimaryKey().ToString()}...");
             RaiseEvent(updateEvent);
             await ConfirmEvents();
         }

@@ -13,10 +13,10 @@ using Orleans.Providers;
 
 namespace DemoCluster.GrainImplementations
 {
-    [LogConsistencyProvider(ProviderName = "CustomStorage")]
+    [LogConsistencyProvider(ProviderName = "StateStorage")]
+    [StorageProvider(ProviderName="SqlBase")]
     public class DeviceInstanceGrain :
-        JournaledGrain<DeviceInstanceState, DeviceCommand>,
-        ICustomStorageInterface<DeviceInstanceState, DeviceCommand>,
+        JournaledGrain<DeviceInstanceState>,
         IDeviceInstanceGrain
     {
         private readonly IConfigurationStorage configurationStorage;
@@ -43,35 +43,6 @@ namespace DemoCluster.GrainImplementations
         public Task<DeviceInstanceState> UpdateStatus(DeviceStateConfig newStatus)
         {
             throw new System.NotImplementedException();
-        }
-
-        public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceCommand> updates, int expectedversion)
-        {
-            try
-            {
-                foreach (var item in updates)
-                {
-                    
-                }
-            }
-            catch (System.Exception)
-            {
-                
-                throw;
-            }
-
-            return Task.FromResult(true);
-        }
-
-        public async Task<KeyValuePair<int, DeviceInstanceState>> ReadStateFromStorage()
-        {
-            var historyList = await runtimeStorage.GetDeviceStateHistory(this.GetPrimaryKey());
-            foreach (var item in historyList)
-            {
-                State.Apply(item.ToDeviceStateCommand());
-            }
-
-            return new KeyValuePair<int, DeviceInstanceState>(historyList.Count, State);
         }
     }
 }

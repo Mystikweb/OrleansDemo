@@ -73,22 +73,24 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(new KeyValuePair<int, DeviceState>(0, new DeviceState()));
         }
 
-        public async Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)
+        public Task<bool> ApplyUpdatesToStorage(IReadOnlyList<DeviceHistoryState> updates, int expectedversion)
         {
-            try
-            {
-                // foreach (var item in updates)
-                // {
-                //     await storage.SaveDeviceState(item.ToDeviceHistoryItem());
-                // }
+            return Task.FromResult(true);
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(5001, $"Error storing updates.", ex);
-                return false;
-            }
+            // try
+            // {
+            //     // foreach (var item in updates)
+            //     // {
+            //     //     await storage.SaveDeviceState(item.ToDeviceHistoryItem());
+            //     // }
+
+            //     return true;
+            // }
+            // catch (Exception ex)
+            // {
+            //     logger.Error(5001, $"Error storing updates.", ex);
+            //     return false;
+            // }
         }
     }
 }
