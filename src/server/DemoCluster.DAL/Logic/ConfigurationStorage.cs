@@ -1,4 +1,5 @@
 using DemoCluster.DAL.Database;
+using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,15 +12,16 @@ namespace DemoCluster.DAL
 {
     public class ConfigurationStorage : IConfigurationStorage
     {
-        private readonly RuntimeContext configDb;
-        public ConfigurationStorage(RuntimeContext context)
+        private readonly ConfigurationContext context;
+
+        public ConfigurationStorage(ConfigurationContext context)
         {
-            configDb = context;
+            this.context = context;
         }
 
         public async Task<List<DeviceConfig>> GetDeviceListAsync()
         {
-            return await configDb.Device.Select(d => new DeviceConfig
+            return await context.Device.Select(d => new DeviceConfig
             {
                 DeviceId = d.DeviceId.ToString(),
                 Name = d.Name,
@@ -31,13 +33,27 @@ namespace DemoCluster.DAL
                     Name = ds.Sensor.Name,
                     UOM = ds.Sensor.Uom,
                     IsEnabled = ds.IsEnabled
+                }).ToList(),
+                Events = d.DeviceEventType.Select(de => new DeviceEventConfig
+                {
+                    DeviceEventTypeId = de.DeviceEventTypeId,
+                    EventTypeId = de.EventTypeId,
+                    Name = de.EventType.Name,
+                    IsEnabled = de.IsEnabled
+                }).ToList(),
+                States = d.DeviceState.Select(ds => new DeviceStateConfig
+                {
+                    DeviceStateId = ds.DeviceStateId,
+                    StateId = ds.StateId,
+                    Name = ds.State.Name,
+                    IsEnabled = ds.IsEnabled
                 }).ToList()
             }).ToListAsync();
         }
 
         public async Task<DeviceConfig> GetDeviceByIdAsync(string deviceId)
         {
-            return await configDb.Device
+            return await context.Device
                 .Where(d => d.DeviceId == Guid.Parse(deviceId))
                 .Select(d => new DeviceConfig
                 {
@@ -51,13 +67,27 @@ namespace DemoCluster.DAL
                         Name = ds.Sensor.Name,
                         UOM = ds.Sensor.Uom,
                         IsEnabled = ds.IsEnabled
+                    }).ToList(),
+                    Events = d.DeviceEventType.Select(de => new DeviceEventConfig
+                    {
+                        DeviceEventTypeId = de.DeviceEventTypeId,
+                        EventTypeId = de.EventTypeId,
+                        Name = de.EventType.Name,
+                        IsEnabled = de.IsEnabled
+                    }).ToList(),
+                    States = d.DeviceState.Select(ds => new DeviceStateConfig
+                    {
+                        DeviceStateId = ds.DeviceStateId,
+                        StateId = ds.StateId,
+                        Name = ds.State.Name,
+                        IsEnabled = ds.IsEnabled
                     }).ToList()
                 }).FirstOrDefaultAsync();
         }
 
         public async Task<DeviceConfig> GetDeviceByNameAsync(string name)
         {
-            return await configDb.Device
+            return await context.Device
                 .Where(d => d.Name == name)
                 .Select(d => new DeviceConfig
                 {
@@ -71,59 +101,76 @@ namespace DemoCluster.DAL
                         Name = ds.Sensor.Name,
                         UOM = ds.Sensor.Uom,
                         IsEnabled = ds.IsEnabled
+                    }).ToList(),
+                    Events = d.DeviceEventType.Select(de => new DeviceEventConfig
+                    {
+                        DeviceEventTypeId = de.DeviceEventTypeId,
+                        EventTypeId = de.EventTypeId,
+                        Name = de.EventType.Name,
+                        IsEnabled = de.IsEnabled
+                    }).ToList(),
+                    States = d.DeviceState.Select(ds => new DeviceStateConfig
+                    {
+                        DeviceStateId = ds.DeviceStateId,
+                        StateId = ds.StateId,
+                        Name = ds.State.Name,
+                        IsEnabled = ds.IsEnabled
                     }).ToList()
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task<DeviceConfig> SaveDeviceAsync(DeviceConfig device)
+        public async Task<DeviceConfig> SaveDeviceAsync(DeviceConfig model)
         {
             Device dbDevice = null;
 
-            if (string.IsNullOrEmpty(device.DeviceId))
+            var transaction = await context.Database.BeginTransactionAsync();
+
+            if (string.IsNullOrEmpty(model.DeviceId))
             {
                 dbDevice = new Device
                 {
-                    Name = device.Name,
-                    IsEnabled = device.IsEnabled
+                    Name = model.Name,
+                    IsEnabled = model.IsEnabled
                 };
 
-                await configDb.Device.AddAsync(dbDevice);
+                await context.Device.AddAsync(dbDevice);
             }
             else
             {
-                dbDevice = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(device.DeviceId));
+                dbDevice = await context.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(model.DeviceId));
 
                 if (dbDevice == null)
                 {
-                    throw new ApplicationException($"Device with id {device.DeviceId.ToString()} was not found.");
+                    throw new ApplicationException($"Device with id {model.DeviceId.ToString()} was not found.");
                 }
 
-                dbDevice.Name = device.Name;
-                dbDevice.IsEnabled = device.IsEnabled;
+                dbDevice.Name = model.Name;
+                dbDevice.IsEnabled = model.IsEnabled;
 
-                configDb.Device.Update(dbDevice);
+                context.Device.Update(dbDevice);
             }
 
             try
             {
-                await configDb.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (System.Exception)
             {
+                transaction.Rollback();
                 throw;
             }
 
-            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => !device.Sensors.Any(s => s.DeviceSensorId == ds.DeviceSensorId)));
-            await configDb.SaveChangesAsync();
+            context.DeviceSensor.RemoveRange(context.DeviceSensor.Where(ds => !model.Sensors.Any(s => s.DeviceSensorId == ds.DeviceSensorId)));
+            await context.SaveChangesAsync();
 
-            foreach (var sensor in device.Sensors)
+            foreach (var sensor in model.Sensors)
             {
                 DeviceSensor dbDeviceSensor = null;
                 if (sensor.DeviceSensorId.HasValue)
                 {
-                    dbDeviceSensor = await configDb.DeviceSensor.FirstOrDefaultAsync(ds => ds.DeviceSensorId == sensor.DeviceSensorId);
+                    dbDeviceSensor = await context.DeviceSensor.FirstOrDefaultAsync(ds => ds.DeviceSensorId == sensor.DeviceSensorId);
                     dbDeviceSensor.IsEnabled = sensor.IsEnabled;
-                    configDb.DeviceSensor.Update(dbDeviceSensor);
+                    context.DeviceSensor.Update(dbDeviceSensor);
                 }
                 else
                 {
@@ -131,40 +178,87 @@ namespace DemoCluster.DAL
                     dbDeviceSensor.DeviceId = dbDevice.DeviceId;
                     dbDeviceSensor.SensorId = sensor.SensorId;
                     dbDeviceSensor.IsEnabled = sensor.IsEnabled;
-                    await configDb.DeviceSensor.AddAsync(dbDeviceSensor);
+                    await context.DeviceSensor.AddAsync(dbDeviceSensor);
+                }
+            }
+
+            context.DeviceEventType.RemoveRange(context.DeviceEventType.Where(de => !model.Events.Any(e => e.DeviceEventTypeId == de.DeviceEventTypeId)));
+            await context.SaveChangesAsync();
+
+            foreach (var eventType in model.Events)
+            {
+                DeviceEventType dbDeviceEventType = null;
+                if (eventType.DeviceEventTypeId.HasValue)
+                {
+                    dbDeviceEventType = await context.DeviceEventType.FirstOrDefaultAsync(de => de.DeviceEventTypeId == eventType.DeviceEventTypeId);
+                    dbDeviceEventType.IsEnabled = eventType.IsEnabled;
+                    context.DeviceEventType.Update(dbDeviceEventType);
+                }
+                else
+                {
+                    dbDeviceEventType = new DeviceEventType();
+                    dbDeviceEventType.DeviceId = dbDevice.DeviceId;
+                    dbDeviceEventType.EventTypeId = eventType.EventTypeId;
+                    dbDeviceEventType.IsEnabled = eventType.IsEnabled;
+                    await context.DeviceEventType.AddAsync(dbDeviceEventType);                    
+                }
+            }
+
+            context.DeviceState.RemoveRange(context.DeviceState.Where(ds => !model.States.Any(e => e.DeviceStateId == ds.DeviceStateId)));
+            await context.SaveChangesAsync();
+
+            foreach (var state in model.States)
+            {
+                DeviceState dbDeviceState = null;
+                if (state.DeviceStateId.HasValue)
+                {
+                    dbDeviceState = await context.DeviceState.FirstOrDefaultAsync(ds => ds.DeviceStateId == state.DeviceStateId);
+                    dbDeviceState.IsEnabled = state.IsEnabled;
+                    context.DeviceState.Update(dbDeviceState);
+                }
+                else
+                {
+                    dbDeviceState = new DeviceState();
+                    dbDeviceState.DeviceId = dbDevice.DeviceId;
+                    dbDeviceState.StateId = state.StateId;
+                    dbDeviceState.IsEnabled = state.IsEnabled;
+                    await context.DeviceState.AddAsync(dbDeviceState);                    
                 }
             }
 
             try
             {
-                await configDb.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (Exception)
             {
+                transaction.Rollback();
                 throw;
             }
+
+            transaction.Commit();
 
             return await GetDeviceByIdAsync(dbDevice.DeviceId.ToString());
         }
 
         public async Task RemoveDeviceAsync(string deviceId)
         {
-            Device device = await configDb.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(deviceId));
+            Device device = await context.Device.FirstOrDefaultAsync(d => d.DeviceId == Guid.Parse(deviceId));
             if (device == null)
             {
                 throw new ApplicationException($"Device {deviceId} was not found.");
             }
 
-            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => ds.DeviceId == device.DeviceId));
-            await configDb.SaveChangesAsync();
+            context.DeviceSensor.RemoveRange(context.DeviceSensor.Where(ds => ds.DeviceId == device.DeviceId));
+            await context.SaveChangesAsync();
 
-            configDb.Device.Remove(device);
-            await configDb.SaveChangesAsync();
+            context.Device.Remove(device);
+            await context.SaveChangesAsync();
         }
 
         public async Task<List<SensorConfig>> GetSensorListAsync(string sort, int index, string search)
         {
-            var baseList = configDb.Sensor.AsQueryable();
+            var baseList = context.Sensor.AsQueryable();
 
             if (!string.IsNullOrEmpty(search)) 
             {
@@ -198,7 +292,7 @@ namespace DemoCluster.DAL
 
         public async Task<SensorConfig> GetSensorAsync(int sensorId)
         {
-            return await configDb.Sensor
+            return await context.Sensor
                 .Where(s => s.SensorId == sensorId)
                 .Select(s => new SensorConfig
                 {
@@ -208,38 +302,38 @@ namespace DemoCluster.DAL
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task<SensorConfig> SaveSensorAsync(SensorConfig sensor)
+        public async Task<SensorConfig> SaveSensorAsync(SensorConfig model)
         {
             Sensor dbSensor = null;
 
-            if (!sensor.SensorId.HasValue)
+            if (!model.SensorId.HasValue)
             {
                 dbSensor = new Sensor
                 {
-                    Name = sensor.Name,
-                    Uom = sensor.Uom
+                    Name = model.Name,
+                    Uom = model.Uom
                 };
 
-                await configDb.Sensor.AddAsync(dbSensor);
+                await context.Sensor.AddAsync(dbSensor);
             }
             else
             {
-                dbSensor = await configDb.Sensor.FirstOrDefaultAsync(s => s.SensorId == sensor.SensorId.Value);
+                dbSensor = await context.Sensor.FirstOrDefaultAsync(s => s.SensorId == model.SensorId.Value);
 
                 if (dbSensor == null)
                 {
-                    throw new ApplicationException($"Device with id {sensor.SensorId.ToString()} was not found.");
+                    throw new ApplicationException($"Sensor with id {model.SensorId.ToString()} was not found.");
                 }
 
-                dbSensor.Name = sensor.Name;
-                dbSensor.Uom = sensor.Uom;
+                dbSensor.Name = model.Name;
+                dbSensor.Uom = model.Uom;
 
-                configDb.Sensor.Update(dbSensor);
+                context.Sensor.Update(dbSensor);
             }
 
             try
             {
-                await configDb.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -252,17 +346,201 @@ namespace DemoCluster.DAL
 
         public async Task RemoveSensorAsync(int sensorId)
         {
-            Sensor sensor = await configDb.Sensor.FirstOrDefaultAsync(s => s.SensorId == sensorId);
+            Sensor sensor = await context.Sensor.FirstOrDefaultAsync(s => s.SensorId == sensorId);
             if (sensor == null)
             {
                 throw new ApplicationException($"Sensor {sensorId} was not found.");
             }
 
-            configDb.DeviceSensor.RemoveRange(configDb.DeviceSensor.Where(ds => ds.SensorId == sensor.SensorId));
-            await configDb.SaveChangesAsync();
+            context.DeviceSensor.RemoveRange(context.DeviceSensor.Where(ds => ds.SensorId == sensor.SensorId));
+            await context.SaveChangesAsync();
 
-            configDb.Sensor.Remove(sensor);
-            await configDb.SaveChangesAsync();
+            context.Sensor.Remove(sensor);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<EventConfig>> GetEventListAsync(string sort, int index, string search)
+        {
+            var baseList = context.EventType.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search)) 
+            {
+                baseList = baseList.Where(e => e.Name.ToLower().Contains(search.ToLower()));
+            }
+
+            switch (sort)
+            {
+                case "name_desc":
+                    baseList = baseList.OrderByDescending(e => e.Name);
+                    break;
+                default:
+                    baseList = baseList.OrderBy(e => e.Name);
+                    break;
+            }
+
+            return await baseList.AsNoTracking()
+                .Select(e => new EventConfig
+                {
+                    EventId = e.EventTypeId,
+                    Name = e.Name 
+                }).ToListAsync();
+        }
+
+        public async Task<EventConfig> GetEventAsync(int eventId)
+        {
+            return await context.EventType
+                .Where(e => e.EventTypeId == eventId)
+                .Select(e => new EventConfig
+                {
+                    EventId = e.EventTypeId,
+                    Name = e.Name
+                }).FirstOrDefaultAsync();
+        }
+
+        public async Task<EventConfig> SaveEventAsync(EventConfig model)
+        {
+            EventType dbEvent = null;
+
+            if (!model.EventId.HasValue)
+            {
+                dbEvent = new EventType
+                {
+                    Name = model.Name
+                };
+
+                await context.EventType.AddAsync(dbEvent);
+            }
+            else
+            {
+                dbEvent = await context.EventType.FirstOrDefaultAsync(e => e.EventTypeId == model.EventId);
+                if (dbEvent == null)
+                {
+                    throw new ApplicationException($"Event with id {model.EventId} was not found.");
+                }
+
+                dbEvent.Name = model.Name;
+
+                context.EventType.Update(dbEvent);
+            }
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return await GetEventAsync(dbEvent.EventTypeId);
+        }
+
+        public async Task RemoveEventAsync(int eventId)
+        {
+            EventType dbEvent = await context.EventType.FirstOrDefaultAsync(e => e.EventTypeId == eventId);
+            if (dbEvent == null)
+            {
+                throw new ApplicationException($"Event with {eventId} was not found.");
+            }
+
+            context.DeviceEventType.RemoveRange(context.DeviceEventType.Where(de => de.EventTypeId == dbEvent.EventTypeId));
+            await context.SaveChangesAsync();
+
+            context.EventType.Remove(dbEvent);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<StateConfig>> GetStateListAsync(string sort, int index, string search)
+        {
+            var baseList = context.State.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search)) 
+            {
+                baseList = baseList.Where(s => s.Name.ToLower().Contains(search.ToLower()));
+            }
+
+            switch (sort)
+            {
+                case "name_desc":
+                    baseList = baseList.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    baseList = baseList.OrderBy(s => s.Name);
+                    break;
+            }
+
+            return await baseList.AsNoTracking()
+                .Select(s => new StateConfig
+                {
+                    StateId = s.StateId,
+                    Name = s.Name
+                }).ToListAsync();
+        }
+
+        public async Task<StateConfig> GetStateAsync(int stateId)
+        {
+            return await context.State
+                .Where(s => s.StateId == stateId)
+                .Select(s => new StateConfig
+                {
+                    StateId = s.StateId,
+                    Name = s.Name
+                }).FirstOrDefaultAsync();
+        }
+
+        public async Task<StateConfig> SaveStateAsync(StateConfig model)
+        {
+            State dbState = null;
+
+            if (!model.StateId.HasValue)
+            {
+                dbState = new State
+                {
+                    Name = model.Name
+                };
+
+                await context.State.AddAsync(dbState);
+            }
+            else
+            {
+                dbState = await context.State.FirstOrDefaultAsync(s => s.StateId == model.StateId.Value);
+
+                if (dbState == null)
+                {
+                    throw new ApplicationException($"State with id {model.StateId.ToString()} was not found.");
+                }
+
+                dbState.Name = model.Name;
+
+                context.State.Update(dbState);
+            }
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                //logger.LogError(new EventId(5001), ex, string.Empty);
+                throw;
+            }
+
+            return await GetStateAsync(dbState.StateId);
+        }
+
+        public async Task RemoveStateAsync(int stateId)
+        {
+            State state = await context.State.FirstOrDefaultAsync(s => s.StateId == stateId);
+            if (state == null)
+            {
+                throw new ApplicationException($"State {stateId} was not found.");
+            }
+
+            context.DeviceState.RemoveRange(context.DeviceState.Where(ds => ds.StateId == state.StateId));
+            await context.SaveChangesAsync();
+
+            context.State.Remove(state);
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -49,11 +49,11 @@ export class DashboardService {
 
   startDevice(device: DeviceStatus) {
     const requestUri = `${this.runtimeUri}/start`;
-    return this.http.post(requestUri, device, httpOptions);
+    return this.http.post(requestUri, { deviceId: device.deviceId, isRunning: true }, httpOptions);
   }
 
   stopDevice(device: DeviceStatus) {
     const requestUri = `${this.runtimeUri}/stop`;
-    return this.http.post(requestUri, device, httpOptions);
+    return this.http.post(requestUri, { deviceId: device.deviceId, isRunning: false }, httpOptions);
   }
 }

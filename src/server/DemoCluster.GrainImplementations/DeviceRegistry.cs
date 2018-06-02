@@ -23,14 +23,17 @@ namespace DemoCluster.GrainImplementations
         public async Task Initialize()
         {
             var deviceList = await storage.GetDeviceListAsync();
-            var activeDevices = deviceList.Where(d => d.IsEnabled).ToList();
+            var activeDevices = deviceList.ToList();
 
             foreach (var device in activeDevices)
             {
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
 
-                await deviceGrain.Start(device);
+                if (device.IsEnabled)
+                {
+                    await deviceGrain.Start();
+                }
             }
         }
 
@@ -51,7 +54,8 @@ namespace DemoCluster.GrainImplementations
 
             if (deviceGrain != null)
             {
-                result = await deviceGrain.GetIsRunning();
+                //var deviceState = await deviceGrain.GetCurrentState();
+                result = true;
             }
 
             return result;
@@ -64,7 +68,7 @@ namespace DemoCluster.GrainImplementations
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await RegisterGrain(deviceGrain);
 
-            await deviceGrain.Start(device);
+            await deviceGrain.Start();
         }
 
         public async Task StopDevice(string deviceId)

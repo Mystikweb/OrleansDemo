@@ -3,121 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoCluster.DAL.Database;
+using DemoCluster.DAL.Database.Runtime;
 using DemoCluster.DAL.Models;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace DemoCluster.DAL
 {
     public class RuntimeStorage : IRuntimeStorage
     {
-        private readonly RuntimeContext db;
+        private readonly IMongoCollection<DeviceStateHistory> deviceHistoryCollection;
+        private readonly FilterDefinitionBuilder<DeviceStateHistory> filterBuilder = Builders<DeviceStateHistory>.Filter;
+        private readonly SortDefinitionBuilder<DeviceStateHistory> sortBuilder = Builders<DeviceStateHistory>.Sort;
 
-        public RuntimeStorage(RuntimeContext context)
+        public RuntimeStorage(IMongoDatabase db, RuntimeCollections collectionNames)
         {
-            db = context;
+            deviceHistoryCollection = db.GetCollection<DeviceStateHistory>(collectionNames.DeviceStatusHistory);
         }
 
-        public Task<List<DeviceSummary>> GetDashboardSummary()
+        public async Task<List<DeviceStateHistory>> GetDeviceStateHistory(Guid deviceId, int days = 30)
         {
-            return Task.FromResult(new List<DeviceSummary>());
+            DateTime startDateUtc = DateTime.UtcNow.AddDays((-1 * days));
+            
+            FilterDefinition<DeviceStateHistory> filter = filterBuilder.Eq(d => d.DeviceId, deviceId) 
+                & filterBuilder.Gte(d => d.Timestamp, startDateUtc);
+            SortDefinition<DeviceStateHistory> sort = sortBuilder.Descending(d => d.Version);
+
+            return await deviceHistoryCollection.Find(filter).Sort(sort).ToListAsync();
         }
 
-        public async Task<List<DeviceStateItem>> GetDeviceStates()
+        public async Task<bool> SaveDeviceState(DeviceStateHistory item)
         {
-            return await db.Device.Select(d => new DeviceStateItem
+            bool result = true;
+
+            try
             {
-                DeviceId = d.DeviceId.ToString(),
-                Name = d.Name,
-                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
-                {
-                    DeviceSensorId = s.DeviceSensorId,
-                    Name = s.Sensor.Name,
-                    UOM = s.Sensor.Uom
-                }).ToList()
-            }).ToListAsync();
-        }
-
-        public async Task<DeviceStateItem> GetInitialState(Guid deviceId)
-        {
-            return await db.Device.Select(d => new DeviceStateItem
+                await deviceHistoryCollection.InsertOneAsync(item);
+            }
+            catch
             {
-                DeviceId = d.DeviceId.ToString(),
-                Name = d.Name,
-                Sensors = d.DeviceSensor.Where(ds => ds.IsEnabled).Select(s => new SensorStateItem
-                {
-                    DeviceSensorId = s.DeviceSensorId,
-                    Name = s.Sensor.Name,
-                    UOM = s.Sensor.Uom
-                }).ToList()
-            }).FirstOrDefaultAsync(x => x.DeviceId == deviceId.ToString());
-        }
-
-        public async Task<List<DeviceHistoryItem>> GetDeviceHistory(Guid deviceId)
-        {
-            return await db.DeviceHistory.Select(s => new DeviceHistoryItem
-            {
-                DeviceId = s.DeviceId,
-                Name = s.Device.Name,
-                IsRunning = s.IsRunning,
-                TimeStamp = s.Timestamp,
-                SensorCount = s.SensorCount,
-                EventTypeCount = s.EventTypeCount
-            }).ToListAsync();
-        }
-
-        public async Task<int> StoreDeviceHistory(DeviceHistoryItem historyItem)
-        {
-            DeviceHistory history = await db.DeviceHistory.FirstOrDefaultAsync(h => h.DeviceId == historyItem.DeviceId && h.Timestamp == historyItem.TimeStamp);
-            if (history == null)
-            {
-                history = new DeviceHistory
-                {
-                    DeviceId = historyItem.DeviceId,
-                    IsRunning = historyItem.IsRunning,
-                    Timestamp = historyItem.TimeStamp,
-                    SensorCount = historyItem.SensorCount,
-                    EventTypeCount = historyItem.EventTypeCount
-                };
-
-                db.DeviceHistory.Add(history);
-
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                result = false;
             }
 
-            return await db.DeviceHistory.Where(h => h.DeviceId == historyItem.DeviceId).CountAsync();
-        }
-
-        public async Task StoreSensorValue(SensorValueItem item)
-        {
-            DeviceSensorValue value = await db.DeviceSensorValue.FirstOrDefaultAsync(s => s.DeviceSensorId == item.DeviceSensorId && s.Timestamp == item.TimeStamp);
-            if (value == null)
-            {
-                value = new DeviceSensorValue
-                {
-                    DeviceSensorId = item.DeviceSensorId,
-                    Timestamp = item.TimeStamp,
-                    Value = item.Value
-                };
-
-                db.DeviceSensorValue.Add(value);
-
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
+            return result;
         }
     }
 }

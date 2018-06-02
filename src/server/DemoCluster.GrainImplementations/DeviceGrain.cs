@@ -4,82 +4,50 @@ using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Microsoft.Extensions.Logging;
 using Orleans;
+using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Runtime;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [StorageProvider(ProviderName = "MemoryStorage")]
-    public class DeviceGrain : Grain<DeviceState>, IDeviceGrain
+    [StorageProvider(ProviderName="CacheStorage")]
+    public class DeviceGrain : 
+        Grain<DeviceState>,
+        IDeviceGrain
     {
-        private readonly IRuntimeStorage storage;
-        private ILogger logger;
+        private readonly IConfigurationStorage configuration;
+        private readonly ILogger<DeviceGrain> logger;
 
-        private IDeviceJournalGrain journalGrain;
+        private DeviceConfig config;
+        private IDeviceStatusHistoryGrain statusHistory;
 
-        public DeviceGrain(IRuntimeStorage storage, ILogger<DeviceGrain> logger)
+        public DeviceGrain(IConfigurationStorage configuration, ILoggerFactory loggerFactory)
         {
-            this.storage = storage;
-            this.logger = logger;
+            this.configuration = configuration;
+            this.logger = loggerFactory.CreateLogger<DeviceGrain>();
         }
 
-        public override Task OnActivateAsync()
+        public override async Task OnActivateAsync()
         {
-            journalGrain = GrainFactory.GetGrain<IDeviceJournalGrain>(this.GetPrimaryKey());
-
-            return base.OnActivateAsync();
+            config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
+            statusHistory = GrainFactory.GetGrain<IDeviceStatusHistoryGrain>(this.GetPrimaryKey());
+            State = config.ToDeviceGrainState();
         }
 
-        public Task<bool> GetIsRunning()
-        {
-            return Task.FromResult(State.IsRunning);
-        }
-
-        public async Task Start(DeviceConfig config)
+        public Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            
-            State = await journalGrain.Initialize(config);
-            State.IsRunning = true;
-
-            foreach (var sensor in config.Sensors.Where(s => s.IsEnabled))
-            {
-                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>(sensor.DeviceSensorId.Value);
-                State.RegisteredSensors.Add(sensorGrain);
-
-                await sensorGrain.Initialize(sensor, State.Name);
-                await sensorGrain.StartReceiving();
-            }
-
-            await LogState();
+            return Task.CompletedTask;
         }
 
-        public async Task Stop()
+        public Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            State.IsRunning = false;
-
-            foreach (var sensor in State.RegisteredSensors)
-            {
-                if (await sensor.GetIsReceiving())
-                {
-                    await sensor.StopReceiving();
-                }
-            }
-
-            await LogState();
-        }
-
-        private async Task LogState()
-        {
-            await journalGrain.PushState(new DeviceHistoryState
-            {
-                DeviceId = State.DeviceId,
-                IsRunning = State.IsRunning,
-                SensorCount = State.RegisteredSensors.Count
-            });
+            return Task.CompletedTask;
         }
     }
 }

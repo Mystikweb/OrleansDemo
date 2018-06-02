@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DemoCluster.DAL.Database
+namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class Device
     {
         public Device()
         {
             DeviceEventType = new HashSet<DeviceEventType>();
-            DeviceHistory = new HashSet<DeviceHistory>();
             DeviceSensor = new HashSet<DeviceSensor>();
+            DeviceState = new HashSet<DeviceState>();
         }
 
         public Guid DeviceId { get; set; }
@@ -23,8 +23,8 @@ namespace DemoCluster.DAL.Database
         [InverseProperty("Device")]
         public ICollection<DeviceEventType> DeviceEventType { get; set; }
         [InverseProperty("Device")]
-        public ICollection<DeviceHistory> DeviceHistory { get; set; }
-        [InverseProperty("Device")]
         public ICollection<DeviceSensor> DeviceSensor { get; set; }
+        [InverseProperty("Device")]
+        public ICollection<DeviceState> DeviceState { get; set; }
     }
 }

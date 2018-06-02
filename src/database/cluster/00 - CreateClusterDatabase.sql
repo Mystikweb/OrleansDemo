@@ -2,7 +2,7 @@ USE [master]
 GO
 
 CREATE LOGIN [ClusterManager]
-    WITH PASSWORD = N'MyPa55w0rd!', 
+    WITH PASSWORD = N'Th1sPa55w0rd', 
     DEFAULT_LANGUAGE = [us_english];
 GO
 

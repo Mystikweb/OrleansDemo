@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DemoCluster.DAL.Database
+namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class DeviceSensor
     {
-        public DeviceSensor()
-        {
-            DeviceSensorValue = new HashSet<DeviceSensorValue>();
-        }
-
         public int DeviceSensorId { get; set; }
         public Guid DeviceId { get; set; }
         public int SensorId { get; set; }
@@ -23,7 +18,5 @@ namespace DemoCluster.DAL.Database
         [ForeignKey("SensorId")]
         [InverseProperty("DeviceSensor")]
         public Sensor Sensor { get; set; }
-        [InverseProperty("DeviceSensor")]
-        public ICollection<DeviceSensorValue> DeviceSensorValue { get; set; }
     }
 }

@@ -24,10 +24,10 @@ namespace DemoCluster.Api.Controllers
             this.factory = factory;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<DeviceSummary>> Get()
-        {
-            return await runtime.GetDashboardSummary();
-        }
+        // [HttpGet]
+        // public async Task<IEnumerable<DeviceSummary>> Get()
+        // {
+        //     return await runtime.GetDashboardSummary();
+        // }
     }
 }

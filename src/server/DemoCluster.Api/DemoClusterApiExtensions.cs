@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
@@ -11,23 +10,17 @@ namespace DemoCluster.Api
 {
     public static class DemoClusterApiExtensions
     {
-        public static Dictionary<string, string> ToDictionary(this DemoClusterApiOptions options)
-        {
-            return new Dictionary<string, string>
-            {
-                { DemoClusterApiConstants.DEMOCLUSTER_RUNTIME_CONNNECTIONSTRING, options.RuntimeConnnectionString },
-                { DemoClusterApiConstants.DEMOCLUSTER_API_HOSTNAME, options.HostName },
-                { DemoClusterApiConstants.DEMOCLUSTER_API_PORT, options.Port.ToString() }
-            };
-        }
-
-        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder, Action<DemoClusterApiOptions> options)
+        public static ISiloHostBuilder UseApi(this ISiloHostBuilder builder, Action<DemoClusterApiOptions> options = null)
         {
             builder.ConfigureServices(services =>
             {
                 if (options != null)
                 {
                     services.Configure(options);
+                }
+                else
+                {
+                    services.Configure<DemoClusterApiOptions>(config => new DemoClusterApiOptions());
                 }
             });
 

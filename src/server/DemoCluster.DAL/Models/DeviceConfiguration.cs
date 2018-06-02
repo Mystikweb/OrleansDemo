@@ -13,6 +13,7 @@ namespace DemoCluster.DAL.Models
         public bool IsEnabled { get; set; } = false;
         public IEnumerable<DeviceSensorConfig> Sensors { get; set; } = new List<DeviceSensorConfig>();
         public IEnumerable<DeviceEventConfig> Events { get; set; } = new List<DeviceEventConfig>();
+        public IEnumerable<DeviceStateConfig> States { get; set; } = new List<DeviceStateConfig>();
     }
 
     public class DeviceSensorConfig
@@ -30,5 +31,13 @@ namespace DemoCluster.DAL.Models
         public int EventTypeId { get; set; }
         public string Name { get; set; }
         public bool IsEnabled { get; set; } = false;
+    }
+
+    public class DeviceStateConfig
+    {
+        public int? DeviceStateId { get; set; }
+        public int StateId { get; set; }
+        public string Name { get; set; }
+        public bool IsEnabled { get; set; }
     }
 }
