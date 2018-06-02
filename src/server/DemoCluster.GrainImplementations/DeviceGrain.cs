@@ -14,16 +14,16 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [LogConsistencyProvider(ProviderName="StateStorage")]
-    [StorageProvider(ProviderName = "SqlBase")]
+    [StorageProvider(ProviderName="CacheStorage")]
     public class DeviceGrain : 
-        JournaledGrain<DeviceState, DeviceUpdateEvent>,
-        IRemindable,
+        Grain<DeviceState>,
         IDeviceGrain
     {
         private readonly IConfigurationStorage configuration;
         private readonly ILogger<DeviceGrain> logger;
+
         private DeviceConfig config;
+        private IDeviceStatusHistoryGrain statusHistory;
 
         public DeviceGrain(IConfigurationStorage configuration, ILoggerFactory loggerFactory)
         {
@@ -34,39 +34,20 @@ namespace DemoCluster.GrainImplementations
         public override async Task OnActivateAsync()
         {
             config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
-            await RegisterOrUpdateReminder("PushState", TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+            statusHistory = GrainFactory.GetGrain<IDeviceStatusHistoryGrain>(this.GetPrimaryKey());
+            State = config.ToDeviceGrainState();
         }
 
-        public async Task ReceiveReminder(string reminderName, TickStatus status)
-        {
-            if (reminderName == "PushState")
-            {
-                await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name });
-            }
-        }
-
-        public Task<DeviceState> GetCurrentState()
-        {
-            return Task.FromResult(State);
-        }
-
-        public async Task Start()
+        public Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = config.Name, IsRunning = true });
+            return Task.CompletedTask;
         }
 
-        public async Task Stop()
+        public Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            await PushState(new DeviceUpdateEvent() { DeviceId = this.GetPrimaryKey(), Name = State.Name, IsRunning = false });
-        }
-
-        private async Task PushState(DeviceUpdateEvent updateEvent)
-        {
-            logger.Info($"Pushing update for {this.GetPrimaryKey().ToString()}...");
-            RaiseEvent(updateEvent);
-            await ConfirmEvents();
+            return Task.CompletedTask;
         }
     }
 }

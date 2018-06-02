@@ -51,10 +51,9 @@ namespace DemoCluster
                 .Build();
 
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
-            var configConnectionString = appConfig.GetConnectionString("Config");
-
+            
+            var storageLogicOptions = appConfig.GetSection(StorageLogicOptions.SECTION_NAME).Get<StorageLogicOptions>();
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
-            var mongoOptions = appConfig.GetSection(MongoDbOptions.SECTION_NAME).Get<MongoDbOptions>();
             var rabbitOptions = appConfig.GetSection(RabbitMessagingOptions.SECTION_NAME).Get<RabbitMessagingOptions>();
 
             var builder = new SiloHostBuilder()
@@ -75,17 +74,17 @@ namespace DemoCluster
                     options.ConnectionString = clusterConnectionString;
                     options.Invariant = "System.Data.SqlClient";
                 })
-                .AddAdoNetGrainStorage("SqlBase", options =>
-                {
-                    options.ConnectionString = clusterConnectionString;
-                    options.Invariant = "System.Data.SqlClient";
-                    options.UseJsonFormat = true;
-                })
-                .AddMongoDBGrainStorage("MongoStorage", options =>
-                {
-                    options.ConnectionString = "mongodb://ubadmin:R0flth1s!@mystikweb.ddns.net:33005/runtime";
-                })
-                .AddRedisGrainStorage("DeviceStorage", options =>
+                // .AddAdoNetGrainStorage("SqlBase", options =>
+                // {
+                //     options.ConnectionString = clusterConnectionString;
+                //     options.Invariant = "System.Data.SqlClient";
+                //     options.UseJsonFormat = true;
+                // })
+                // .AddMongoDBGrainStorage("MongoStorage", options =>
+                // {
+                //     options.ConnectionString = "mongodb://ubadmin:R0flth1s!@mystikweb.ddns.net:33005/runtime";
+                // })
+                .AddRedisGrainStorage("CacheStorage", options =>
                 {
                     options.Hostname = redisOptions.Hostname;
                     options.Port = redisOptions.Port;
@@ -94,20 +93,13 @@ namespace DemoCluster
                     options.DatabaseNumber = 1;
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
-                .AddMemoryGrainStorage("PubSubStore")
-                .AddStateStorageBasedLogConsistencyProvider()
-                .AddCustomStorageBasedLogConsistencyProvider("CustomStorage")
-                .AddSimpleMessageStreamProvider("PubSub")
-                .UseDashboard()
-                .UseStorageLogic(configConnectionString, mongoOptions)
-                .UseRabbitMessaging(rabbitOptions)
-                .UseApi(options =>
-                {
-                    options.RuntimeConnnectionString = configConnectionString;
-                })
+                .AddCustomStorageBasedLogConsistencyProvider()
+                .UseStorageLogic(storageLogicOptions)
+                .UseApi()
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
+                .AddStartupTask<DeviceRegistryStartup>()
                 .ConfigureLogging(log => log.AddConsole())
-                .AddStartupTask<DeviceRegistryBootstrap>();
+                .UseDashboard();                
 
             var host = builder.Build();
             await host.StartAsync();

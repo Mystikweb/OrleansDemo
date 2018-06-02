@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace DemoCluster.DAL.Database.Runtime
 {
-    public class DeviceStatusHistory
+    public class DeviceStateHistory
     {
         public ObjectId Id { get; set; }
         public Guid DeviceId { get; set; }

@@ -54,7 +54,7 @@ namespace DemoCluster.GrainImplementations
 
             if (deviceGrain != null)
             {
-                var deviceState = await deviceGrain.GetCurrentState();
+                //var deviceState = await deviceGrain.GetCurrentState();
                 result = true;
             }
 

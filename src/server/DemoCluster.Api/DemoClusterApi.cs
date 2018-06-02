@@ -17,29 +17,22 @@ namespace DemoCluster.Api
     public class DemoClusterApi : IStartupTask, IDisposable
     {
         private readonly DemoClusterApiOptions options;
-        private readonly MongoDbOptions mongoOptions;
+        private readonly StorageLogicOptions storageOptions;
         private readonly ILogger logger;
         private readonly IGrainFactory grainFactory;
 
         private IWebHost host;
 
-        public DemoClusterApi(IOptions<DemoClusterApiOptions> options, MongoDbOptions mongoOptions, ILogger<DemoClusterApi> logger, IGrainFactory grainFactory)
+        public DemoClusterApi(IOptions<DemoClusterApiOptions> options, StorageLogicOptions storageOptions, ILogger<DemoClusterApi> logger, IGrainFactory grainFactory)
         {
             this.options = options.Value;
-            this.mongoOptions = mongoOptions;
+            this.storageOptions = storageOptions;
             this.logger = logger;
             this.grainFactory = grainFactory;
         }
 
         public async Task Execute(CancellationToken cancellationToken)
         {
-            string runtimeConnectionString = options.RuntimeConnnectionString;
-
-            if (string.IsNullOrEmpty(runtimeConnectionString))
-            {
-                throw new ApplicationException("Configuration or runtime connection string not provided");
-            }
-
             string listeningUri = $"http://{options.HostName}:{options.Port}";
 
             try
@@ -47,7 +40,7 @@ namespace DemoCluster.Api
                 //host = WebHost.CreateDefaultBuilder()
                 host = new WebHostBuilder()
                     .UseContentRoot(Directory.GetCurrentDirectory())
-                    .RegisterStorageLogic(runtimeConnectionString, mongoOptions)
+                    .UseStorageLogic(storageOptions)
                     .ConfigureServices(services =>
                     {
                         services.AddSingleton(grainFactory);

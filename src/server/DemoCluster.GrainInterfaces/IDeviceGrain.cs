@@ -8,7 +8,6 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceGrain : IGrainWithGuidKey
     {
-        Task<DeviceState> GetCurrentState();
         Task Start();
         Task Stop();
     }

@@ -10,18 +10,6 @@ namespace Orleans.Storage.Redis
 {
     public static class RedisProviderExtensions
     {
-        public static IDictionary<string, string> ToDictionary(this RedisProviderOptions options)
-        {
-            return new Dictionary<string, string>
-            {
-                { RedisProviderConstants.REDIS_HOSTNAME, options.Hostname },
-                { RedisProviderConstants.REDIS_PORT, options.Port.ToString() },
-                { RedisProviderConstants.REDIS_PASSWORD, options.Password },
-                { RedisProviderConstants.REDIS_DATABASE_NUMBER, options.DatabaseNumber.ToString() },
-                { RedisProviderConstants.USE_JSON_FORMAT_PROPERTY, options.UseJsonFormat.ToString() }
-            };
-        }
-
         public static ISiloHostBuilder AddRedisGrainStorage(this ISiloHostBuilder builder, string name,
             Action<RedisProviderOptions> configureOptions)
         {

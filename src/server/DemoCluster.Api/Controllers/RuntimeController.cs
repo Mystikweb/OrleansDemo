@@ -41,11 +41,11 @@ namespace DemoCluster.Api.Controllers
 
             var result = new List<DeviceState>();
 
-            foreach (var device in devices)
-            {
-                var currentState = await dispatcher.DispatchAsync(() => device.GetCurrentState()).ConfigureAwait(false);
-                result.Add(currentState);
-            }
+            // foreach (var device in devices)
+            // {
+            //     var currentState = await dispatcher.DispatchAsync(() => device.GetCurrentState()).ConfigureAwait(false);
+            //     result.Add(currentState);
+            // }
 
             return result;
         }

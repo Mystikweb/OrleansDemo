@@ -1,3 +1,4 @@
+using System;
 using DemoCluster.DAL.Database;
 using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Database.Runtime;
@@ -11,46 +12,37 @@ namespace DemoCluster.DAL
 {
     public static class DemoClusterDALExtensions
     {
-        public static ISiloHostBuilder UseStorageLogic(this ISiloHostBuilder builder, string connetionString, MongoDbOptions mongoOptions)
+        public static ISiloHostBuilder UseStorageLogic(this ISiloHostBuilder builder,
+            StorageLogicOptions options)
         {
-            builder.ConfigureServices(services =>
-            {
-                services.AddDbContextPool<ConfigurationContext>(opts =>
-                    opts.UseSqlServer(connetionString));
-
-                services.AddSingleton<MongoDbOptions>(mongoOptions);
-                services.AddSingleton<IMongoDatabase>(provider =>
-                {
-                    var connection = new MongoClient($"{mongoOptions.ConnectionString}");
-                    return connection.GetDatabase(mongoOptions.DatabaseName);
-                });
-
-                services.AddTransient<IRuntimeStorage, RuntimeStorage>();
-                services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
-            });
-
-            return builder;
+            return builder.ConfigureServices(services =>
+                services.ConfigureStorageLogicServices(options));
         }
 
-        public static IWebHostBuilder RegisterStorageLogic(this IWebHostBuilder builder, string connetionString, MongoDbOptions mongoOptions)
+        public static IWebHostBuilder UseStorageLogic(this IWebHostBuilder builder,
+            StorageLogicOptions options)
         {
-            builder.ConfigureServices(services =>
+            return builder.ConfigureServices(services =>
+                services.ConfigureStorageLogicServices(options));
+        }
+
+        public static IServiceCollection ConfigureStorageLogicServices(this IServiceCollection services, StorageLogicOptions options)
+        {
+            services.AddDbContextPool<ConfigurationContext>(dbOptions =>
+                dbOptions.UseSqlServer(options.SqlConfigurationConnectionString));
+
+            services.AddSingleton<StorageLogicOptions>(options);
+            services.AddSingleton<RuntimeCollections>(options.RuntimeCollections);
+            services.AddSingleton<IMongoDatabase>(provider =>
             {
-                services.AddDbContextPool<ConfigurationContext>(opts =>
-                    opts.UseSqlServer(connetionString));
-
-                services.AddSingleton<MongoDbOptions>(mongoOptions);
-                services.AddSingleton<IMongoDatabase>(provider =>
-                {
-                    var connection = new MongoClient($"{mongoOptions.ConnectionString}");
-                    return connection.GetDatabase(mongoOptions.DatabaseName);
-                });
-
-                services.AddTransient<IRuntimeStorage, RuntimeStorage>();
-                services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
+                var connection = new MongoClient($"{options.MongoRuntimeConnectionString}");
+                return connection.GetDatabase(options.MongoRuntimeDatabaseName);
             });
 
-            return builder;
+            services.AddTransient<IConfigurationStorage, ConfigurationStorage>();
+            services.AddTransient<IRuntimeStorage, RuntimeStorage>();
+
+            return services;
         }
     }
 }

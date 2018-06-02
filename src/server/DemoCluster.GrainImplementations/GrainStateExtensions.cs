@@ -18,21 +18,24 @@ namespace DemoCluster.GrainImplementations
             };
         }
 
-        public static DeviceStatusState ToDeviceStatusState(this DeviceStatus status)
+        public static DeviceStatusCommand CreateDeviceStatusCommand(this DeviceStateHistory item)
         {
-            return new DeviceStatusState
-            {
-                DeviceStateId = status.DeviceStateId,
-                Name = status.Name
-            };
+            return new DeviceStatusCommand(item.DeviceStateId, 
+                item.StateName,
+                item.Timestamp,
+                item.Version);
         }
 
-        public static DeviceStatus ToDeviceStatus(this DeviceStatusState state)
+        public static DeviceStateHistory CreateDeviceStateHistory(this DeviceStatusCommand item, Guid deviceId, string deviceName)
         {
-            return new DeviceStatus
+            return new DeviceStateHistory
             {
-                DeviceStateId = state.DeviceStateId,
-                Name = state.Name
+                DeviceId = deviceId,
+                Name = deviceName,
+                DeviceStateId = item.DeviceStateId,
+                StateName = item.Name,
+                Timestamp = item.Timestamp,
+                Version = item.Version.Value
             };
         }
     }
