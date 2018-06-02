@@ -20,24 +20,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.2" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.0.0" />
     <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0" />
     <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.3" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="2.0.0" />
     <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.0" />
     <PackageReference Include="Microsoft.Orleans.Statistics.AdoNet" Version="2.0.0-beta3" />
-    <PackageReference Include="OrleansDashboard" Version="2.0.4" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
     <PackageReference Include="Orleans.Providers.MongoDB" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.3" />
+    <PackageReference Include="OrleansDashboard" Version="2.0.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
