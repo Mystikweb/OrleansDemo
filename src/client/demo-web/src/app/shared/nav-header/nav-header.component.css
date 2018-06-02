@@ -1,0 +1,8 @@
+.fixed-top {
+  position: fixed;
+  top: 0;
+}
+
+.app-title {
+  margin-left: 16px;
+}

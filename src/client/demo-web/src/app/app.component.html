@@ -1,0 +1,22 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<app-nav-header (toggleNavMenu)="toggleNavMenu($event)"></app-nav-header>
+<mat-sidenav-container class="app-container">
+  <mat-sidenav class="app-nav-container" mode="over" position="start" opened="{{navOpened}}">
+    <mat-nav-list class="app-nav">
+      <a mat-list-item routerLink="/dashboard">
+        <mat-icon matListIcon>dashboard</mat-icon>
+        <span class="app-nav-text">Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/configuration">
+        <mat-icon matListIcon>build</mat-icon>
+        <span class="app-nav-text">Configuration</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav class="app-details-container" mode="over" position="end" opened="{{detailsOpened}}" disableClose="true">
+    <app-details-host></app-details-host>
+  </mat-sidenav>
+  <mat-sidenav-content class="app-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

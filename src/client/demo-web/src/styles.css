@@ -1,0 +1,99 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding-top: 64px;
+}
+
+/* Global table formatting */
+.app-table-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  min-width: 300px;
+  position: relative;
+}
+
+.app-table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
+
+.app-table {
+  overflow: auto;
+  min-height: 300px;
+}
+
+.app-table-loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-table-filter-header {
+  min-height: 56px;
+  max-height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 8px 24px 0;
+  font-size: 20px;
+  justify-content: space-between;
+  border-bottom: 1px solid transparent;
+}
+
+.app-table-filter-input {
+  font-size: 14px;
+  flex-grow: 1;
+  margin-top: 8px;
+}
+
+.app-table-filter-no-results {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.app-table-rate-limit-reached {
+  color: #980000;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Any material table column formats for columns */
+.mat-column-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mat-column-edit,
+.mat-column-remove {
+  max-width: 48px;
+}
+
+/* Gloabl add button */
+.add-button-fab.mat-fab, .add-button-fab.mat-mini-fab {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+/* Global flexbox spacer class */
+.flex-column-spacer {
+  flex: 1;
+}

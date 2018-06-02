@@ -1,0 +1,33 @@
+<mat-grid-list cols="6" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let device of devices$ | async">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{device.name}}</mat-card-title>
+        <mat-icon *ngIf="device.isEnabled">check</mat-icon>
+        <mat-icon *ngIf="!device.isEnabled">block</mat-icon>
+        <!-- <mat-card-subtitle>{{device.deviceType}}</mat-card-subtitle> -->
+      </mat-card-header>
+      <mat-card-content>
+        <mat-card-title-group>
+          <mat-card-subtitle>Sensors</mat-card-subtitle>
+        </mat-card-title-group>
+        <mat-list>
+          <mat-list-item *ngFor="let sensor of device.sensors">
+            <span>{{sensor.name}}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button (click)="removeDevice(device.deviceId)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openEditor(device)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<button mat-fab class="add-button-fab" (click)="openEditor(null)">
+  <mat-icon>add</mat-icon>
+</button>

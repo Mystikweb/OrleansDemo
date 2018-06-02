@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
+    <ProjectReference Include="..\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj" />
+    <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
+    <ProjectReference Include="..\DemoCluster.Api\DemoCluster.Api.csproj" />
+    <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
+    <ProjectReference Include="..\DemoCluster.Util\DemoCluster.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Statistics.AdoNet" Version="2.0.0-beta3" />
+    <PackageReference Include="Orleans.Providers.MongoDB" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.3" />
+    <PackageReference Include="OrleansDashboard" Version="2.0.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

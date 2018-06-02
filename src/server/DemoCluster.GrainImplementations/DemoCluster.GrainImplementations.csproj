@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.EventSourcing" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Orleans.Providers.MongoDB" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
+    <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
+    <ProjectReference Include="..\DemoCluster.Util\DemoCluster.Util.csproj" />
+  </ItemGroup>
+</Project>

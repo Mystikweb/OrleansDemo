@@ -1,0 +1,42 @@
+<div class="form-container">
+  <h4>Sensor</h4>
+  <div class="device-container">
+    <mat-form-field>
+      <input matInput placeholder="Name" [(ngModel)]="sensor.name" tabindex="1" name="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Uom" [(ngModel)]="sensor.uom" tabindex="1" name="uom" />
+    </mat-form-field>
+    <!-- <mat-form-field>
+      <mat-select placeholder="Device Type" [(ngModel)]="device.deviceTypeId" tabindex="2" (selectionChange)="typeSelected()">
+        <mat-option *ngFor="let deviceType of deviceTypes" [value]="deviceType.id">{{deviceType.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-divider *ngIf="device.readings.length > 0"></mat-divider>
+    <mat-list *ngIf="device.readings.length > 0">
+      <h3 mat-subheader>Readings</h3>
+      <mat-list-item *ngFor="let reading of device.readings">
+        <section class="device-control-section">
+          <mat-checkbox class="device-control-margin" [(ngModel)]="reading.enabled">
+            <span>{{reading.readingType}}</span>&nbsp;(<em>{{reading.readingUom}}</em>)
+          </mat-checkbox>
+        </section>
+      </mat-list-item>
+    </mat-list>
+    <mat-divider></mat-divider>
+    <section class="device-control-section">
+      <mat-slide-toggle class="device-control-margin" [(ngModel)]="device.enabled" tabindex="3" name="active">
+        Enabled
+      </mat-slide-toggle>
+    </section>
+    <section class="device-control-section">
+      <mat-slide-toggle class="device-control-margin" [(ngModel)]="device.runOnStartup" tabindex="4" name="active">
+        Run on startup
+      </mat-slide-toggle>
+    </section> -->
+  </div>
+  <div class="device-button-bar">
+    <button mat-raised-button color="primary" (click)="save()">Save</button>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
+  </div>
+</div>
