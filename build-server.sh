@@ -1,6 +1,4 @@
 #!/bin/bash
-pwd
-cd ./src
-dotnet restore ./DemoCluster.sln
-dotnet build ./DemoCluster.sln
+dotnet restore ./src/DemoCluster.sln
+dotnet build ./src/DemoCluster.sln
 docker build -t mystikweb/orleans-demo-server .
