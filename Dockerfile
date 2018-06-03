@@ -19,4 +19,12 @@ RUN dotnet publish -c RELEASE -o release
 FROM microsoft/dotnet:2.1-runtime AS runtime
 WORKDIR /server
 COPY --from=publish /server/DemoCluster/release ./
+# default API port
+EXPOSE 5000
+# dashboard monitor port
+EXPOSE 8080
+# default silo to silo port
+EXPOSE 11111
+# default gateway port
+EXPOSE 30000
 ENTRYPOINT [ "dotnet", "DemoCluster.dll" ]
