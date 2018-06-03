@@ -4,5 +4,5 @@ My Oleans Demo App
 
 | Branch | Status
 |---------|----------|
-| Master | [![master](https://api.travis-ci.com/Mysitkweb/OrleansDemo.svg?branch=master)](https://travis-ci.com/Mystikweb/OrleansDemo) |
-| Develop | [![develop](https://api.travis-ci.com/Mystikweb/OrleansDemo.svg?branch=develop)](https://travis-ci.com/Mystikweb/OrleansDemo)
+| Master | [![master](https://travis-ci.com/Mystikweb/OrleansDemo.svg?branch=master)](https://travis-ci.com/Mystikweb/OrleansDemo) |
+| Develop | [![develop](https://travis-ci.com/Mystikweb/OrleansDemo.svg?branch=develop)](https://travis-ci.com/Mystikweb/OrleansDemo)
