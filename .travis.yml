@@ -2,16 +2,16 @@ language: csharp
 sudo: required
 mono: none
 dotnet: 2.1.300
+services:
+    - docker
 branches:
   only:
     - master
     - develop
 before_script:
   - chmod a+x ./build-server.sh
-  - chmod a+x ./build-docker.sh
 script:
   - ./build-server.sh
-  - ./build-docker.sh
 notifications:
   email:
     on_success: never
