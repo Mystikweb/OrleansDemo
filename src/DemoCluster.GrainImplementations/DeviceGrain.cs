@@ -43,7 +43,7 @@ namespace DemoCluster.GrainImplementations
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
             var currentstatus = await statusHistory.GetCurrentStatus();
-            if (currentstatus.Name.ToUpper() != "RUNNING")
+            if (string.IsNullOrEmpty(currentstatus.Name) || currentstatus.Name.ToUpper() != "RUNNING")
             {
                 var configState = config.States.Where(s => s.Name.ToUpper() == "RUNNING").FirstOrDefault();
                 await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,

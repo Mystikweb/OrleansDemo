@@ -20,17 +20,24 @@ namespace DemoCluster.GrainImplementations
         ICustomStorageInterface<DeviceStatusState, DeviceStatusCommand>,
         IDeviceStatusHistoryGrain
     {
+        private readonly IConfigurationStorage configStorage;
         private readonly IRuntimeStorage runtimeStorage;
         private readonly ILogger logger;
 
-        public DeviceStatusHistoryGrain(IRuntimeStorage runtimeStorage, ILogger<DeviceStatusHistoryGrain> logger)
+        public DeviceStatusHistoryGrain(IConfigurationStorage configStorage, 
+            IRuntimeStorage runtimeStorage, ILogger<DeviceStatusHistoryGrain> logger)
         {
+            this.configStorage = configStorage;
             this.runtimeStorage = runtimeStorage;
             this.logger = logger;
         }
 
         public override async Task OnActivateAsync()
         {
+            var config = await configStorage.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
+            State.DeviceId = Guid.Parse(config.DeviceId);
+            State.DeviceName = config.Name;
+
             await RefreshNow();
         }
 
