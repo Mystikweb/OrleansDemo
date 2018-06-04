@@ -5,7 +5,7 @@ namespace DemoCluster.GrainInterfaces.Commands
 {
     public class DeviceStatusCommand : DeviceCommand
     {
-        public DeviceStatusCommand(int deviceStatusId, string name, DateTime? timeStamp, int? version)
+        public DeviceStatusCommand(int deviceStatusId, string name, DateTime? timeStamp = null, int? version = null)
             : base(timeStamp, version)
         {
             DeviceStateId = deviceStatusId;
