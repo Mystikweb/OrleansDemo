@@ -10,5 +10,13 @@ namespace DemoCluster.GrainInterfaces.States
     {
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
+        public CurrentStatusState CurrentState { get; set; }
+    }
+
+    [Serializable]
+    public class CurrentStatusState
+    {
+        public int DeviceStateId { get; set; }
+        public string Name { get; set; }
     }
 }

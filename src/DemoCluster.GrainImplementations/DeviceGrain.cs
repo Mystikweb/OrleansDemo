@@ -34,32 +34,41 @@ namespace DemoCluster.GrainImplementations
 
         public override async Task OnActivateAsync()
         {
-            config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
             statusHistory = GrainFactory.GetGrain<IDeviceStatusHistoryGrain>(this.GetPrimaryKey());
-            State = config.ToDeviceGrainState();
+
+            await ReadStateAsync();
+            if (State.DeviceId == Guid.Empty)
+            {
+                config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
+                State = config.ToDeviceGrainState();
+                State.CurrentState = await statusHistory.GetCurrentStatus();
+                await WriteStateAsync();
+            }
         }
 
         public async Task Start()
         {
             logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            var currentstatus = await statusHistory.GetCurrentStatus();
-            if (string.IsNullOrEmpty(currentstatus.Name) || currentstatus.Name.ToUpper() != "RUNNING")
+            if (string.IsNullOrEmpty(State.CurrentState.Name) || State.CurrentState.Name.ToUpper() != "RUNNING")
             {
                 var configState = config.States.Where(s => s.Name.ToUpper() == "RUNNING").FirstOrDefault();
                 await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,
                     configState.Name));
+                State.CurrentState = await statusHistory.GetCurrentStatus();
+                await WriteStateAsync();
             }
         }
 
         public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            var currentstatus = await statusHistory.GetCurrentStatus();
-            if (string.IsNullOrEmpty(currentstatus.Name) || currentstatus.Name.ToUpper() != "STOPPED")
+            if (string.IsNullOrEmpty(State.CurrentState.Name) || State.CurrentState.Name.ToUpper() != "STOPPED")
             {
                 var configState = config.States.Where(s => s.Name.ToUpper() == "STOPPED").FirstOrDefault();
                 await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,
                     configState.Name));
+                State.CurrentState = await statusHistory.GetCurrentStatus();
+                await WriteStateAsync();
             }
         }
     }
