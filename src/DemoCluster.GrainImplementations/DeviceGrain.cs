@@ -51,10 +51,16 @@ namespace DemoCluster.GrainImplementations
             }
         }
 
-        public Task Stop()
+        public async Task Stop()
         {
             logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            return Task.CompletedTask;
+            var currentstatus = await statusHistory.GetCurrentStatus();
+            if (string.IsNullOrEmpty(currentstatus.Name) || currentstatus.Name.ToUpper() != "STOPPED")
+            {
+                var configState = config.States.Where(s => s.Name.ToUpper() == "STOPPED").FirstOrDefault();
+                await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,
+                    configState.Name));
+            }
         }
     }
 }
