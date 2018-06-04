@@ -13,7 +13,7 @@ RUN dotnet build
 # take the build and publish the app
 FROM build AS publish
 WORKDIR /server/DemoCluster
-RUN dotnet publish -c RELEASE -o release
+RUN dotnet publish -c Release -o release
 
 # now create the runtime image
 FROM microsoft/dotnet:2.1-runtime AS runtime
