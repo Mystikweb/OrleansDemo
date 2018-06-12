@@ -37,6 +37,7 @@ namespace DemoCluster.GrainImplementations
                 State.DeviceSensorId = (int)this.GetPrimaryKeyLong();
                 State.Name = config.Name;
                 State.IsReceiving = await statusHistory.GetIsReceiving();
+                await WriteStateAsync();
             }
         }
 
