@@ -16,7 +16,7 @@ namespace DemoCluster.DAL
         Task<SensorConfig> GetSensorAsync(int sensorId);
         Task<SensorConfig> SaveSensorAsync(SensorConfig model);
         Task RemoveSensorAsync(int sensorId);
-        Task<SensorConfig> GetDeviceSensorAsync(int deviceSensorId);
+        Task<SensorDeviceConfig> GetDeviceSensorAsync(int deviceSensorId);
         Task<List<EventConfig>> GetEventListAsync(string sort, int index, string search);
         Task<EventConfig> GetEventAsync(int eventId);
         Task<EventConfig> SaveEventAsync(EventConfig model);

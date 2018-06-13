@@ -359,15 +359,18 @@ namespace DemoCluster.DAL
             await context.SaveChangesAsync();
         }
 
-        public async Task<SensorConfig> GetDeviceSensorAsync(int deviceSensorId)
+        public async Task<SensorDeviceConfig> GetDeviceSensorAsync(int deviceSensorId)
         {
-            DeviceSensor deviceSensor = await context.DeviceSensor.FirstOrDefaultAsync(ds => ds.DeviceSensorId == deviceSensorId);
-            if (deviceSensor == null)
-            {
-                throw new ApplicationException($"Device sensor configuration for {deviceSensorId} was not found.");
-            }
-
-            return await GetSensorAsync(deviceSensor.SensorId);
+            return await context.DeviceSensor
+                .Where(ds => ds.DeviceSensorId == deviceSensorId)
+                .Select(ds => new SensorDeviceConfig
+                {
+                    DeviceSensorId = ds.DeviceSensorId,
+                    DeviceName = ds.Device.Name,
+                    SensorName = ds.Sensor.Name,
+                    Uom = ds.Sensor.Uom,
+                    IsEnabled = ds.IsEnabled
+                }).FirstOrDefaultAsync();
         }
 
         public async Task<List<EventConfig>> GetEventListAsync(string sort, int index, string search)

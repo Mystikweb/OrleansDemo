@@ -8,7 +8,9 @@ namespace DemoCluster.GrainInterfaces.States
     public class SensorStatusState
     {
         public int DeviceSensorId { get; set; }
+        public string DeviceName { get; set; }
         public string SensorName { get; set; }
+        public string Uom { get; set; }
         public bool IsReceiving { get; set; }
         public DateTime Timestamp { get; set; }
         public int Version { get; set; } = 0;
@@ -16,7 +18,6 @@ namespace DemoCluster.GrainInterfaces.States
 
         public void Apply(SensorStatusCommand update)
         {
-            this.DeviceSensorId = update.DeviceSensorId;
             this.IsReceiving = update.IsReceiving;
             this.Timestamp = update.Timestamp;
             this.Version = update.Version.HasValue ? update.Version.Value : this.Version++;

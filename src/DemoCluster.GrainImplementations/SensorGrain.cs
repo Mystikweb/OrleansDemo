@@ -17,7 +17,7 @@ namespace DemoCluster.GrainImplementations
         private readonly IConfigurationStorage configuration;
         private readonly ILogger<SensorGrain> logger;
 
-        private SensorConfig config;
+        private SensorDeviceConfig config;
         private ISensorStatusHistoryGrain statusHistory;
 
         public SensorGrain(IConfigurationStorage configuration, ILogger<SensorGrain> logger)
@@ -35,7 +35,7 @@ namespace DemoCluster.GrainImplementations
             {
                 config = await configuration.GetDeviceSensorAsync((int)this.GetPrimaryKeyLong());
                 State.DeviceSensorId = (int)this.GetPrimaryKeyLong();
-                State.Name = config.Name;
+                State.Name = config.SensorName;
                 State.IsReceiving = await statusHistory.GetIsReceiving();
                 await WriteStateAsync();
             }

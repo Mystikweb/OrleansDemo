@@ -10,5 +10,7 @@ namespace DemoCluster.DAL
     {
         Task<List<DeviceStateHistory>> GetDeviceStateHistory(Guid deviceId, int days = 30);
         Task<bool> SaveDeviceState(DeviceStateHistory item);
+        Task<List<SensorStateHistory>> GetSensorStateHistory(int deviceSensorId, int days = 30);
+        Task<bool> SaveSensorState(SensorStateHistory item);
     }
 }

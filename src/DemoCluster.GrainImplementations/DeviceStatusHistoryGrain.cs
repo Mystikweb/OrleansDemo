@@ -88,7 +88,7 @@ namespace DemoCluster.GrainImplementations
             {
                 foreach (var item in updates)
                 {
-                    await runtimeStorage.SaveDeviceState(item.CreateDeviceStateHistory(State.DeviceId, State.DeviceName));
+                    await runtimeStorage.SaveDeviceState(item.CreateDeviceStateHistory(State));
                     version = item.Version.Value;
                 }
             }

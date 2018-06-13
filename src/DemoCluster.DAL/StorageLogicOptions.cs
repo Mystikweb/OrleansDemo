@@ -12,6 +12,7 @@ namespace DemoCluster.DAL
 
     public class RuntimeCollections
     {
-        public string DeviceStatusHistory { get; set; }
+        public string DeviceStateHistory { get; set; }
+        public string SensorStateHistory { get; set; }
     }
 }
