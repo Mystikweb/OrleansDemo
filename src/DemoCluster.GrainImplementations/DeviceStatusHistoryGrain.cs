@@ -41,9 +41,13 @@ namespace DemoCluster.GrainImplementations
             await RefreshNow();
         }
 
-        public Task<DeviceStatusState> GetCurrentStatus()
+        public Task<CurrentStatusState> GetCurrentStatus()
         {
-            return Task.FromResult(State);
+            return Task.FromResult(new CurrentStatusState
+            {
+                DeviceStateId = State.DeviceStateId,
+                Name = State.Name
+            });
         }
 
         public Task<List<DeviceStatusHistory>> GetStatusHistory()
@@ -84,7 +88,7 @@ namespace DemoCluster.GrainImplementations
             {
                 foreach (var item in updates)
                 {
-                    await runtimeStorage.SaveDeviceState(item.CreateDeviceStateHistory(State.DeviceId, State.DeviceName));
+                    await runtimeStorage.SaveDeviceState(item.CreateDeviceStateHistory(State));
                     version = item.Version.Value;
                 }
             }

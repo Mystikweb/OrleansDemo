@@ -359,6 +359,20 @@ namespace DemoCluster.DAL
             await context.SaveChangesAsync();
         }
 
+        public async Task<SensorDeviceConfig> GetDeviceSensorAsync(int deviceSensorId)
+        {
+            return await context.DeviceSensor
+                .Where(ds => ds.DeviceSensorId == deviceSensorId)
+                .Select(ds => new SensorDeviceConfig
+                {
+                    DeviceSensorId = ds.DeviceSensorId,
+                    DeviceName = ds.Device.Name,
+                    SensorName = ds.Sensor.Name,
+                    Uom = ds.Sensor.Uom,
+                    IsEnabled = ds.IsEnabled
+                }).FirstOrDefaultAsync();
+        }
+
         public async Task<List<EventConfig>> GetEventListAsync(string sort, int index, string search)
         {
             var baseList = context.EventType.AsQueryable();

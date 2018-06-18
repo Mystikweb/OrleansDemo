@@ -26,14 +26,35 @@ namespace DemoCluster.GrainImplementations
                 item.Version);
         }
 
-        public static DeviceStateHistory CreateDeviceStateHistory(this DeviceStatusCommand item, Guid deviceId, string deviceName)
+        public static DeviceStateHistory CreateDeviceStateHistory(this DeviceStatusCommand item, DeviceStatusState state)
         {
             return new DeviceStateHistory
             {
-                DeviceId = deviceId,
-                Name = deviceName,
+                DeviceId = state.DeviceId,
+                Name = state.Name,
                 DeviceStateId = item.DeviceStateId,
                 StateName = item.Name,
+                Timestamp = item.Timestamp,
+                Version = item.Version.Value
+            };
+        }
+
+        public static SensorStatusCommand CreateSensorStatusCommand(this SensorStateHistory item)
+        {
+            return new SensorStatusCommand(item.IsReceiving, 
+                item.Timestamp, 
+                item.Version);
+        }
+
+        public static SensorStateHistory CreateSensorStateHistory(this SensorStatusCommand item, SensorStatusState state)
+        {
+            return new SensorStateHistory
+            {
+                DeviceSensorId = state.DeviceSensorId,
+                DeviceName = state.DeviceName,
+                SensorName = state.SensorName,
+                Uom = state.Uom,
+                IsReceiving = item.IsReceiving,
                 Timestamp = item.Timestamp,
                 Version = item.Version.Value
             };

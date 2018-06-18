@@ -23,9 +23,8 @@ namespace DemoCluster.GrainImplementations
         public async Task Initialize()
         {
             var deviceList = await storage.GetDeviceListAsync();
-            var activeDevices = deviceList.ToList();
 
-            foreach (var device in activeDevices)
+            foreach (var device in deviceList)
             {
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
