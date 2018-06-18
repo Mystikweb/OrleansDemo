@@ -24,4 +24,12 @@ namespace DemoCluster.DAL.Models
         public string DeviceId { get; set; }
         public bool IsRunning { get; set; }
     }
+
+    public class DeviceStateItem
+    {
+        public Guid DeviceId { get; set; }
+        public int DeviceStatusId { get; set; }
+        public string Name { get; set; }
+        public DateTime? Timestamp { get; set; }
+    }
 }
