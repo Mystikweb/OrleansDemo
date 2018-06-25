@@ -8,7 +8,7 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceStatusHistoryGrain : IGrainWithGuidKey
     {
-        Task<CurrentStatusState> GetCurrentStatus();
+        Task<CurrentDeviceState> GetCurrentStatus();
         Task<List<DeviceStatusHistory>> GetStatusHistory();
         Task<bool> UpdateStatus(DeviceStatusCommand update);
     }

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using DemoCluster.Api.Hubs;
 using DemoCluster.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -73,6 +74,10 @@ namespace DemoCluster.Api
                         });
 
                         app.UseMvc();
+                        app.UseSignalR(config =>
+                        {
+                            config.MapHub<DeviceHub>("/devicehub");
+                        });
                     })
                     .UseKestrel()
                     .UseUrls(listeningUri)

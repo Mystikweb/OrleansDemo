@@ -41,9 +41,9 @@ namespace DemoCluster.GrainImplementations
             await RefreshNow();
         }
 
-        public Task<CurrentStatusState> GetCurrentStatus()
+        public Task<CurrentDeviceState> GetCurrentStatus()
         {
-            return Task.FromResult(new CurrentStatusState
+            return Task.FromResult(new CurrentDeviceState
             {
                 DeviceStateId = State.DeviceStateId,
                 Name = State.Name
