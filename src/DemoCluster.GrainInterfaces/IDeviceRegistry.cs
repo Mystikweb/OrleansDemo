@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
-    public interface IDeviceRegistry : IRegistryGrain<IDeviceGrain>
+    public interface IDeviceRegistry : IRegistryGrain<IDeviceWorkerGrain>
     {
         Task Initialize();
         Task Teardown();

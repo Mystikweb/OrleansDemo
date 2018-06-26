@@ -11,7 +11,7 @@ namespace DemoCluster.GrainImplementations
 {
     [OneInstancePerCluster]
     [StorageProvider(ProviderName = "MemoryStorage")]
-    public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
+    public class DeviceRegistry : RegistryGrain<IDeviceWorkerGrain>, IDeviceRegistry
     {
         private IConfigurationStorage storage;
 
@@ -26,7 +26,7 @@ namespace DemoCluster.GrainImplementations
 
             foreach (var device in deviceList)
             {
-                var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+                var deviceGrain = GrainFactory.GetGrain<IDeviceWorkerGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
 
                 if (device.IsEnabled)
@@ -49,7 +49,7 @@ namespace DemoCluster.GrainImplementations
             bool result = false;
 
             var device = await storage.GetDeviceByIdAsync(deviceId);
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+            var deviceGrain = GrainFactory.GetGrain<IDeviceWorkerGrain>(Guid.Parse(device.DeviceId));
 
             if (deviceGrain != null)
             {
@@ -64,7 +64,7 @@ namespace DemoCluster.GrainImplementations
         {
             var device = await storage.GetDeviceByIdAsync(deviceId);
 
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+            var deviceGrain = GrainFactory.GetGrain<IDeviceWorkerGrain>(Guid.Parse(device.DeviceId));
             await RegisterGrain(deviceGrain);
 
             await deviceGrain.Start();
@@ -74,7 +74,7 @@ namespace DemoCluster.GrainImplementations
         {
             var device = await storage.GetDeviceByIdAsync(deviceId);
 
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+            var deviceGrain = GrainFactory.GetGrain<IDeviceWorkerGrain>(Guid.Parse(device.DeviceId));
             await deviceGrain.Stop();
         }
     }

@@ -10,5 +10,7 @@ namespace DemoCluster.GrainInterfaces
         Task<bool> UpdateConfig(DeviceConfig config);
         Task<DeviceStateItem> GetCurrentStatus();
         Task<bool> UpdateCurrentStatus(DeviceStateItem state);
+        Task Start();
+        Task Stop();
     }
 }

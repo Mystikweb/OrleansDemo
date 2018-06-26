@@ -8,7 +8,7 @@ namespace DemoCluster.DAL.Database.Runtime
     {
         public ObjectId Id { get; set; }
         public Guid DeviceId { get; set; }
-        public string DeviceName { get; set; }
+        public string Name { get; set; }
         public DateTime Timestamp { get; set; }
         public int Version { get; set; }
         public DeviceStateItem State { get; set; } = new DeviceStateItem();
@@ -28,5 +28,6 @@ namespace DemoCluster.DAL.Database.Runtime
         public int SensorId { get; set; }
         public string Name { get; set; }
         public string UOM { get; set; }
+        public bool Enabled { get; set; }
     }
 }
