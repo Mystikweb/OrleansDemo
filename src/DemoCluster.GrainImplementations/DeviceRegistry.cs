@@ -2,10 +2,13 @@ using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
 using Microsoft.Extensions.Logging;
+using Orleans;
 using Orleans.MultiCluster;
 using Orleans.Providers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,11 +19,13 @@ namespace DemoCluster.GrainImplementations
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
         private readonly ILogger logger;
+        private readonly IGrainFactory factory;
         private readonly IConfigurationStorage storage;
 
-        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, IGrainFactory factory, IConfigurationStorage storage)
         {
             this.logger = logger;
+            this.factory = factory;
             this.storage = storage;
         }
 
@@ -56,17 +61,23 @@ namespace DemoCluster.GrainImplementations
             }
         }
 
-        public async Task<bool> GetLoadedDeviceState(string deviceId)
+        public async Task<List<DeviceState>> GetLoadedDeviceStates()
         {
-            bool result = false;
+            List<DeviceState> result = new List<DeviceState>();
 
-            var device = await storage.GetDeviceByIdAsync(deviceId);
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-
-            if (deviceGrain != null)
+            try
             {
-                //var deviceState = await deviceGrain.GetCurrentState();
-                result = true;
+                foreach (var device in State.RegisteredGrains)
+                {
+                    factory.BindGrainReference(device);
+                    
+                    var currentState = await device.GetState();
+                    result.Add(currentState);
+                }    
+            }
+            catch (System.Exception ex)
+            {
+                logger.LogError(ex, $"Error loading device states");
             }
 
             return result;

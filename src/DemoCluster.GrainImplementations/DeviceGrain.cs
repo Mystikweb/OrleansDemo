@@ -36,6 +36,11 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(this.GetPrimaryKey());
         }
 
+        public Task<DeviceState> GetState()
+        {
+            return Task.FromResult(State);
+        }
+
         public Task<DeviceConfig> GetCurrentConfig()
         {
             return Task.FromResult(deviceConfig);

@@ -9,7 +9,6 @@ namespace DemoCluster.GrainInterfaces.Patterns
     {
         Task<TRegisteredGrain> RegisterGrain(TRegisteredGrain item);
         Task<TRegisteredGrain> UnregisterGrain(TRegisteredGrain item);
-
         Task<List<TRegisteredGrain>> GetRegisteredGrains();
     }
 }
