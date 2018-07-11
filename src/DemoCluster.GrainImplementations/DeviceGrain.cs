@@ -10,15 +10,18 @@ using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.Providers;
+using Orleans.Runtime;
 
 namespace DemoCluster.GrainImplementations
 {
     [LogConsistencyProvider(ProviderName="LogStorage")]
     [StorageProvider(ProviderName = "SqlBase")]
     public class DeviceGrain : 
-        JournaledGrain<DeviceState>, IDeviceGrain
+        JournaledGrain<DeviceState>, IRemindable,
+        IDeviceGrain
     {
         private readonly ILogger logger;
+        private IGrainReminder reminder;
         private DeviceConfig deviceConfig;
 
         public DeviceGrain(ILogger<DeviceGrain> logger)
@@ -29,6 +32,21 @@ namespace DemoCluster.GrainImplementations
         public override async Task OnActivateAsync()
         {
             await RefreshNow();
+
+            if (State.CurrentState != null && State.CurrentState.Name == "RUNNING")
+            {
+                reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
+            }
+        }
+
+        public async Task ReceiveReminder(string reminderName, TickStatus status)
+        {
+            switch (reminderName)
+            {
+                case "GetSensorUpdates":
+                    await UpdateSensorSummaries();
+                    break;
+            }
         }
 
         public Task<Guid> GetKey()
@@ -57,8 +75,8 @@ namespace DemoCluster.GrainImplementations
 
             RaiseEvent(new DeviceConfigCommand(this.GetPrimaryKey(), deviceConfig.Name));
             await ConfirmEvents();
-
             await ProcessConfigStatus();
+            await ProcessConfigSensors();
 
             return true;
         }
@@ -80,6 +98,8 @@ namespace DemoCluster.GrainImplementations
                 {
                     await UpdateCurrentStatus(runningState.ConfigToStateItem(this.GetPrimaryKey()));
                 }
+
+                reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
             }
 
             if (!deviceConfig.IsEnabled && State.CurrentState.Name != "STOPPED")
@@ -88,6 +108,50 @@ namespace DemoCluster.GrainImplementations
                 if (stoppedState != null)
                 {
                     await UpdateCurrentStatus(stoppedState.ConfigToStateItem(this.GetPrimaryKey()));
+                }
+
+                await UnregisterReminder(reminder);
+            }
+        }
+
+        private async Task ProcessConfigSensors()
+        {
+            foreach (var sensor in deviceConfig.Sensors)
+            {
+                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
+                var isSetup = await sensorGrain.UpdateConfig(sensor);
+
+                if (!isSetup)
+                {
+                    logger.LogError($"Unable to register sensor {sensor.Name} ({sensor.DeviceSensorId}) with device {deviceConfig.Name}");
+                }
+                else
+                {
+                    var sensorSummary = await sensorGrain.GetDeviceState();
+
+                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                        sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
+                        sensorSummary.AverageValue, sensorSummary.TotalValue));
+
+                    await ConfirmEvents();
+                }
+            }
+        }
+
+        private async Task UpdateSensorSummaries()
+        {
+            if (deviceConfig != null)
+            {
+                foreach (var sensor in deviceConfig.Sensors)
+                {
+                    var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
+                    var sensorSummary = await sensorGrain.GetDeviceState();
+
+                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                        sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
+                        sensorSummary.AverageValue, sensorSummary.TotalValue));
+
+                    await ConfirmEvents();
                 }
             }
         }

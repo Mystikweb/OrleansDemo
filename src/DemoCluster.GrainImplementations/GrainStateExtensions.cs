@@ -8,15 +8,6 @@ namespace DemoCluster.GrainImplementations
 {
     public static class GrainStateExtensions
     {
-        public static DeviceState ToDeviceGrainState(this DeviceConfig item)
-        {
-            return new DeviceState
-            {
-                DeviceId = Guid.Parse(item.DeviceId),
-                Name = item.Name
-            };
-        }
-
         public static DeviceStateItem ToStateItem(this CurrentDeviceState state, Guid deviceId)
         {
             return new DeviceStateItem
@@ -26,6 +17,18 @@ namespace DemoCluster.GrainImplementations
                 StatusId = state.StateId,
                 Name = state.Name,
                 Timestamp = state.Timestamp
+            };
+        }
+
+        public static SensorStateSummary ToStateSummary(this SensorState state)
+        {
+            return new SensorStateSummary
+            {
+                DeviceSensorId = state.DeviceSensorId,
+                SensorId = state.SensorId,
+                Name = state.Name,
+                UOM = state.UOM,
+                IsEnabled = state.IsEnabled
             };
         }
     }

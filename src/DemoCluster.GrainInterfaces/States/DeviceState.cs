@@ -32,6 +32,33 @@ namespace DemoCluster.GrainInterfaces.States
 
             CurrentState = newState;
         }
+
+        public void Apply(DeviceSensorSummaryUpdatedCommand @event)
+        {
+            var newState = new DeviceSensorState
+            {
+                DeviceSensorId = @event.DeviceSensorId,
+                SensorId = @event.SensorId,
+                Name = @event.Name,
+                UOM = @event.UOM,
+                Enabled = @event.IsEnabled,
+                LastValue = @event.LastValue,
+                LastValueReceived = @event.LastValueReceived,
+                AverageValue = @event.AverageValue,
+                TotalValue = @event.TotalValue,
+                Timestamp = @event.Timestamp
+            };
+
+            if (Sensors.Exists(s => s.DeviceSensorId == newState.DeviceSensorId))
+            {
+                int idx = Sensors.IndexOf(Sensors.Find(s => s.DeviceSensorId == newState.DeviceSensorId));
+                Sensors[idx] = newState;
+            }
+            else
+            {
+                Sensors.Add(newState);
+            }
+        }
     }
 
     [Serializable]
@@ -51,6 +78,8 @@ namespace DemoCluster.GrainInterfaces.States
         public string Name { get; set; }
         public string UOM { get; set; }
         public bool Enabled { get; set; }
+        public double? LastValue { get; set; }
+        public DateTime? LastValueReceived { get; set; }
         public double? AverageValue { get; set; }
         public double? TotalValue { get; set; }
         public DateTime Timestamp { get; set; }
