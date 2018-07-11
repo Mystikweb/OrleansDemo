@@ -31,7 +31,7 @@ namespace DemoCluster.GrainImplementations
 
                 if (device.IsEnabled)
                 {
-                    await deviceGrain.Start();
+                    //await deviceGrain.Start();
                 }
             }
         }
@@ -40,7 +40,8 @@ namespace DemoCluster.GrainImplementations
         {
             foreach (var device in State.RegisteredGrains)
             {
-                await device.Stop();
+                await UnregisterGrain(device);
+                //await device.Stop();
             }
         }
 
@@ -67,7 +68,7 @@ namespace DemoCluster.GrainImplementations
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await RegisterGrain(deviceGrain);
 
-            await deviceGrain.Start();
+            //await deviceGrain.Start();
         }
 
         public async Task StopDevice(string deviceId)
@@ -75,7 +76,7 @@ namespace DemoCluster.GrainImplementations
             var device = await storage.GetDeviceByIdAsync(deviceId);
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            await deviceGrain.Stop();
+            //await deviceGrain.Stop();
         }
     }
 }
