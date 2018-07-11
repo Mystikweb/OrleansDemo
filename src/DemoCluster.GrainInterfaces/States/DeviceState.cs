@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using DemoCluster.GrainInterfaces.Commands;
 
 namespace DemoCluster.GrainInterfaces.States
@@ -32,7 +31,6 @@ namespace DemoCluster.GrainInterfaces.States
             };
 
             CurrentState = newState;
-            Timestamp = @event.Timestamp;
         }
     }
 
@@ -53,5 +51,8 @@ namespace DemoCluster.GrainInterfaces.States
         public string Name { get; set; }
         public string UOM { get; set; }
         public bool Enabled { get; set; }
+        public double? AverageValue { get; set; }
+        public double? TotalValue { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
