@@ -20,7 +20,8 @@ namespace DemoCluster.GrainInterfaces.States
             {
                 DeviceStateId = @event.DeviceStateId,
                 StateId = @event.StatusId,
-                Name = @event.Name
+                Name = @event.Name,
+                Timestamp = @event.Timestamp
             };
 
             CurrentState = newState;
@@ -34,6 +35,7 @@ namespace DemoCluster.GrainInterfaces.States
         public int DeviceStateId { get; set; }
         public int StateId { get; set; }
         public string Name { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 
     [Serializable]

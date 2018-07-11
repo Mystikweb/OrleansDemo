@@ -8,9 +8,8 @@ namespace DemoCluster.GrainInterfaces.Commands
     {
         public DeviceCommand(DateTime? timeStamp)
         {
-            this.Timestamp = timeStamp.HasValue ? timeStamp.Value : DateTime.UtcNow;
+            Timestamp = timeStamp.HasValue ? timeStamp.Value : DateTime.UtcNow;
         }
-        public Guid DeviceId { get; set; }
         public DateTime Timestamp { get; private set; }
     }
 }

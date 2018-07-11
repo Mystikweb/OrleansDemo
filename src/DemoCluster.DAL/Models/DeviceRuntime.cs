@@ -37,6 +37,7 @@ namespace DemoCluster.DAL.Models
     {
         public Guid DeviceId { get; set; }
         public int DeviceStatusId { get; set; }
+        public int StatusId { get; set; }
         public string Name { get; set; }
         public DateTime? Timestamp { get; set; }
     }

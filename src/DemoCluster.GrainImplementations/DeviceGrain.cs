@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.Commands;
 using DemoCluster.GrainInterfaces.States;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -29,17 +30,17 @@ namespace DemoCluster.GrainImplementations
         public override async Task OnActivateAsync()
         {
             deviceConfig = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
-            
+            await RefreshNow();
         }
 
         public Task<DeviceConfig> GetCurrentConfig()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(deviceConfig);
         }
 
         public Task<DeviceStateItem> GetCurrentStatus()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(State.CurrentState.ToStateItem(this.GetPrimaryKey()));
         }
 
         public Task<bool> UpdateConfig()
@@ -47,9 +48,12 @@ namespace DemoCluster.GrainImplementations
             throw new System.NotImplementedException();
         }
 
-        public Task<bool> UpdateCurrentStatus(DeviceStateItem state)
+        public async Task<bool> UpdateCurrentStatus(DeviceStateItem state)
         {
-            throw new System.NotImplementedException();
+            RaiseEvent(new DeviceStatusCommand(state.DeviceStatusId, state.StatusId, state.Name));
+            await ConfirmEvents();
+
+            return true;
         }
     }
 }
