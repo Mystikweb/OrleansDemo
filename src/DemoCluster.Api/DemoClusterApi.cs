@@ -47,6 +47,7 @@ namespace DemoCluster.Api
                         services.AddSingleton(grainFactory);
                         services.AddSingleton<IActionDispatcher>(new ActionDispatcher(TaskScheduler.Current));
                         services.AddSingleton(logger);
+                        services.AddSignalR();
                         services.AddMvc();
 
                         // Register the Swagger generator, defining one or more Swagger documents

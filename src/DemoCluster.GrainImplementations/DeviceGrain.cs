@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
@@ -17,20 +19,21 @@ namespace DemoCluster.GrainImplementations
         JournaledGrain<DeviceState>, IDeviceGrain
     {
         private readonly ILogger logger;
-        private readonly IConfigurationStorage configuration;
-
         private DeviceConfig deviceConfig;
 
-        public DeviceGrain(ILogger<DeviceGrain> logger, IConfigurationStorage configuration)
+        public DeviceGrain(ILogger<DeviceGrain> logger)
         {
             this.logger = logger;
-            this.configuration = configuration;
         }
 
         public override async Task OnActivateAsync()
         {
-            deviceConfig = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
             await RefreshNow();
+        }
+
+        public Task<Guid> GetKey()
+        {
+            return Task.FromResult(this.GetPrimaryKey());
         }
 
         public Task<DeviceConfig> GetCurrentConfig()
@@ -43,9 +46,16 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(State.CurrentState.ToStateItem(this.GetPrimaryKey()));
         }
 
-        public Task<bool> UpdateConfig()
+        public async Task<bool> UpdateConfig(DeviceConfig config)
         {
-            throw new System.NotImplementedException();
+            deviceConfig = config;
+
+            RaiseEvent(new DeviceConfigCommand(this.GetPrimaryKey(), deviceConfig.Name));
+            await ConfirmEvents();
+
+            await ProcessConfigStatus();
+
+            return true;
         }
 
         public async Task<bool> UpdateCurrentStatus(DeviceStateItem state)
@@ -54,6 +64,27 @@ namespace DemoCluster.GrainImplementations
             await ConfirmEvents();
 
             return true;
+        }
+
+        private async Task ProcessConfigStatus()
+        {
+            if (deviceConfig.IsEnabled && State.CurrentState.Name != "RUNNING")
+            {
+                var runningState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "RUNNING");
+                if (runningState != null)
+                {
+                    await UpdateCurrentStatus(runningState.ConfigToStateItem(this.GetPrimaryKey()));
+                }
+            }
+
+            if (!deviceConfig.IsEnabled && State.CurrentState.Name != "STOPPED")
+            {
+                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                if (stoppedState != null)
+                {
+                    await UpdateCurrentStatus(stoppedState.ConfigToStateItem(this.GetPrimaryKey()));
+                }
+            }
         }
     }
 }

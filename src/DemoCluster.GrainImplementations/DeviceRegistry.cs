@@ -1,6 +1,8 @@
 using DemoCluster.DAL;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
+using Microsoft.Extensions.Logging;
 using Orleans.MultiCluster;
 using Orleans.Providers;
 using System;
@@ -13,10 +15,12 @@ namespace DemoCluster.GrainImplementations
     [StorageProvider(ProviderName = "CacheStorage")]
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
-        private IConfigurationStorage storage;
+        private readonly ILogger logger;
+        private readonly IConfigurationStorage storage;
 
-        public DeviceRegistry(IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
         {
+            this.logger = logger;
             this.storage = storage;
         }
 
@@ -29,9 +33,10 @@ namespace DemoCluster.GrainImplementations
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
 
-                if (device.IsEnabled)
+                bool isSetup = await deviceGrain.UpdateConfig(device);
+                if (!isSetup)
                 {
-                    //await deviceGrain.Start();
+                    logger.LogWarning($"Device {device.DeviceId} was not seupt correctly on initialization");
                 }
             }
         }
@@ -40,8 +45,14 @@ namespace DemoCluster.GrainImplementations
         {
             foreach (var device in State.RegisteredGrains)
             {
+                var deviceConfig = await device.GetCurrentConfig();
+                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                if (stoppedState != null)
+                {
+                    await device.UpdateCurrentStatus(stoppedState.ConfigToStateItem(Guid.Parse(deviceConfig.DeviceId)));
+                }
+
                 await UnregisterGrain(device);
-                //await device.Stop();
             }
         }
 

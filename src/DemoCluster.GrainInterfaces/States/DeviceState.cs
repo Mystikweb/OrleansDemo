@@ -14,6 +14,13 @@ namespace DemoCluster.GrainInterfaces.States
         public CurrentDeviceState CurrentState { get; set; } = new CurrentDeviceState();
         public List<DeviceSensorState> Sensors { get; set; } = new List<DeviceSensorState>();
 
+        public void Apply(DeviceConfigCommand @event)
+        {
+            DeviceId = @event.DeviceId;
+            Name = @event.Name;
+            Timestamp = @event.Timestamp;
+        }
+
         public void Apply(DeviceStatusCommand @event)
         {
             var newState = new CurrentDeviceState
