@@ -19,13 +19,11 @@ namespace DemoCluster.GrainImplementations
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
         private readonly ILogger logger;
-        private readonly IGrainFactory factory;
         private readonly IConfigurationStorage storage;
 
-        public DeviceRegistry(ILogger<DeviceRegistry> logger, IGrainFactory factory, IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
         {
             this.logger = logger;
-            this.factory = factory;
             this.storage = storage;
         }
 
@@ -69,7 +67,7 @@ namespace DemoCluster.GrainImplementations
             {
                 foreach (var device in State.RegisteredGrains)
                 {
-                    factory.BindGrainReference(device);
+                    GrainFactory.BindGrainReference(device);
                     
                     var currentState = await device.GetState();
                     result.Add(currentState);
