@@ -16,6 +16,10 @@ CREATE ROLE [Configuration]
     AUTHORIZATION [dbo]
 GO
 
+CREATE SCHEMA [App]
+    AUTHORIZATION [Configuration]
+GO
+
 CREATE SCHEMA [Config]
     AUTHORIZATION [Configuration]
 GO
