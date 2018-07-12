@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
@@ -25,19 +27,28 @@ namespace DemoCluster.GrainImplementations
             this.storage = storage;
         }
 
-        public Task Initialize(CancellationToken cancellation)
+        public async Task Initialize(CancellationToken cancellation)
         {
             this.cancellation = cancellation;
 
-            //GrainFactory.GetGrain
+            var monitors = await storage.GetMonitorListAsync();
+            foreach (var monitor in monitors.Where(m => m.IsEnabled && m.RunAtStartup))
+            {
+                var monitorGrain = GrainFactory.GetGrain<IMessageMonitorGrain>(Guid.Parse(monitor.MonitorId));
 
-            return Task.CompletedTask;
+                bool isSetup = await monitorGrain.UpdateMonitor(monitor);
+                await RegisterGrain(monitorGrain);
+
+                if (!isSetup)
+                {
+                    logger.LogWarning($"Monitor with id {monitor.MonitorId} was not initialized successfully.");
+                }
+            }
         }
 
         public Task ConfigureMonitor(MonitorConfig config)
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
     }
-
 }

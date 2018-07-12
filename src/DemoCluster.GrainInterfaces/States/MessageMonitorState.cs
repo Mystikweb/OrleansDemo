@@ -7,6 +7,10 @@ namespace DemoCluster.GrainInterfaces.States
     [Serializable]
     public class MessageMonitorState
     {
+        public string Name { get; set; }
+        public string HostName { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
         public string ExchangeName { get; set; }
         public string QueueName { get; set; }
         public DateTime Timestamp { get; set; }
@@ -14,6 +18,10 @@ namespace DemoCluster.GrainInterfaces.States
 
         public void Apply(MessageMonitorSetupCommand @event)
         {
+            Name = @event.Name;
+            HostName = @event.HostName;
+            UserName = @event.UserName;
+            Password = @event.Password;
             ExchangeName = @event.Exchange;
             QueueName = @event.Queue;
             Timestamp = @event.Timestamp;

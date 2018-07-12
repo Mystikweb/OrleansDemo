@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.Commands;
 using DemoCluster.GrainInterfaces.States;
@@ -15,6 +16,7 @@ namespace DemoCluster.GrainImplementations
         IMessageMonitorGrain
     {
         private readonly ILogger logger;
+        private bool isRunning = false;
 
         public MessageMonitorGrain(ILogger<MessageMonitorGrain> logger)
         {
@@ -24,6 +26,14 @@ namespace DemoCluster.GrainImplementations
         public override async Task OnActivateAsync()
         {
             await RefreshNow();
+        }
+
+        public async Task<bool> UpdateMonitor(MonitorConfig config)
+        {
+            RaiseEvent(new MessageMonitorSetupCommand(config.Name, config.HostName, config.UserName, config.Password, config.ExchangeName, config.QueueName));
+            await ConfirmEvents();
+
+            return true;
         }
 
         public Task StartConsumer()
