@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using DemoCluster.Api;
 using DemoCluster.DAL;
 using DemoCluster.GrainImplementations;
 using DemoCluster.Util;
@@ -96,7 +95,6 @@ namespace DemoCluster
                 .AddLogStorageBasedLogConsistencyProvider()
                 //.AddCustomStorageBasedLogConsistencyProvider()
                 .UseStorageLogic(storageLogicOptions)
-                .UseApi()
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .AddStartupTask<DeviceRegistryStartup>()
                 .ConfigureLogging(log => log.AddConsole())
