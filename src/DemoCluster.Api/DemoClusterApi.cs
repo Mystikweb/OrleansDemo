@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using DemoCluster.Api.Hubs;
 using DemoCluster.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,6 +47,7 @@ namespace DemoCluster.Api
                         services.AddSingleton(grainFactory);
                         services.AddSingleton<IActionDispatcher>(new ActionDispatcher(TaskScheduler.Current));
                         services.AddSingleton(logger);
+                        services.AddSignalR();
                         services.AddMvc();
 
                         // Register the Swagger generator, defining one or more Swagger documents
@@ -73,6 +75,10 @@ namespace DemoCluster.Api
                         });
 
                         app.UseMvc();
+                        app.UseSignalR(config =>
+                        {
+                            config.MapHub<DeviceHub>("/devicehub");
+                        });
                     })
                     .UseKestrel()
                     .UseUrls(listeningUri)

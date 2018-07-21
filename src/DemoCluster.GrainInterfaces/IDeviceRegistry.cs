@@ -1,4 +1,5 @@
 using DemoCluster.GrainInterfaces.Patterns;
+using DemoCluster.GrainInterfaces.States;
 using Orleans;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace DemoCluster.GrainInterfaces
     {
         Task Initialize();
         Task Teardown();
-        Task<bool> GetLoadedDeviceState(string deviceId);
+        Task<List<DeviceState>> GetLoadedDeviceStates();
         Task StartDevice(string deviceId);
         Task StopDevice(string deviceId);
     }

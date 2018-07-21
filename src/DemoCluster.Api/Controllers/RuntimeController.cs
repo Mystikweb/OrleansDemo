@@ -37,17 +37,7 @@ namespace DemoCluster.Api.Controllers
         {
             var registry = factory.GetGrain<IDeviceRegistry>(0);
 
-            var devices = await dispatcher.DispatchAsync(() => registry.GetRegisteredGrains()).ConfigureAwait(false);
-
-            var result = new List<DeviceState>();
-
-            // foreach (var device in devices)
-            // {
-            //     var currentState = await dispatcher.DispatchAsync(() => device.GetCurrentState()).ConfigureAwait(false);
-            //     result.Add(currentState);
-            // }
-
-            return result;
+            return await dispatcher.DispatchAsync(() => registry.GetLoadedDeviceStates()).ConfigureAwait(false);
         }
 
         [HttpPost("start")]

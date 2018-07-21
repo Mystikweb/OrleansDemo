@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces;
@@ -8,67 +11,148 @@ using Orleans;
 using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
-    [StorageProvider(ProviderName="CacheStorage")]
+    [LogConsistencyProvider(ProviderName="LogStorage")]
+    [StorageProvider(ProviderName = "SqlBase")]
     public class DeviceGrain : 
-        Grain<DeviceState>,
+        JournaledGrain<DeviceState>, IRemindable,
         IDeviceGrain
     {
-        private readonly IConfigurationStorage configuration;
-        private readonly ILogger<DeviceGrain> logger;
+        private readonly ILogger logger;
+        private IGrainReminder reminder;
+        private DeviceConfig deviceConfig;
 
-        private DeviceConfig config;
-        private IDeviceStatusHistoryGrain statusHistory;
-
-        public DeviceGrain(IConfigurationStorage configuration, ILoggerFactory loggerFactory)
+        public DeviceGrain(ILogger<DeviceGrain> logger)
         {
-            this.configuration = configuration;
-            this.logger = loggerFactory.CreateLogger<DeviceGrain>();
+            this.logger = logger;
         }
 
         public override async Task OnActivateAsync()
         {
-            statusHistory = GrainFactory.GetGrain<IDeviceStatusHistoryGrain>(this.GetPrimaryKey());
+            await RefreshNow();
 
-            await ReadStateAsync();
-            if (State.DeviceId == Guid.Empty)
+            if (State.CurrentState != null && State.CurrentState.Name == "RUNNING")
             {
-                config = await configuration.GetDeviceByIdAsync(this.GetPrimaryKey().ToString());
-                State = config.ToDeviceGrainState();
-                State.CurrentState = await statusHistory.GetCurrentStatus();
-                await WriteStateAsync();
+                reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
             }
         }
 
-        public async Task Start()
+        public async Task ReceiveReminder(string reminderName, TickStatus status)
         {
-            logger.Info($"Starting {this.GetPrimaryKey().ToString()}...");
-            if (string.IsNullOrEmpty(State.CurrentState.Name) || State.CurrentState.Name.ToUpper() != "RUNNING")
+            switch (reminderName)
             {
-                var configState = config.States.Where(s => s.Name.ToUpper() == "RUNNING").FirstOrDefault();
-                await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,
-                    configState.Name));
-                State.CurrentState = await statusHistory.GetCurrentStatus();
-                await WriteStateAsync();
+                case "GetSensorUpdates":
+                    await UpdateSensorSummaries();
+                    break;
             }
         }
 
-        public async Task Stop()
+        public Task<Guid> GetKey()
         {
-            logger.Info($"Stopping {this.GetPrimaryKey().ToString()}...");
-            if (string.IsNullOrEmpty(State.CurrentState.Name) || State.CurrentState.Name.ToUpper() != "STOPPED")
+            return Task.FromResult(this.GetPrimaryKey());
+        }
+
+        public Task<DeviceState> GetState()
+        {
+            return Task.FromResult(State);
+        }
+
+        public Task<DeviceConfig> GetCurrentConfig()
+        {
+            return Task.FromResult(deviceConfig);
+        }
+
+        public Task<DeviceStateItem> GetCurrentStatus()
+        {
+            return Task.FromResult(State.CurrentState.ToStateItem(this.GetPrimaryKey()));
+        }
+
+        public async Task<bool> UpdateConfig(DeviceConfig config)
+        {
+            deviceConfig = config;
+
+            RaiseEvent(new DeviceConfigCommand(this.GetPrimaryKey(), deviceConfig.Name));
+            await ConfirmEvents();
+            await ProcessConfigStatus();
+            await ProcessConfigSensors();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateCurrentStatus(DeviceStateItem state)
+        {
+            RaiseEvent(new DeviceStatusCommand(state.DeviceStatusId, state.StatusId, state.Name));
+            await ConfirmEvents();
+
+            return true;
+        }
+
+        private async Task ProcessConfigStatus()
+        {
+            if (deviceConfig.IsEnabled && State.CurrentState.Name != "RUNNING")
             {
-                var configState = config.States.Where(s => s.Name.ToUpper() == "STOPPED").FirstOrDefault();
-                await statusHistory.UpdateStatus(new DeviceStatusCommand(configState.DeviceStateId.Value,
-                    configState.Name));
-                State.CurrentState = await statusHistory.GetCurrentStatus();
-                await WriteStateAsync();
+                var runningState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "RUNNING");
+                if (runningState != null)
+                {
+                    await UpdateCurrentStatus(runningState.ConfigToStateItem(this.GetPrimaryKey()));
+                }
+
+                reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
+            }
+
+            if (!deviceConfig.IsEnabled && State.CurrentState.Name != "STOPPED")
+            {
+                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                if (stoppedState != null)
+                {
+                    await UpdateCurrentStatus(stoppedState.ConfigToStateItem(this.GetPrimaryKey()));
+                }
+
+                await UnregisterReminder(reminder);
+            }
+        }
+
+        private async Task ProcessConfigSensors()
+        {
+            foreach (var sensor in deviceConfig.Sensors)
+            {
+                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
+                var isSetup = await sensorGrain.UpdateConfig(sensor);
+
+                if (!isSetup)
+                {
+                    logger.LogError($"Unable to register sensor {sensor.Name} ({sensor.DeviceSensorId}) with device {deviceConfig.Name}");
+                }
+                else
+                {
+                    var sensorSummary = await sensorGrain.GetDeviceState();
+
+                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                        sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
+                        sensorSummary.AverageValue, sensorSummary.TotalValue));
+
+                    await ConfirmEvents();
+                }
+            }
+        }
+
+        private async Task UpdateSensorSummaries()
+        {
+            if (deviceConfig != null)
+            {
+                foreach (var sensor in deviceConfig.Sensors)
+                {
+                    var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
+                    var sensorSummary = await sensorGrain.GetDeviceState();
+
+                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                        sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
+                        sensorSummary.AverageValue, sensorSummary.TotalValue));
+
+                    await ConfirmEvents();
+                }
             }
         }
     }

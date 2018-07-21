@@ -7,6 +7,10 @@ namespace DemoCluster.DAL
 {
     public interface IConfigurationStorage
     {
+        Task<List<MonitorConfig>> GetMonitorListAsync();
+        Task<MonitorConfig> GetMonitorByIdAsync(string monitorId);
+        Task<MonitorConfig> SaveMonitorAsync(MonitorConfig model);
+        Task RemoveMonitorAsync(string monitorId);
         Task<List<DeviceConfig>> GetDeviceListAsync();
         Task<DeviceConfig> GetDeviceByIdAsync(string deviceId);
         Task<DeviceConfig> GetDeviceByNameAsync(string name);

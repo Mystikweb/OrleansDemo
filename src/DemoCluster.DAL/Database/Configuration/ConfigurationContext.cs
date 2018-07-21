@@ -6,16 +6,32 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class ConfigurationContext : DbContext
     {
+        public ConfigurationContext()
+        {
+        }
+
         public ConfigurationContext(DbContextOptions<ConfigurationContext> options)
-            : base(options) { }
+            : base(options)
+        {
+        }
 
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<DeviceEventType> DeviceEventType { get; set; }
         public virtual DbSet<DeviceSensor> DeviceSensor { get; set; }
         public virtual DbSet<DeviceState> DeviceState { get; set; }
         public virtual DbSet<EventType> EventType { get; set; }
+        public virtual DbSet<Monitor> Monitor { get; set; }
         public virtual DbSet<Sensor> Sensor { get; set; }
         public virtual DbSet<State> State { get; set; }
+
+//         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//         {
+//             if (!optionsBuilder.IsConfigured)
+//             {
+// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                 optionsBuilder.UseSqlServer("Server=mystikweb.ddns.net,1521;Database=DemoConfiguration;User Id=ConfigManager;Password=MyPa55w0rd123;");
+//             }
+//         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +85,11 @@ namespace DemoCluster.DAL.Database.Configuration
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceState_State");
+            });
+
+            modelBuilder.Entity<Monitor>(entity =>
+            {
+                entity.Property(e => e.MonitorId).HasDefaultValueSql("(newsequentialid())");
             });
         }
     }

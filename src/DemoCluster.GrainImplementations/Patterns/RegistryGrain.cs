@@ -27,5 +27,15 @@ namespace DemoCluster.GrainImplementations.Patterms
             await WriteStateAsync();
             return item;
         }
+
+        public async Task<TRegisteredGrain> UnregisterGrain(TRegisteredGrain item)
+        {
+            if (State.RegisteredGrains.Contains(item))
+            {
+                State.RegisteredGrains.Remove(item);
+                await WriteStateAsync();
+            }
+            return item;
+        }
     }
 }

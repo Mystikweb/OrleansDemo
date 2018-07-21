@@ -1,4 +1,3 @@
-using DemoCluster.DAL.Database.Runtime;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainInterfaces.Commands;
 using DemoCluster.GrainInterfaces.States;
@@ -9,54 +8,27 @@ namespace DemoCluster.GrainImplementations
 {
     public static class GrainStateExtensions
     {
-        public static DeviceState ToDeviceGrainState(this DeviceConfig item)
+        public static DeviceStateItem ToStateItem(this CurrentDeviceState state, Guid deviceId)
         {
-            return new DeviceState
+            return new DeviceStateItem
             {
-                DeviceId = Guid.Parse(item.DeviceId),
-                Name = item.Name
-            };
-        }
-
-        public static DeviceStatusCommand CreateDeviceStatusCommand(this DeviceStateHistory item)
-        {
-            return new DeviceStatusCommand(item.DeviceStateId, 
-                item.StateName,
-                item.Timestamp,
-                item.Version);
-        }
-
-        public static DeviceStateHistory CreateDeviceStateHistory(this DeviceStatusCommand item, DeviceStatusState state)
-        {
-            return new DeviceStateHistory
-            {
-                DeviceId = state.DeviceId,
+                DeviceId = deviceId,
+                DeviceStatusId = state.DeviceStateId,
+                StatusId = state.StateId,
                 Name = state.Name,
-                DeviceStateId = item.DeviceStateId,
-                StateName = item.Name,
-                Timestamp = item.Timestamp,
-                Version = item.Version.Value
+                Timestamp = state.Timestamp
             };
         }
 
-        public static SensorStatusCommand CreateSensorStatusCommand(this SensorStateHistory item)
+        public static SensorStateSummary ToStateSummary(this SensorState state)
         {
-            return new SensorStatusCommand(item.IsReceiving, 
-                item.Timestamp, 
-                item.Version);
-        }
-
-        public static SensorStateHistory CreateSensorStateHistory(this SensorStatusCommand item, SensorStatusState state)
-        {
-            return new SensorStateHistory
+            return new SensorStateSummary
             {
                 DeviceSensorId = state.DeviceSensorId,
-                DeviceName = state.DeviceName,
-                SensorName = state.SensorName,
-                Uom = state.Uom,
-                IsReceiving = item.IsReceiving,
-                Timestamp = item.Timestamp,
-                Version = item.Version.Value
+                SensorId = state.SensorId,
+                Name = state.Name,
+                UOM = state.UOM,
+                IsEnabled = state.IsEnabled
             };
         }
     }

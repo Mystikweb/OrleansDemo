@@ -4,12 +4,12 @@ namespace DemoCluster.GrainInterfaces.Commands
 {
     public class SensorStatusCommand : SensorCommand
     {
-        public SensorStatusCommand(bool isReceiving, DateTime? timeStamp = null, int? version = null)
-            : base(timeStamp, version)
+        public SensorStatusCommand(bool isEnabled, DateTime? timeStamp = null)
+            : base(timeStamp)
         {
-            IsReceiving = isReceiving;
+            IsEnabled = isEnabled;
         }
 
-        public bool IsReceiving { get; private set; }
+        public bool IsEnabled { get; private set; }
     }
 }

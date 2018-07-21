@@ -12,9 +12,9 @@ namespace DemoCluster.DAL
 {
     public class RuntimeStorage : IRuntimeStorage
     {
-        private readonly IMongoCollection<DeviceStateHistory> deviceHistoryCollection;
-        private readonly FilterDefinitionBuilder<DeviceStateHistory> deviceFilterBuilder = Builders<DeviceStateHistory>.Filter;
-        private readonly SortDefinitionBuilder<DeviceStateHistory> deviceSortBuilder = Builders<DeviceStateHistory>.Sort;
+        private readonly IMongoCollection<DeviceHistory> deviceHistoryCollection;
+        private readonly FilterDefinitionBuilder<DeviceHistory> deviceFilterBuilder = Builders<DeviceHistory>.Filter;
+        private readonly SortDefinitionBuilder<DeviceHistory> deviceSortBuilder = Builders<DeviceHistory>.Sort;
 
         private readonly IMongoCollection<SensorStateHistory> sensorHistoryCollection;
         private readonly FilterDefinitionBuilder<SensorStateHistory> sensorFilterBuilder = Builders<SensorStateHistory>.Filter;
@@ -22,22 +22,22 @@ namespace DemoCluster.DAL
 
         public RuntimeStorage(IMongoDatabase db, RuntimeCollections collectionNames)
         {
-            deviceHistoryCollection = db.GetCollection<DeviceStateHistory>(collectionNames.DeviceStateHistory);
+            deviceHistoryCollection = db.GetCollection<DeviceHistory>(collectionNames.DeviceStateHistory);
             sensorHistoryCollection = db.GetCollection<SensorStateHistory>(collectionNames.SensorStateHistory);
         }
 
-        public async Task<List<DeviceStateHistory>> GetDeviceStateHistory(Guid deviceId, int days = 30)
+        public async Task<List<DeviceHistory>> GetDeviceHistory(Guid deviceId, int days = 30)
         {
             DateTime startDateUtc = DateTime.UtcNow.AddDays((-1 * days));
             
-            FilterDefinition<DeviceStateHistory> filter = deviceFilterBuilder.Eq(d => d.DeviceId, deviceId) 
+            FilterDefinition<DeviceHistory> filter = deviceFilterBuilder.Eq(d => d.DeviceId, deviceId) 
                 & deviceFilterBuilder.Gte(d => d.Timestamp, startDateUtc);
-            SortDefinition<DeviceStateHistory> sort = deviceSortBuilder.Descending(d => d.Version);
+            SortDefinition<DeviceHistory> sort = deviceSortBuilder.Descending(d => d.Version);
 
             return await deviceHistoryCollection.Find(filter).Sort(sort).ToListAsync();
         }
 
-        public async Task<bool> SaveDeviceState(DeviceStateHistory item)
+        public async Task<bool> SaveDeviceHistory(DeviceHistory item)
         {
             bool result = true;
 
@@ -53,31 +53,31 @@ namespace DemoCluster.DAL
             return result;
         }
 
-        public async Task<List<SensorStateHistory>> GetSensorStateHistory(int deviceSensorId, int days = 30)
-        {
-            DateTime startDateUtc = DateTime.UtcNow.AddDays((-1 * days));
+        // public async Task<List<SensorStateHistory>> GetSensorStateHistory(int deviceSensorId, int days = 30)
+        // {
+        //     DateTime startDateUtc = DateTime.UtcNow.AddDays((-1 * days));
 
-            FilterDefinition<SensorStateHistory> filter = sensorFilterBuilder.Eq(s => s.DeviceSensorId, deviceSensorId)
-                & sensorFilterBuilder.Gte(s => s.Timestamp, startDateUtc);
-            SortDefinition<SensorStateHistory> sort = sensorSortBuilder.Descending(s => s.Version);
+        //     FilterDefinition<SensorStateHistory> filter = sensorFilterBuilder.Eq(s => s.DeviceSensorId, deviceSensorId)
+        //         & sensorFilterBuilder.Gte(s => s.Timestamp, startDateUtc);
+        //     SortDefinition<SensorStateHistory> sort = sensorSortBuilder.Descending(s => s.Version);
 
-            return await sensorHistoryCollection.Find(filter).Sort(sort).ToListAsync();
-        }
+        //     return await sensorHistoryCollection.Find(filter).Sort(sort).ToListAsync();
+        // }
 
-        public async Task<bool> SaveSensorState(SensorStateHistory item)
-        {
-            bool result = true;
+        // public async Task<bool> SaveSensorState(SensorStateHistory item)
+        // {
+        //     bool result = true;
 
-            try
-            {
-                await sensorHistoryCollection.InsertOneAsync(item);
-            }
-            catch
-            {
-                result = false;
-            }
+        //     try
+        //     {
+        //         await sensorHistoryCollection.InsertOneAsync(item);
+        //     }
+        //     catch
+        //     {
+        //         result = false;
+        //     }
 
-            return result;
-        }
+        //     return result;
+        // }
     }
 }

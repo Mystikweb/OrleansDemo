@@ -74,12 +74,12 @@ namespace DemoCluster
                     options.ConnectionString = clusterConnectionString;
                     options.Invariant = "System.Data.SqlClient";
                 })
-                // .AddAdoNetGrainStorage("SqlBase", options =>
-                // {
-                //     options.ConnectionString = clusterConnectionString;
-                //     options.Invariant = "System.Data.SqlClient";
-                //     options.UseJsonFormat = true;
-                // })
+                .AddAdoNetGrainStorage("SqlBase", options =>
+                {
+                    options.ConnectionString = clusterConnectionString;
+                    options.Invariant = "System.Data.SqlClient";
+                    options.UseJsonFormat = true;
+                })
                 // .AddMongoDBGrainStorage("MongoStorage", options =>
                 // {
                 //     options.ConnectionString = "mongodb://ubadmin:R0flth1s!@mystikweb.ddns.net:33005/runtime";
@@ -93,7 +93,8 @@ namespace DemoCluster
                     options.DatabaseNumber = 1;
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
-                .AddCustomStorageBasedLogConsistencyProvider()
+                .AddLogStorageBasedLogConsistencyProvider()
+                //.AddCustomStorageBasedLogConsistencyProvider()
                 .UseStorageLogic(storageLogicOptions)
                 .UseApi()
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())

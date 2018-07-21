@@ -200,7 +200,7 @@ namespace DemoCluster.DAL
                     dbDeviceEventType.DeviceId = dbDevice.DeviceId;
                     dbDeviceEventType.EventTypeId = eventType.EventTypeId;
                     dbDeviceEventType.IsEnabled = eventType.IsEnabled;
-                    await context.DeviceEventType.AddAsync(dbDeviceEventType);                    
+                    await context.DeviceEventType.AddAsync(dbDeviceEventType);
                 }
             }
 
@@ -222,7 +222,7 @@ namespace DemoCluster.DAL
                     dbDeviceState.DeviceId = dbDevice.DeviceId;
                     dbDeviceState.StateId = state.StateId;
                     dbDeviceState.IsEnabled = state.IsEnabled;
-                    await context.DeviceState.AddAsync(dbDeviceState);                    
+                    await context.DeviceState.AddAsync(dbDeviceState);
                 }
             }
 
@@ -260,7 +260,7 @@ namespace DemoCluster.DAL
         {
             var baseList = context.Sensor.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search)) 
+            if (!string.IsNullOrEmpty(search))
             {
                 baseList = baseList.Where(s => s.Name.ToLower().Contains(search.ToLower()));
             }
@@ -377,7 +377,7 @@ namespace DemoCluster.DAL
         {
             var baseList = context.EventType.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search)) 
+            if (!string.IsNullOrEmpty(search))
             {
                 baseList = baseList.Where(e => e.Name.ToLower().Contains(search.ToLower()));
             }
@@ -396,7 +396,7 @@ namespace DemoCluster.DAL
                 .Select(e => new EventConfig
                 {
                     EventId = e.EventTypeId,
-                    Name = e.Name 
+                    Name = e.Name
                 }).ToListAsync();
         }
 
@@ -468,7 +468,7 @@ namespace DemoCluster.DAL
         {
             var baseList = context.State.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search)) 
+            if (!string.IsNullOrEmpty(search))
             {
                 baseList = baseList.Where(s => s.Name.ToLower().Contains(search.ToLower()));
             }
@@ -554,6 +554,107 @@ namespace DemoCluster.DAL
             await context.SaveChangesAsync();
 
             context.State.Remove(state);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<MonitorConfig>> GetMonitorListAsync()
+        {
+            return await context.Monitor.Select(m => new MonitorConfig
+            {
+                MonitorId = m.MonitorId.ToString(),
+                Name = m.Name,
+                HostName = m.HostName,
+                UserName = m.UserName,
+                Password = m.Password,
+                ExchangeName = m.ExchangeName,
+                QueueName = m.QueueName,
+                IsEnabled = m.IsEnabled,
+                RunAtStartup = m.RunAtStartup
+            }).ToListAsync();
+        }
+
+        public async Task<MonitorConfig> GetMonitorByIdAsync(string monitorId)
+        {
+            return await context.Monitor
+                .Where(m => m.MonitorId == Guid.Parse(monitorId))
+                .Select(m => new MonitorConfig
+                {
+                    MonitorId = m.MonitorId.ToString(),
+                    Name = m.Name,
+                    HostName = m.HostName,
+                    UserName = m.UserName,
+                    Password = m.Password,
+                    ExchangeName = m.ExchangeName,
+                    QueueName = m.QueueName,
+                    IsEnabled = m.IsEnabled,
+                    RunAtStartup = m.RunAtStartup
+                }).FirstOrDefaultAsync();
+        }
+
+        public async Task<MonitorConfig> SaveMonitorAsync(MonitorConfig model)
+        {
+            Monitor dbMonitor = null;
+
+            if (!string.IsNullOrEmpty(model.MonitorId))
+            {
+                dbMonitor = new Monitor
+                {
+                    Name = model.Name,
+                    HostName = model.HostName,
+                    UserName = model.UserName,
+                    Password = model.Password,
+                    ExchangeName = model.ExchangeName,
+                    QueueName = model.QueueName,
+                    IsEnabled = model.IsEnabled,
+                    RunAtStartup = model.RunAtStartup
+                };
+
+                await context.Monitor.AddAsync(dbMonitor);
+            }
+            else
+            {
+                dbMonitor = await context.Monitor.FirstOrDefaultAsync(m => m.MonitorId == Guid.Parse(model.MonitorId));
+
+                if (dbMonitor == null)
+                {
+                    throw new ApplicationException($"Monitor with id {model.MonitorId} was not found.");
+                }
+
+                dbMonitor.Name = model.Name;
+                dbMonitor.HostName = model.HostName;
+                dbMonitor.UserName = model.UserName;
+                dbMonitor.Password = model.Password;
+                dbMonitor.ExchangeName = model.ExchangeName;
+                dbMonitor.QueueName = model.QueueName;
+                dbMonitor.IsEnabled = model.IsEnabled;
+                dbMonitor.RunAtStartup = model.RunAtStartup;
+
+                context.Monitor.Update(dbMonitor);
+            }
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                //logger.LogError(new EventId(5001), ex, string.Empty);
+                throw;
+            }
+
+            return await GetMonitorByIdAsync(dbMonitor.MonitorId.ToString());
+        }
+
+        public async Task RemoveMonitorAsync(string monitorId)
+        {
+            Monitor dbMonitor = await context.Monitor.FirstOrDefaultAsync(m => m.MonitorId == Guid.Parse(monitorId));
+
+            if (dbMonitor == null)
+            {
+                throw new ApplicationException($"Monitor with id {monitorId} was not found.");
+            }
+
+            context.Monitor.Remove(dbMonitor);
             await context.SaveChangesAsync();
         }
     }

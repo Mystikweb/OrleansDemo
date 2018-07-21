@@ -1,22 +1,29 @@
 using DemoCluster.DAL;
+using DemoCluster.DAL.Models;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
+using DemoCluster.GrainInterfaces.States;
+using Microsoft.Extensions.Logging;
+using Orleans;
 using Orleans.MultiCluster;
 using Orleans.Providers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
     [OneInstancePerCluster]
-    [StorageProvider(ProviderName = "MemoryStorage")]
+    [StorageProvider(ProviderName = "CacheStorage")]
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
-        private IConfigurationStorage storage;
+        private readonly ILogger logger;
+        private readonly IConfigurationStorage storage;
 
-        public DeviceRegistry(IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
         {
+            this.logger = logger;
             this.storage = storage;
         }
 
@@ -29,9 +36,10 @@ namespace DemoCluster.GrainImplementations
                 var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
 
-                if (device.IsEnabled)
+                bool isSetup = await deviceGrain.UpdateConfig(device);
+                if (!isSetup)
                 {
-                    await deviceGrain.Start();
+                    logger.LogWarning($"Device {device.DeviceId} was not seupt correctly on initialization");
                 }
             }
         }
@@ -40,21 +48,34 @@ namespace DemoCluster.GrainImplementations
         {
             foreach (var device in State.RegisteredGrains)
             {
-                await device.Stop();
+                var deviceConfig = await device.GetCurrentConfig();
+                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                if (stoppedState != null)
+                {
+                    await device.UpdateCurrentStatus(stoppedState.ConfigToStateItem(Guid.Parse(deviceConfig.DeviceId)));
+                }
+
+                await UnregisterGrain(device);
             }
         }
 
-        public async Task<bool> GetLoadedDeviceState(string deviceId)
+        public async Task<List<DeviceState>> GetLoadedDeviceStates()
         {
-            bool result = false;
+            List<DeviceState> result = new List<DeviceState>();
 
-            var device = await storage.GetDeviceByIdAsync(deviceId);
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-
-            if (deviceGrain != null)
+            try
             {
-                //var deviceState = await deviceGrain.GetCurrentState();
-                result = true;
+                foreach (var device in State.RegisteredGrains)
+                {
+                    GrainFactory.BindGrainReference(device);
+                    
+                    var currentState = await device.GetState();
+                    result.Add(currentState);
+                }    
+            }
+            catch (System.Exception ex)
+            {
+                logger.LogError(ex, $"Error loading device states");
             }
 
             return result;
@@ -67,7 +88,7 @@ namespace DemoCluster.GrainImplementations
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await RegisterGrain(deviceGrain);
 
-            await deviceGrain.Start();
+            //await deviceGrain.Start();
         }
 
         public async Task StopDevice(string deviceId)
@@ -75,7 +96,7 @@ namespace DemoCluster.GrainImplementations
             var device = await storage.GetDeviceByIdAsync(deviceId);
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            await deviceGrain.Stop();
+            //await deviceGrain.Stop();
         }
     }
 }
