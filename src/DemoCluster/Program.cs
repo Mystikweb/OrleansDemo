@@ -79,10 +79,6 @@ namespace DemoCluster
                     options.Invariant = "System.Data.SqlClient";
                     options.UseJsonFormat = true;
                 })
-                // .AddMongoDBGrainStorage("MongoStorage", options =>
-                // {
-                //     options.ConnectionString = "mongodb://ubadmin:R0flth1s!@mystikweb.ddns.net:33005/runtime";
-                // })
                 .AddRedisGrainStorage("CacheStorage", options =>
                 {
                     options.Hostname = redisOptions.Hostname;
@@ -93,7 +89,6 @@ namespace DemoCluster
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
                 .AddLogStorageBasedLogConsistencyProvider()
-                //.AddCustomStorageBasedLogConsistencyProvider()
                 .UseStorageLogic(storageLogicOptions)
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .AddStartupTask<DeviceRegistryStartup>()
