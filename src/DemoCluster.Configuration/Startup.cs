@@ -26,7 +26,7 @@ namespace DemoCluster.Configuration
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureStorageLogicServices(Configuration.GetValue<StorageLogicOptions>("DemoCluster.StorageLogicOptions"));
+            services.ConfigureStorageLogicServices(Configuration.GetSection(StorageLogicOptions.SECTION_NAME).Get<StorageLogicOptions>());
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

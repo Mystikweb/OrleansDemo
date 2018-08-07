@@ -19,6 +19,7 @@
             "name": "Configuration",
             "type": "coreclr",
             "request": "launch",
+            "preLaunchTask": "build config",
             "program": "${workspaceRoot}/src/DemoCluster.Configuration/bin/Debug/netcoreapp2.1/DemoCluster.Configuration.dll",
             "args": [],
             "cwd": "${workspaceRoot}/src/DemoCluster.Configuration",

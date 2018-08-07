@@ -16,6 +16,17 @@
             }
         },
         {
+            "label": "build config",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/DemoCluster.Configuration/DemoCluster.Configuration.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
             "label": "clean",
             "command": "dotnet",
             "type": "process",
