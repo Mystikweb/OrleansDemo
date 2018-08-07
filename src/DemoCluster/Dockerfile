@@ -3,7 +3,7 @@ FROM microsoft/dotnet:2.1-sdk AS source
 WORKDIR /server
 
 # copy in the solution and restore
-COPY src/ .
+COPY ../src/DemoCluster .
 RUN dotnet restore
 
 # create a build environment from source
@@ -19,8 +19,6 @@ RUN dotnet publish -c Release -o release
 FROM microsoft/dotnet:2.1-runtime AS runtime
 WORKDIR /server
 COPY --from=publish /server/DemoCluster/release ./
-# default API port
-EXPOSE 5000
 # dashboard monitor port
 EXPOSE 8080
 # default silo to silo port
