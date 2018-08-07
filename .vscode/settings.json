@@ -1,6 +1,6 @@
 {
-    "travis.repository": "OrleansDemo",
     "travis.username": "Mystikweb",
+    "travis.repository": "OrleansDemo",
     "files.associations": {
         "DockerCluster": "dockerfile",
         "DockerConfigApi": "dockerfile"
