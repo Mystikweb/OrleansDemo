@@ -4,25 +4,33 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
-       {
-           "name": ".NET Core Attach",
-           "type": "coreclr",
-           "request": "attach",
-           "processId": "${command:pickProcess}"
-       },
         {
-            "name": ".NET Core Launch Server",
+            "name": "Cluster",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build server",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/DemoCluster/bin/Debug/netcoreapp2.0/DemoCluster.dll",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/DemoCluster/bin/Debug/netcoreapp2.1/DemoCluster.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/DemoCluster",
-            // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
-            "console": "internalConsole",
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
+            "console": "externalTerminal"
+        },
+        {
+            "name": "Configuration",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build config",
+            "program": "${workspaceRoot}/src/DemoCluster.Configuration/bin/Debug/netcoreapp2.1/DemoCluster.Configuration.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/src/DemoCluster.Configuration",
+            "stopAtEntry": false,
+            "console": "externalTerminal"
         }
-    ]
+    ],
+    "compounds": [
+        {
+            "name": "FullStack",
+            "configurations": ["Cluster", "Configuration"]
+        }
+    ]   
 }

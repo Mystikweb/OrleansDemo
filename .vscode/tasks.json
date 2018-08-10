@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build server",
+            "label": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -16,7 +16,18 @@
             }
         },
         {
-            "label": "clean server",
+            "label": "build config",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/DemoCluster.Configuration/DemoCluster.Configuration.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
+            "label": "clean",
             "command": "dotnet",
             "type": "process",
             "args": [

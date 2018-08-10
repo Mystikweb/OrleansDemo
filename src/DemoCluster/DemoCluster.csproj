@@ -14,7 +14,6 @@
         <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
         <ProjectReference Include="..\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj" />
         <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
-        <ProjectReference Include="..\DemoCluster.Api\DemoCluster.Api.csproj" />
         <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
         <ProjectReference Include="..\DemoCluster.Util\DemoCluster.Util.csproj" />
     </ItemGroup>
@@ -33,7 +32,7 @@
         <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
         <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.0.4" />
         <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.4" />
-        <PackageReference Include="OrleansDashboard" Version="2.0.7" />
+        <PackageReference Include="OrleansDashboard" Version="2.0.8" />
     </ItemGroup>
 
     <ItemGroup>

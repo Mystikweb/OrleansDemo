@@ -6,14 +6,8 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class ConfigurationContext : DbContext
     {
-        public ConfigurationContext()
-        {
-        }
-
         public ConfigurationContext(DbContextOptions<ConfigurationContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<DeviceEventType> DeviceEventType { get; set; }

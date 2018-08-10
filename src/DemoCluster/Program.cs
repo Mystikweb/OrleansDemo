@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using DemoCluster.Api;
 using DemoCluster.DAL;
 using DemoCluster.GrainImplementations;
 using DemoCluster.Util;
@@ -80,10 +79,6 @@ namespace DemoCluster
                     options.Invariant = "System.Data.SqlClient";
                     options.UseJsonFormat = true;
                 })
-                // .AddMongoDBGrainStorage("MongoStorage", options =>
-                // {
-                //     options.ConnectionString = "mongodb://ubadmin:R0flth1s!@mystikweb.ddns.net:33005/runtime";
-                // })
                 .AddRedisGrainStorage("CacheStorage", options =>
                 {
                     options.Hostname = redisOptions.Hostname;
@@ -94,9 +89,7 @@ namespace DemoCluster
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
                 .AddLogStorageBasedLogConsistencyProvider()
-                //.AddCustomStorageBasedLogConsistencyProvider()
                 .UseStorageLogic(storageLogicOptions)
-                .UseApi()
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .AddStartupTask<DeviceRegistryStartup>()
                 .ConfigureLogging(log => log.AddConsole())
