@@ -16,3 +16,6 @@ notifications:
   email:
     on_success: never
     on_failure: always
+  slack:
+    rooms:
+      - mystikweb:PXFBzS4uEnTzScjI1IlvmBcd#orleansdemo
