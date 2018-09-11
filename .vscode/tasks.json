@@ -27,6 +27,17 @@
             "group": "build"
         },
         {
+            "label": "build messaging",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/DemoCluster.Messaging/DemoCluster.Messaging.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
             "label": "clean",
             "command": "dotnet",
             "type": "process",

@@ -16,7 +16,7 @@ namespace DemoCluster.GrainImplementations
         IMessageMonitorGrain
     {
         private readonly ILogger logger;
-        private bool isRunning = false;
+        //private bool isRunning = false;
 
         public MessageMonitorGrain(ILogger<MessageMonitorGrain> logger)
         {

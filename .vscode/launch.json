@@ -25,12 +25,23 @@
             "cwd": "${workspaceRoot}/src/DemoCluster.Configuration",
             "stopAtEntry": false,
             "console": "externalTerminal"
+        },
+        {
+            "name": "Messaging",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build messaging",
+            "program": "${workspaceRoot}/src/DemoCluster.Messaging/bin/Debug/netcoreapp2.1/DemoCluster.Messaging.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/src/DemoCluster.Messaging",
+            "stopAtEntry": false,
+            "console": "externalTerminal"
         }
     ],
     "compounds": [
         {
             "name": "FullStack",
-            "configurations": ["Cluster", "Configuration"]
+            "configurations": ["Cluster", "Configuration", "Messaging"]
         }
     ]   
 }
