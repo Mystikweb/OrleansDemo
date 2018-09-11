@@ -19,6 +19,7 @@ namespace DemoCluster.DAL.Models
     public class DeviceSensorConfig
     {
         public int? DeviceSensorId { get; set; }
+        public string DeviceId { get; set; }
         public int SensorId { get; set; }
         public string Name { get; set; }
         public string UOM { get; set; }
@@ -28,6 +29,7 @@ namespace DemoCluster.DAL.Models
     public class DeviceEventConfig
     {
         public int? DeviceEventTypeId { get; set; }
+        public string DeviceId { get; set; }
         public int EventTypeId { get; set; }
         public string Name { get; set; }
         public bool IsEnabled { get; set; } = false;
@@ -36,6 +38,7 @@ namespace DemoCluster.DAL.Models
     public class DeviceStateConfig
     {
         public int? DeviceStateId { get; set; }
+        public string DeviceId { get; set; }
         public int StateId { get; set; }
         public string Name { get; set; }
         public bool IsEnabled { get; set; }
