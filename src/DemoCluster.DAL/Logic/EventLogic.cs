@@ -80,7 +80,7 @@ namespace DemoCluster.DAL.Logic
             return result?.ToViewModel();
         }
 
-        public async Task<EventConfig> SaveSensorAsync(EventConfig model,
+        public async Task<EventConfig> SaveEventAsync(EventConfig model,
             CancellationToken token)
         {
             EventType eventItem = null;

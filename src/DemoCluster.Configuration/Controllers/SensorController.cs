@@ -1,51 +1,120 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DemoCluster.DAL;
+using DemoCluster.DAL.Logic;
 using DemoCluster.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoCluster.Configuration.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class SensorController : Controller
     {
-        private readonly IConfigurationStorage storage;
-        public SensorController(IConfigurationStorage storage)
+        private readonly SensorLogic sensorLogic;
+
+        public SensorController(SensorLogic sensorLogic)
         {
-            this.storage = storage;
+            this.sensorLogic = sensorLogic;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SensorConfig>> Get(string sort, int index, string filter)
+        public async Task<IEnumerable<SensorConfig>> Get()
         {
-            return await storage.GetSensorListAsync(sort, index, filter);
+            return await sensorLogic.GetSensorListAsync(HttpContext.RequestAborted);
         }
 
         [HttpGet("{sensorId}")]
-        public async Task<IActionResult> Get(int sensorId)
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<SensorConfig>> Get(int sensorId)
         {
-            return Ok(await storage.GetSensorAsync(sensorId));
+            SensorConfig result = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SensorConfig config)
+        [ProducesResponseType(400)]
+        [ProducesResponseType(201)]
+        public async Task<ActionResult<SensorConfig>> Post([FromBody] SensorConfig config)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            SensorConfig result = await storage.SaveSensorAsync(config);
+            SensorConfig result = null;
 
-            return CreatedAtAction("Get", new { sensorId = result.SensorId }, result);
+            try
+            {
+                result = await sensorLogic.SaveSensorAsync(config, HttpContext.RequestAborted);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return CreatedAtAction(nameof(Get), new { sensorId = result.SensorId }, result);
+        }
+
+        [HttpPut("{sensorId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(204)]
+        public async Task<ActionResult> Put(int sensorId, [FromBody] SensorConfig config)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            SensorConfig sensor = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await sensorLogic.SaveSensorAsync(config, HttpContext.RequestAborted);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return NoContent();
         }
 
         [HttpDelete("{sensorId}")]
-        public async Task<IActionResult> Delete(int sensorId)
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(204)]
+        public async Task<ActionResult> Delete(int sensorId)
         {
-            await storage.RemoveSensorAsync(sensorId);
-            return Ok();
+            SensorConfig config = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
+            if (config == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await sensorLogic.RemoveSensorAsync(config, HttpContext.RequestAborted);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return NoContent();
         }
     }
 }
