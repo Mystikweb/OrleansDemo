@@ -4,6 +4,7 @@ using System.Linq;
 using DemoCluster.DAL.Database;
 using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Database.Runtime;
+using DemoCluster.DAL.Logic;
 using DemoCluster.DAL.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,12 +31,25 @@ namespace DemoCluster.DAL
 
     public static class RepositoryServiceCollectionExtensions
     {
+        public static IServiceCollection AddLogicLayer(
+            this IServiceCollection services,
+            string connectionString)
+        {
+            services.AddDbContextPool<ConfigurationContext>(dbOptions =>
+                dbOptions.UseSqlServer(connectionString));
+
+            services.AddRepository();
+            services.AddLogic();
+
+            return services;
+        }
+
         public static IServiceCollection AddRepository(
             this IServiceCollection services)
         {
             services.TryAddScoped(
                 typeof(IRepository<,>),
-                typeof(Repository<,>));
+                typeof(IRepository<,>));
 
             return services;
         }
@@ -43,9 +57,10 @@ namespace DemoCluster.DAL
         public static IServiceCollection AddLogic(
             this IServiceCollection services)
         {
-            // services.TryAddScoped(typeof(DeploymentLogic));
-            // services.TryAddScoped(typeof(FeatureLogic));
-            // services.TryAddScoped(typeof(ServiceLogic));
+            services.TryAddScoped(typeof(DeviceLogic));
+            services.TryAddScoped(typeof(SensorLogic));
+            services.TryAddScoped(typeof(EventLogic));
+            services.TryAddScoped(typeof(StateLogic));
 
             return services;
         }
@@ -143,6 +158,62 @@ namespace DemoCluster.DAL
                 DeviceId = Guid.Parse(model.DeviceId),
                 StateId = model.StateId,
                 IsEnabled = model.IsEnabled
+            };
+        }
+
+        public static SensorConfig ToViewModel(this Sensor model)
+        {
+            return new SensorConfig
+            {
+                SensorId = model.SensorId,
+                Name = model.Name,
+                Uom = model.Uom
+            };
+        }
+
+        public static Sensor ToModel(this SensorConfig model)
+        {
+            return new Sensor
+            {
+                SensorId = model.SensorId.GetValueOrDefault(),
+                Name = model.Name,
+                Uom = model.Uom
+            };
+        }
+
+        public static EventConfig ToViewModel(this EventType model)
+        {
+            return new EventConfig
+            {
+                EventId = model.EventTypeId,
+                Name = model.Name
+            };
+        }
+
+        public static EventType ToModel(this EventConfig model)
+        {
+            return new EventType
+            {
+                EventTypeId = model.EventId.GetValueOrDefault(),
+                Name = model.Name
+            };
+        }
+
+        public static StateConfig ToViewModel(this State model)
+        {
+            return new StateConfig
+            {
+                StateId = model.StateId,
+                Name = model.Name
+            };
+        }
+
+        public static State ToModel(this StateConfig model)
+        {
+            return new State
+            {
+                StateId = model.StateId.GetValueOrDefault(),
+                Name = model.Name
             };
         }
     }

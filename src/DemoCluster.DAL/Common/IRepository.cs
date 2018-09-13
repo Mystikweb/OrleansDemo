@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,9 @@ namespace DemoCluster.DAL
         TContext Context { get; }
 
         IQueryable<TEntity> Entities { get; }
+
+        void ThrowIfDisposed();
+        IQueryable<TEntity> AggregateProperties(params Expression<Func<TEntity, object>>[] includeProperties);
 
         void SaveChanges();
         Task SaveChangesAsync(CancellationToken cancellationToken);
@@ -28,7 +33,7 @@ namespace DemoCluster.DAL
 
         TEntity FindByKey(params object[] keyValues);
         Task<TEntity> FindByKeyAsync(params object[] keyValues);
-        Task<TEntity> FindByKeyAsync(object[] keyValues,CancellationToken cancellationToken = default);
+        Task<TEntity> FindByKeyAsync(object[] keyValues, CancellationToken cancellationToken = default);
         IEnumerable<TEntity> All();
         Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default);
     }

@@ -11,9 +11,8 @@ namespace DemoCluster.DAL
     public class Repository<TEntity> : Repository<TEntity, DbContext>
         where TEntity : class
     {
-        public Repository(DbContext context) : base(context)
-        {
-        }
+        public Repository(DbContext context) 
+            : base(context) { }
     }
 
     public class Repository<TEntity, TContext> : IRepository<TEntity, TContext>
@@ -191,20 +190,20 @@ namespace DemoCluster.DAL
             return await Entities.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        internal IQueryable<TEntity> AggregateProperties(
-            params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            return includeProperties.Aggregate(
-                Entities.AsNoTracking(),
-                (current, includeProperty) => current.Include(includeProperty));
-        }
-
-        internal void ThrowIfDisposed()
+        public void ThrowIfDisposed()
         {
             if (_disposed)
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
+        }
+
+        public IQueryable<TEntity> AggregateProperties(
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return includeProperties.Aggregate(
+                Entities.AsNoTracking(),
+                (current, includeProperty) => current.Include(includeProperty));
         }
 
         public void Dispose() => _disposed = true;

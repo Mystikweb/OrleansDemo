@@ -11,7 +11,7 @@ namespace DemoCluster.DAL
     public static class RepositoryExtensions
     {
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter)
             where TEntity : class
             where TContext : DbContext
@@ -27,7 +27,7 @@ namespace DemoCluster.DAL
                 .ToList();
         }
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             params Expression<Func<TEntity, object>>[] includeProperties)
             where TEntity : class
@@ -50,7 +50,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy)
             where TEntity : class
@@ -74,7 +74,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords)
@@ -110,7 +110,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             params Expression<Func<TEntity, object>>[] includeProperties)
@@ -139,7 +139,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
@@ -176,7 +176,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords)
             where TEntity : class
@@ -206,7 +206,7 @@ namespace DemoCluster.DAL
         }
 
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
             params Expression<Func<TEntity, object>>[] includeProperties)
@@ -236,7 +236,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             CancellationToken cancellationToken = default)
             where TEntity : class
@@ -257,7 +257,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             CancellationToken cancellationToken = default,
             params Expression<Func<TEntity, object>>[] includeProperties)
@@ -281,7 +281,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             CancellationToken cancellationToken = default)
@@ -304,7 +304,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
@@ -340,7 +340,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             CancellationToken cancellationToken = default,
@@ -365,7 +365,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
@@ -410,7 +410,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
             CancellationToken cancellationToken = default)
@@ -440,7 +440,7 @@ namespace DemoCluster.DAL
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
-            this Repository<TEntity, TContext> repository,
+            this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
             CancellationToken cancellationToken = default,
