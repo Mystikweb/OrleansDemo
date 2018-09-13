@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DemoCluster.DAL;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.Messaging.Hubs;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ namespace DemoCluster.Messaging
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogicLayer(Configuration.GetConnectionString("Configuration"));
             services.AddSingleton(CreateClusterClient);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
