@@ -12,13 +12,10 @@ namespace DemoCluster.Configuration.Controllers
     [Produces("application/json")]
     public class DashboardController : Controller
     {
-        private readonly IRuntimeStorage runtime;
-        private readonly IConfigurationStorage configuration;
 
-        public DashboardController(IRuntimeStorage runtime, IConfigurationStorage configuration)
+        public DashboardController()
         {
-            this.runtime = runtime;
-            this.configuration = configuration;        }
+        }
 
         // [HttpGet]
         // public async Task<IEnumerable<DeviceSummary>> Get()
