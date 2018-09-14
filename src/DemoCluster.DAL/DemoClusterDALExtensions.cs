@@ -31,6 +31,13 @@ namespace DemoCluster.DAL
 
     public static class RepositoryServiceCollectionExtensions
     {
+        public static ISiloHostBuilder UseLogicLayer(this ISiloHostBuilder builder,
+            string connectionString)
+        {
+            return builder.ConfigureServices(services =>
+                services.AddLogicLayer(connectionString));
+        }
+
         public static IServiceCollection AddLogicLayer(
             this IServiceCollection services,
             string connectionString)
@@ -49,7 +56,7 @@ namespace DemoCluster.DAL
         {
             services.TryAddScoped(
                 typeof(IRepository<,>),
-                typeof(IRepository<,>));
+                typeof(Repository<,>));
 
             return services;
         }

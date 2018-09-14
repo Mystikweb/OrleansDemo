@@ -32,7 +32,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         #region Device Configuration
-        public async Task<DeviceConfig> CreateDeviceAsync(DeviceConfig model, CancellationToken token)
+        public async Task<DeviceConfig> CreateDeviceAsync(DeviceConfig model, CancellationToken token = default)
         {
             DeviceConfig result = null;
 
@@ -66,7 +66,7 @@ namespace DemoCluster.DAL.Logic
             return result;
         }
 
-        public async Task<DeviceConfig> UpdateDeviceAsync(DeviceConfig model, CancellationToken token)
+        public async Task<DeviceConfig> UpdateDeviceAsync(DeviceConfig model, CancellationToken token = default)
         {
             DeviceConfig config = await GetDeviceAsync(Guid.Parse(model.DeviceId), token);
             if (config == null)
@@ -105,7 +105,7 @@ namespace DemoCluster.DAL.Logic
             return config;
         }
 
-        public async Task DeleteDeviceAsync(DeviceConfig model, CancellationToken token)
+        public async Task DeleteDeviceAsync(DeviceConfig model, CancellationToken token = default)
         {
             DeviceConfig config = await GetDeviceAsync(Guid.Parse(model.DeviceId), token);
             if (config == null)
@@ -142,7 +142,7 @@ namespace DemoCluster.DAL.Logic
         #endregion
 
         #region Device CRUD
-        public async Task<List<DeviceConfig>> GetDeviceListAsync(CancellationToken token)
+        public async Task<List<DeviceConfig>> GetDeviceListAsync(CancellationToken token = default)
         {
             IEnumerable<Device> listResults = await devices.AllAsync(token);
 
@@ -152,7 +152,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<DeviceConfig>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<Device> listResults = await devices.FindByAsync(filter, token);
 
@@ -163,7 +163,7 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<DeviceConfig>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
             Func<IQueryable<Device>, IOrderedQueryable<Device>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<Device> listResults = await devices.FindByAsync(filter, orderBy, token);
 
@@ -175,7 +175,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<PaginatedList<DeviceConfig>> GetDevicePageAsync(string filter, 
             int pageIndex, 
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<Device> listResults = await devices.AllAsync(token);
 
@@ -186,7 +186,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceConfig> GetDeviceAsync(Guid deviceId,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device result = await devices.FindByKeyAsync(deviceId, token);
 
@@ -194,7 +194,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceConfig> GetDeviceAsync(string deviceName,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device result = await devices.FindByKeyAsync(deviceName, token);
 
@@ -202,7 +202,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceConfig> SaveDeviceAsync(DeviceConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device deviceItem = null;
 
@@ -244,7 +244,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveDeviceAsync(DeviceConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             try
             {
@@ -268,7 +268,7 @@ namespace DemoCluster.DAL.Logic
         #endregion
 
         #region Device Sensor CRUD
-        public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(CancellationToken token)
+        public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(CancellationToken token = default)
         {
             IEnumerable<DeviceSensor> listResults = await deviceSensors.AllAsync(token);
 
@@ -278,7 +278,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceSensor> listResults = await deviceSensors.FindByAsync(filter, token);
 
@@ -289,7 +289,7 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
             Func<IQueryable<DeviceSensor>, IOrderedQueryable<DeviceSensor>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceSensor> listResults = await deviceSensors.FindByAsync(filter, orderBy, token);
 
@@ -302,7 +302,7 @@ namespace DemoCluster.DAL.Logic
             string filter,
             int pageIndex,
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device device = await devices.FindByKeyAsync(deviceId, token);
             if (device == null)
@@ -320,7 +320,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceSensorConfig> SaveDeviceSensorAsync(DeviceSensorConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             DeviceSensor deviceSensorItem = null;
 
@@ -363,7 +363,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveDeviceSensorAsync(DeviceSensorConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             try
             {
@@ -387,7 +387,7 @@ namespace DemoCluster.DAL.Logic
         #endregion
 
         #region Device Event CRUD
-        public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(CancellationToken token)
+        public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(CancellationToken token = default)
         {
             IEnumerable<DeviceEventType> listResults = await deviceEvents.AllAsync(token);
 
@@ -397,7 +397,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceEventType> listResults = await deviceEvents.FindByAsync(filter, token);
 
@@ -408,7 +408,7 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
             Func<IQueryable<DeviceEventType>, IOrderedQueryable<DeviceEventType>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceEventType> listResults = await deviceEvents.FindByAsync(filter, orderBy, token);
 
@@ -421,7 +421,7 @@ namespace DemoCluster.DAL.Logic
             string filter,
             int pageIndex,
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device device = await devices.FindByKeyAsync(deviceId, token);
             if (device == null)
@@ -439,7 +439,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceEventConfig> SaveDeviceEventAsync(DeviceEventConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             DeviceEventType deviceEventItem = null;
 
@@ -482,7 +482,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveDeviceEventAsync(DeviceEventConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             try
             {
@@ -506,7 +506,7 @@ namespace DemoCluster.DAL.Logic
         #endregion
 
         #region Device State CRUD
-        public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(CancellationToken token)
+        public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(CancellationToken token = default)
         {
             IEnumerable<DeviceState> listResults = await deviceStates.AllAsync(token);
 
@@ -516,7 +516,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceState> listResults = await deviceStates.FindByAsync(filter, token);
 
@@ -527,7 +527,7 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
             Func<IQueryable<DeviceState>, IOrderedQueryable<DeviceState>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<DeviceState> listResults = await deviceStates.FindByAsync(filter, orderBy, token);
 
@@ -540,7 +540,7 @@ namespace DemoCluster.DAL.Logic
             string filter,
             int pageIndex,
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             Device device = await devices.FindByKeyAsync(deviceId, token);
             if (device == null)
@@ -558,7 +558,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<DeviceStateConfig> SaveDeviceStateAsync(DeviceStateConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             DeviceState deviceStateItem = null;
 
@@ -601,7 +601,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveDeviceStateAsync(DeviceStateConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             try
             {

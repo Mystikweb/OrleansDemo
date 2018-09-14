@@ -21,7 +21,7 @@ namespace DemoCluster.DAL.Logic
             this.states = states;
         }
 
-        public async Task<List<StateConfig>> GetStateListAsync(CancellationToken token)
+        public async Task<List<StateConfig>> GetStateListAsync(CancellationToken token = default)
         {
             IEnumerable<State> listResults = await states.AllAsync(token);
 
@@ -31,7 +31,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<StateConfig>> GetStateListAsync(Expression<Func<State, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<State> listResults = await states.FindByAsync(filter, token);
 
@@ -42,7 +42,7 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<StateConfig>> GetStateListAsync(Expression<Func<State, bool>> filter,
             Func<IQueryable<State>, IOrderedQueryable<State>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<State> listResults = await states.FindByAsync(filter, orderBy, token);
 
@@ -54,7 +54,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<PaginatedList<StateConfig>> GetStatePageAsync(string filter, 
             int pageIndex, 
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             IEnumerable<State> listResults = await states.AllAsync(token);
 
@@ -65,7 +65,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<StateConfig> GetStateAsync(int eventId,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             State result = await states.FindByKeyAsync(eventId, token);
 
@@ -73,7 +73,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<StateConfig> GetStateAsync(string eventName,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             State result = await states.FindByKeyAsync(eventName, token);
 
@@ -81,7 +81,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<StateConfig> SaveStateAsync(StateConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             State stateItem = null;
 
@@ -123,7 +123,7 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveStateAsync(StateConfig model,
-            CancellationToken token)
+            CancellationToken token = default)
         {
             try
             {

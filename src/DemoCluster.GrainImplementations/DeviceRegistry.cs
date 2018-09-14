@@ -1,4 +1,5 @@
 using DemoCluster.DAL;
+using DemoCluster.DAL.Logic;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
@@ -19,27 +20,31 @@ namespace DemoCluster.GrainImplementations
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
         private readonly ILogger logger;
-        private readonly IConfigurationStorage storage;
+        private readonly DeviceLogic deviceLogic;
 
-        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, DeviceLogic deviceLogic)
         {
             this.logger = logger;
-            this.storage = storage;
+            this.deviceLogic = deviceLogic;
         }
 
         public async Task Initialize()
         {
-            var deviceList = await storage.GetDeviceListAsync();
+            List<DeviceConfig> deviceList = await deviceLogic.GetDeviceListAsync(d => d.IsEnabled);
 
-            foreach (var device in deviceList)
+            foreach (DeviceConfig device in deviceList)
             {
-                var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+                IDeviceGrain deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
                 await RegisterGrain(deviceGrain);
 
                 bool isSetup = await deviceGrain.UpdateConfig(device);
-                if (!isSetup)
+                if (isSetup)
                 {
-                    logger.LogWarning($"Device {device.DeviceId} was not seupt correctly on initialization");
+                    logger.LogInformation($"Device {device.DeviceId} has been registered on initialization");
+                }
+                else
+                {
+                    logger.LogError($"Device {device.DeviceId} was not registered correctly on initialization");
                 }
             }
         }
@@ -48,14 +53,16 @@ namespace DemoCluster.GrainImplementations
         {
             foreach (var device in State.RegisteredGrains)
             {
-                var deviceConfig = await device.GetCurrentConfig();
-                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                DeviceConfig deviceConfig = await device.GetCurrentConfig();
+                DeviceStateConfig stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
                 if (stoppedState != null)
                 {
+                    logger.LogInformation($"Updating state of device {deviceConfig.DeviceId} to STOPPED");
                     await device.UpdateCurrentStatus(stoppedState.ConfigToStateItem(Guid.Parse(deviceConfig.DeviceId)));
                 }
 
                 await UnregisterGrain(device);
+                logger.LogInformation($"Unregistered device {deviceConfig.DeviceId}");
             }
         }
 
@@ -81,22 +88,83 @@ namespace DemoCluster.GrainImplementations
             return result;
         }
 
+        public async Task AddDevice(DeviceConfig config)
+        {
+            IDeviceGrain device = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(config.DeviceId));
+            
+            bool isSetup = await device.UpdateConfig(config);
+            await RegisterGrain(device);
+
+            if (isSetup)
+            {
+                logger.LogInformation($"Device {config.DeviceId} has been registered");
+            }
+            else
+            {
+                logger.LogWarning($"Device {config.DeviceId} was not registered correctly");
+            }
+        }
+
+        public async Task RemoveDevice(DeviceConfig config)
+        {
+            IDeviceGrain device = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(config.DeviceId));
+
+            DeviceConfig deviceConfig = await device.GetCurrentConfig();
+            DeviceStateConfig stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+            if (stoppedState != null)
+            {
+                logger.LogInformation($"Updating state of device {deviceConfig.DeviceId} to STOPPED");
+                await device.UpdateCurrentStatus(stoppedState.ConfigToStateItem(Guid.Parse(deviceConfig.DeviceId)));
+            }
+
+            await UnregisterGrain(device);
+            logger.LogInformation($"Unregistered device {deviceConfig.DeviceId}");
+        }
+
         public async Task StartDevice(string deviceId)
         {
-            var device = await storage.GetDeviceByIdAsync(deviceId);
+            IDeviceGrain currentDevice = null;
 
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            await RegisterGrain(deviceGrain);
+            List<IDeviceGrain> deviceList = await GetRegisteredGrains();
+            foreach (IDeviceGrain device in deviceList)
+            {
+                if (Guid.Parse(deviceId) == device.GetPrimaryKey())
+                {
+                    currentDevice = device;
+                }
+            }
 
-            //await deviceGrain.Start();
+            if (currentDevice != null)
+            {
+                // start device here
+            }
+            else
+            {
+                logger.LogError($"Device {deviceId} was not found in the registered device list");
+            }
         }
 
         public async Task StopDevice(string deviceId)
         {
-            var device = await storage.GetDeviceByIdAsync(deviceId);
+            IDeviceGrain currentDevice = null;
 
-            var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
-            //await deviceGrain.Stop();
+            List<IDeviceGrain> deviceList = await GetRegisteredGrains();
+            foreach (IDeviceGrain device in deviceList)
+            {
+                if (Guid.Parse(deviceId) == device.GetPrimaryKey())
+                {
+                    currentDevice = device;
+                }
+            }
+
+            if (currentDevice != null)
+            {
+                // stop device here
+            }
+            else
+            {
+                logger.LogError($"Device {deviceId} was not found in the registered device list");
+            }
         }
     }
 }

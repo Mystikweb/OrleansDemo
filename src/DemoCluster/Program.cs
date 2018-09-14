@@ -50,10 +50,9 @@ namespace DemoCluster
                 .Build();
 
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
-            
-            var storageLogicOptions = appConfig.GetSection(StorageLogicOptions.SECTION_NAME).Get<StorageLogicOptions>();
+            var configuraitonConnectionString = appConfig.GetConnectionString("Configuration");
+
             var redisOptions = appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Get<RedisProviderOptions>();
-            var rabbitOptions = appConfig.GetSection(RabbitMessagingOptions.SECTION_NAME).Get<RabbitMessagingOptions>();
 
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
@@ -89,7 +88,7 @@ namespace DemoCluster
                 })
                 .AddMemoryGrainStorage("MemoryStorage")
                 .AddLogStorageBasedLogConsistencyProvider()
-                .UseStorageLogic(storageLogicOptions)
+                .UseLogicLayer(configuraitonConnectionString)
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .AddStartupTask<DeviceRegistryStartup>()
                 .ConfigureLogging(log => log.AddConsole())
