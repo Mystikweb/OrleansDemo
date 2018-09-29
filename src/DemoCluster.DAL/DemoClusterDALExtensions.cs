@@ -49,7 +49,7 @@ namespace DemoCluster.DAL
         {
             services.TryAddScoped(
                 typeof(IRepository<,>),
-                typeof(IRepository<,>));
+                typeof(Repository<,>));
 
             return services;
         }

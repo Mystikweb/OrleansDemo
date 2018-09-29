@@ -22,6 +22,10 @@
             "preLaunchTask": "build config",
             "program": "${workspaceRoot}/src/DemoCluster.Configuration/bin/Debug/netcoreapp2.1/DemoCluster.Configuration.dll",
             "args": [],
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:5001"
+            },
             "cwd": "${workspaceRoot}/src/DemoCluster.Configuration",
             "stopAtEntry": false,
             "console": "externalTerminal"
@@ -33,6 +37,10 @@
             "preLaunchTask": "build messaging",
             "program": "${workspaceRoot}/src/DemoCluster.Messaging/bin/Debug/netcoreapp2.1/DemoCluster.Messaging.dll",
             "args": [],
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:5005"
+            },
             "cwd": "${workspaceRoot}/src/DemoCluster.Messaging",
             "stopAtEntry": false,
             "console": "externalTerminal"
