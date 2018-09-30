@@ -16,7 +16,7 @@
             },
             "cwd": "${workspaceFolder}/src/DemoCluster",
             "stopAtEntry": false,
-            "console": "externalTerminal"
+            "console": "integratedTerminal"
         },
         {
             "name": "Configuration",
@@ -31,7 +31,7 @@
             },
             "cwd": "${workspaceRoot}/src/DemoCluster.Configuration",
             "stopAtEntry": false,
-            "console": "externalTerminal"
+            "console": "integratedTerminal"
         },
         {
             "name": "Messaging",
@@ -46,7 +46,7 @@
             },
             "cwd": "${workspaceRoot}/src/DemoCluster.Messaging",
             "stopAtEntry": false,
-            "console": "externalTerminal"
+            "console": "integratedTerminal"
         }
     ],
     "compounds": [
