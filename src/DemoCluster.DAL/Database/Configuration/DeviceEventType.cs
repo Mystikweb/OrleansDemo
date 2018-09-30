@@ -7,6 +7,18 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class DeviceEventType
     {
+        private Action<object, string> Loader { get; set; }
+
+        private Device _device;
+        private EventType _eventType;
+
+        public DeviceEventType() { }
+
+        public DeviceEventType(Action<object, string> loader)
+        {
+            Loader = loader;
+        }
+
         public int DeviceEventTypeId { get; set; }
         public Guid DeviceId { get; set; }
         public int EventTypeId { get; set; }
@@ -14,9 +26,18 @@ namespace DemoCluster.DAL.Database.Configuration
 
         [ForeignKey("DeviceId")]
         [InverseProperty("DeviceEventType")]
-        public Device Device { get; set; }
+        public Device Device 
+        { 
+            get => Loader.Load(this, ref _device);
+            set => _device = value;
+        }
+
         [ForeignKey("EventTypeId")]
         [InverseProperty("DeviceEventType")]
-        public EventType EventType { get; set; }
+        public EventType EventType 
+        { 
+            get => Loader.Load(this, ref _eventType); 
+            set => _eventType = value;
+        }
     }
 }

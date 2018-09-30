@@ -7,9 +7,15 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class State
     {
-        public State()
+        private Action<object, string> Loader { get; set; }
+
+        private ICollection<DeviceState> _deviceState;
+
+        public State() { }
+
+        public State(Action<object, string> loader)
         {
-            DeviceState = new HashSet<DeviceState>();
+            Loader = loader;
         }
 
         public int StateId { get; set; }
@@ -18,6 +24,10 @@ namespace DemoCluster.DAL.Database.Configuration
         public string Name { get; set; }
 
         [InverseProperty("State")]
-        public ICollection<DeviceState> DeviceState { get; set; }
+        public ICollection<DeviceState> DeviceState 
+        { 
+            get => Loader.Load(this, ref _deviceState);
+            set => _deviceState = value;
+        }
     }
 }

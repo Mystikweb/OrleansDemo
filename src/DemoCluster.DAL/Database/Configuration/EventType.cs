@@ -7,9 +7,15 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class EventType
     {
-        public EventType()
+        private Action<object, string> Loader { get; set; }
+
+        private ICollection<DeviceEventType> _deviceEventType;
+
+        public EventType() { }
+
+        public EventType(Action<object, string> loader)
         {
-            DeviceEventType = new HashSet<DeviceEventType>();
+            Loader = loader;
         }
 
         public int EventTypeId { get; set; }
@@ -18,6 +24,10 @@ namespace DemoCluster.DAL.Database.Configuration
         public string Name { get; set; }
 
         [InverseProperty("EventType")]
-        public ICollection<DeviceEventType> DeviceEventType { get; set; }
+        public ICollection<DeviceEventType> DeviceEventType 
+        { 
+            get => Loader.Load(this, ref _deviceEventType); 
+            set => _deviceEventType = value;
+        }
     }
 }

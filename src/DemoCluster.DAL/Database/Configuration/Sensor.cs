@@ -7,9 +7,15 @@ namespace DemoCluster.DAL.Database.Configuration
 {
     public partial class Sensor
     {
-        public Sensor()
+        private Action<object, string> Loader { get; set; }
+
+        private ICollection<DeviceSensor> _deviceSensor;
+
+        public Sensor() { }
+
+        public Sensor(Action<object, string> loader)
         {
-            DeviceSensor = new HashSet<DeviceSensor>();
+            Loader = loader;
         }
 
         public int SensorId { get; set; }
@@ -22,6 +28,10 @@ namespace DemoCluster.DAL.Database.Configuration
         public string Uom { get; set; }
 
         [InverseProperty("Sensor")]
-        public ICollection<DeviceSensor> DeviceSensor { get; set; }
+        public ICollection<DeviceSensor> DeviceSensor 
+        { 
+            get => Loader.Load(this, ref _deviceSensor);
+            set => _deviceSensor = value;
+        }
     }
 }

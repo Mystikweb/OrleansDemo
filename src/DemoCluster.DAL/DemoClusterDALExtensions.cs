@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DemoCluster.DAL.Database;
 using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Database.Runtime;
@@ -15,8 +16,20 @@ using Orleans.Hosting;
 
 namespace DemoCluster.DAL
 {
-    public static class EnumerableExtensions
+    public static class UtilityExtensions
     {
+        public static TRelated Load<TRelated>(
+            this Action<object, string> loader,
+            object entity,
+            ref TRelated navigationField,
+            [CallerMemberName] string navigationName = null)
+            where TRelated : class
+        {
+            loader?.Invoke(entity, navigationName);
+
+            return navigationField;
+        }
+
         public static PaginatedList<T> ToPaginatedList<T>(
             this IEnumerable<T> source,
             int pageIndex,

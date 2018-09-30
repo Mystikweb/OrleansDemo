@@ -180,14 +180,14 @@ namespace DemoCluster.DAL
         public virtual IEnumerable<TEntity> All()
         {
             ThrowIfDisposed();
-            return Entities.AsNoTracking().ToList();
+            return Entities.ToList();
         }
 
         public virtual async Task<IEnumerable<TEntity>> AllAsync(
             CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
-            return await Entities.AsNoTracking().ToListAsync(cancellationToken);
+            return await Entities.ToListAsync(cancellationToken);
         }
 
         public void ThrowIfDisposed()
@@ -202,7 +202,7 @@ namespace DemoCluster.DAL
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return includeProperties.Aggregate(
-                Entities.AsNoTracking(),
+                Entities,
                 (current, includeProperty) => current.Include(includeProperty));
         }
 
