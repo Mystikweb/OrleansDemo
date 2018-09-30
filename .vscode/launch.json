@@ -11,6 +11,9 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/DemoCluster/bin/Debug/netcoreapp2.1/DemoCluster.dll",
             "args": [],
+            "env": {
+                "ENVIRONMENT": "Development"
+            },
             "cwd": "${workspaceFolder}/src/DemoCluster",
             "stopAtEntry": false,
             "console": "externalTerminal"

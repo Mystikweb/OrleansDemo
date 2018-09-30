@@ -44,9 +44,16 @@ namespace DemoCluster
 
         private static async Task<ISiloHost> StartSilo()
         {
+            var environmentConfig = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            string environmentName = environmentConfig.GetValue<string>("ENVIRONMENT");
+
             var appConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
                 .Build();
 
             var clusterConnectionString = appConfig.GetConnectionString("Cluster");
