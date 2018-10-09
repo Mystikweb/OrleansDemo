@@ -2,7 +2,7 @@ FROM microsoft/dotnet:2.1-sdk AS source
 WORKDIR /src
 COPY /src/DemoCluster.DAL ./DemoCluster.DAL
 COPY /src/DemoCluster.Configuration ./DemoCluster.Configuration
-WORKDIR ./DemoCluster.Configuration
+WORKDIR /DemoCluster.Configuration
 RUN dotnet restore DemoCluster.Configuration.csproj
 
 FROM source AS build
