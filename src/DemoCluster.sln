@@ -2,17 +2,17 @@
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster", "DemoCluster\DemoCluster.csproj", "{BA75C563-5C91-45CD-B0F1-DA44AE7A26CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster", "DemoCluster\DemoCluster.csproj", "{BA75C563-5C91-45CD-B0F1-DA44AE7A26CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainInterfaces", "DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj", "{5F5A1475-8910-4BD3-B64D-2665C79672FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.GrainInterfaces", "DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj", "{5F5A1475-8910-4BD3-B64D-2665C79672FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainImplementations", "DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj", "{CD4D7215-AE7C-411F-933C-0689BF5C5B6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.GrainImplementations", "DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj", "{CD4D7215-AE7C-411F-933C-0689BF5C5B6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Storage.Redis", "Orleans.Storage.Redis\Orleans.Storage.Redis.csproj", "{30F32260-843A-4784-B1F2-98C8E5755673}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orleans.Storage.Redis", "Orleans.Storage.Redis\Orleans.Storage.Redis.csproj", "{30F32260-843A-4784-B1F2-98C8E5755673}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.DAL", "DemoCluster.DAL\DemoCluster.DAL.csproj", "{CC24D1EC-D375-4B10-8396-F140840BFF8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.DAL", "DemoCluster.DAL\DemoCluster.DAL.csproj", "{CC24D1EC-D375-4B10-8396-F140840BFF8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Util", "DemoCluster.Util\DemoCluster.Util.csproj", "{4706E080-D40D-4385-8A4E-6AE184865F6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.Util", "DemoCluster.Util\DemoCluster.Util.csproj", "{4706E080-D40D-4385-8A4E-6AE184865F6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.Configuration", "DemoCluster.Configuration\DemoCluster.Configuration.csproj", "{6D4C2139-919C-4C0A-9582-713C22F0C73A}"
 EndProject

@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
-    <PackageReference Include="Microsoft.Orleans.Core" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Core" Version="2.1.2" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.1.2" />
   </ItemGroup>
 </Project>
