@@ -19,6 +19,11 @@ namespace DemoCluster
     {
         public static int Main(string[] args)
         {
+            if (Environment.UserInteractive)
+            {
+                Environment.SetEnvironmentVariable("ENVIRONMENT", "Development");
+            }
+
             return RunMainAsync().Result;
         }
 

@@ -14,6 +14,12 @@ namespace DemoCluster.Configuration
     {
         public static void Main(string[] args)
         {
+            if (Environment.UserInteractive)
+            {
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+                Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "https://localhost:5001");
+            }
+
             CreateWebHostBuilder(args).Build().Run();
         }
 
