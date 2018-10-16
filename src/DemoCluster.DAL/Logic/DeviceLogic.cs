@@ -196,7 +196,8 @@ namespace DemoCluster.DAL.Logic
         public async Task<DeviceConfig> GetDeviceAsync(string deviceName,
             CancellationToken token = default(CancellationToken))
         {
-            Device result = await devices.FindByKeyAsync(deviceName);
+            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.Name == deviceName);
+            Device result = searchResults.FirstOrDefault();
 
             return result?.ToViewModel();
         }
