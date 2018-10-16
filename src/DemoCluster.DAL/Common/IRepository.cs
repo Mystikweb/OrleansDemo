@@ -12,29 +12,30 @@ namespace DemoCluster.DAL
         where TEntity : class
         where TContext : DbContext
     {
-        TContext Context { get; }
-
         IQueryable<TEntity> Entities { get; }
 
         void ThrowIfDisposed();
         IQueryable<TEntity> AggregateProperties(params Expression<Func<TEntity, object>>[] includeProperties);
 
         void SaveChanges();
-        Task SaveChangesAsync(CancellationToken cancellationToken);
+        Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         RepositoryResult Create(TEntity entity);
-        Task<RepositoryResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
+        Task<RepositoryResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
-        RepositoryResult Update(TEntity entity);
-        Task<RepositoryResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+        RepositoryResult CreateBulk(IEnumerable<TEntity> entities);
+        Task<RepositoryResult> CreateBulkAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+
+        RepositoryResult Update(TEntity original, TEntity updated);
+        Task<RepositoryResult> UpdateAsync(TEntity original, TEntity updated, CancellationToken cancellationToken = default(CancellationToken));
 
         RepositoryResult Delete(TEntity entity);
-        Task<RepositoryResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+        Task<RepositoryResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         TEntity FindByKey(params object[] keyValues);
         Task<TEntity> FindByKeyAsync(params object[] keyValues);
-        Task<TEntity> FindByKeyAsync(object[] keyValues, CancellationToken cancellationToken = default);
+        Task<TEntity> FindByKeyAsync(object[] keyValues, CancellationToken cancellationToken = default(CancellationToken));
         IEnumerable<TEntity> All();
-        Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default(CancellationToken), params Expression<Func<TEntity, object>>[] includeProperties);
     }
 }

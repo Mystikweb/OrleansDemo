@@ -60,7 +60,7 @@ namespace DemoCluster.DAL
         public static IServiceCollection AddRepository(
             this IServiceCollection services)
         {
-            services.TryAddScoped(
+            services.TryAddTransient(
                 typeof(IRepository<,>),
                 typeof(Repository<,>));
 
@@ -70,10 +70,10 @@ namespace DemoCluster.DAL
         public static IServiceCollection AddLogic(
             this IServiceCollection services)
         {
-            services.TryAddScoped(typeof(DeviceLogic));
-            services.TryAddScoped(typeof(SensorLogic));
-            services.TryAddScoped(typeof(EventLogic));
-            services.TryAddScoped(typeof(StateLogic));
+            services.TryAddTransient(typeof(DeviceLogic));
+            services.TryAddTransient(typeof(SensorLogic));
+            services.TryAddTransient(typeof(EventLogic));
+            services.TryAddTransient(typeof(StateLogic));
 
             return services;
         }

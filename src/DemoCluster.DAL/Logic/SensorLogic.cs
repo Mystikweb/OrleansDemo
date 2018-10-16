@@ -21,7 +21,7 @@ namespace DemoCluster.DAL.Logic
             this.sensors = sensors;
         }
 
-        public async Task<List<SensorConfig>> GetSensorListAsync(CancellationToken token)
+        public async Task<List<SensorConfig>> GetSensorListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<Sensor> listResults = await sensors.AllAsync(token);
 
@@ -31,9 +31,9 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<SensorConfig>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Sensor> listResults = await sensors.FindByAsync(filter, token);
+            IEnumerable<Sensor> listResults = await sensors.FindByAsync(filter);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -42,9 +42,9 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<SensorConfig>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
             Func<IQueryable<Sensor>, IOrderedQueryable<Sensor>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Sensor> listResults = await sensors.FindByAsync(filter, orderBy, token);
+            IEnumerable<Sensor> listResults = await sensors.FindByAsync(filter, orderBy);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -54,7 +54,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<PaginatedList<SensorConfig>> GetSensorPageAsync(string filter, 
             int pageIndex, 
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             IEnumerable<Sensor> listResults = await sensors.AllAsync(token);
 
@@ -65,23 +65,23 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<SensorConfig> GetSensorAsync(int sensorId,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            Sensor result = await sensors.FindByKeyAsync(sensorId, token);
+            Sensor result = await sensors.FindByKeyAsync(sensorId);
 
             return result?.ToViewModel();
         }
 
         public async Task<SensorConfig> GetSensorAsync(string sensorName,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            Sensor result = await sensors.FindByKeyAsync(sensorName, token);
+            Sensor result = await sensors.FindByKeyAsync(sensorName);
 
             return result?.ToViewModel();
         }
 
         public async Task<SensorConfig> SaveSensorAsync(SensorConfig model,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             Sensor sensorItem = null;
 
@@ -91,18 +91,19 @@ namespace DemoCluster.DAL.Logic
 
                 if (!model.SensorId.HasValue)
                 {
-                    result = await sensors.CreateAsync(model.ToModel(), token);
+                    result = await sensors.CreateAsync(model.ToModel());
                 }
                 else
                 {
-                    result = await sensors.UpdateAsync(model.ToModel(), token);
+                    Sensor original = await sensors.FindByKeyAsync(model.SensorId.Value);
+                    result = await sensors.UpdateAsync(original, model.ToModel());
                 }
 
                 if (result.Succeeded)
                 {
                     logger.LogInformation($"Created device {model.Name}");
 
-                    sensorItem = await sensors.FindByKeyAsync(model.Name, token);
+                    sensorItem = await sensors.FindByKeyAsync(model.Name);
                     if (sensorItem == null)
                     {
                         logger.LogError($"Unable to find device {model.Name} as result.");
@@ -123,11 +124,11 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveSensorAsync(SensorConfig model,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             try
             {
-                RepositoryResult result = await sensors.DeleteAsync(model.ToModel(), token);
+                RepositoryResult result = await sensors.DeleteAsync(model.ToModel());
 
                 if (result.Succeeded)
                 {

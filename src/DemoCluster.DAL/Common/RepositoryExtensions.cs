@@ -238,7 +238,7 @@ namespace DemoCluster.DAL
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
             where TEntity : class
             where TContext : DbContext
         {
@@ -259,7 +259,7 @@ namespace DemoCluster.DAL
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
-            CancellationToken cancellationToken = default,
+            CancellationToken cancellationToken = default(CancellationToken),
             params Expression<Func<TEntity, object>>[] includeProperties)
             where TEntity : class
             where TContext : DbContext
@@ -284,7 +284,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
             where TEntity : class
             where TContext : DbContext
         {
@@ -308,7 +308,7 @@ namespace DemoCluster.DAL
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
             where TEntity : class
             where TContext : DbContext
         {
@@ -343,7 +343,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            CancellationToken cancellationToken = default,
+            CancellationToken cancellationToken = default(CancellationToken),
             params Expression<Func<TEntity, object>>[] includeProperties)
             where TEntity : class
             where TContext : DbContext
@@ -369,7 +369,7 @@ namespace DemoCluster.DAL
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
-            CancellationToken cancellationToken = default,
+            CancellationToken cancellationToken = default(CancellationToken),
             params Expression<Func<TEntity, object>>[] includeProperties)
             where TEntity : class
             where TContext : DbContext
@@ -413,7 +413,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
             where TEntity : class
             where TContext : DbContext
         {
@@ -443,7 +443,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
-            CancellationToken cancellationToken = default,
+            CancellationToken cancellationToken = default(CancellationToken),
             params Expression<Func<TEntity, object>>[] includeProperties)
             where TEntity : class
             where TContext : DbContext

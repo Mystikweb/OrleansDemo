@@ -21,7 +21,7 @@ namespace DemoCluster.DAL.Logic
             this.events = events;
         }
 
-        public async Task<List<EventConfig>> GetEventListAsync(CancellationToken token)
+        public async Task<List<EventConfig>> GetEventListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<EventType> listResults = await events.AllAsync(token);
 
@@ -31,9 +31,9 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<List<EventConfig>> GetEventListAsync(Expression<Func<EventType, bool>> filter,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<EventType> listResults = await events.FindByAsync(filter, token);
+            IEnumerable<EventType> listResults = await events.FindByAsync(filter);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -42,9 +42,9 @@ namespace DemoCluster.DAL.Logic
 
         public async Task<List<EventConfig>> GetEventListAsync(Expression<Func<EventType, bool>> filter,
             Func<IQueryable<EventType>, IOrderedQueryable<EventType>> orderBy,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<EventType> listResults = await events.FindByAsync(filter, orderBy, token);
+            IEnumerable<EventType> listResults = await events.FindByAsync(filter, orderBy);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -54,7 +54,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<PaginatedList<EventConfig>> GetEventPageAsync(string filter, 
             int pageIndex, 
             int pageSize,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             IEnumerable<EventType> listResults = await events.AllAsync(token);
 
@@ -65,23 +65,23 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task<EventConfig> GetEventAsync(int eventId,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            EventType result = await events.FindByKeyAsync(eventId, token);
+            EventType result = await events.FindByKeyAsync(eventId);
 
             return result?.ToViewModel();
         }
 
         public async Task<EventConfig> GetEventAsync(string eventName,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
-            EventType result = await events.FindByKeyAsync(eventName, token);
+            EventType result = await events.FindByKeyAsync(eventName);
 
             return result?.ToViewModel();
         }
 
         public async Task<EventConfig> SaveEventAsync(EventConfig model,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             EventType eventItem = null;
 
@@ -91,18 +91,19 @@ namespace DemoCluster.DAL.Logic
 
                 if (!model.EventId.HasValue)
                 {
-                    result = await events.CreateAsync(model.ToModel(), token);
+                    result = await events.CreateAsync(model.ToModel());
                 }
                 else
                 {
-                    result = await events.UpdateAsync(model.ToModel(), token);
+                    EventType original = await events.FindByKeyAsync(model.EventId.Value);
+                    result = await events.UpdateAsync(original, model.ToModel());
                 }
 
                 if (result.Succeeded)
                 {
                     logger.LogInformation($"Created device {model.Name}");
 
-                    eventItem = await events.FindByKeyAsync(model.Name, token);
+                    eventItem = await events.FindByKeyAsync(model.Name);
                     if (eventItem == null)
                     {
                         logger.LogError($"Unable to find device {model.Name} as result.");
@@ -123,11 +124,11 @@ namespace DemoCluster.DAL.Logic
         }
 
         public async Task RemoveEventAsync(EventConfig model,
-            CancellationToken token)
+            CancellationToken token = default(CancellationToken))
         {
             try
             {
-                RepositoryResult result = await events.DeleteAsync(model.ToModel(), token);
+                RepositoryResult result = await events.DeleteAsync(model.ToModel());
 
                 if (result.Succeeded)
                 {

@@ -19,18 +19,17 @@ namespace DemoCluster.DAL
         where TEntity : class
         where TContext : DbContext
     {
+        private bool _disposed;
+
+        private readonly TContext Context;
+        public bool AutoSaveChanges { get; set; } = true;
+
+        public virtual IQueryable<TEntity> Entities => Context.Set<TEntity>();
+
         public Repository(TContext context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
-
-        private bool _disposed;
-
-        public TContext Context { get; }
-
-        public virtual IQueryable<TEntity> Entities => Context.Set<TEntity>();
-
-        public bool AutoSaveChanges { get; set; } = true;
 
         public void SaveChanges()
         {
@@ -40,7 +39,7 @@ namespace DemoCluster.DAL
             }
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (AutoSaveChanges)
             {
@@ -58,12 +57,12 @@ namespace DemoCluster.DAL
 
             Context.Add(entity);
             SaveChanges();
-            return RepositoryResult.Success;
+            return RepositoryResult.Success(GetPrimaryKey(entity));
         }
 
         public virtual async Task<RepositoryResult> CreateAsync(
             TEntity entity,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -74,38 +73,85 @@ namespace DemoCluster.DAL
 
             Context.Add(entity);
             await SaveChangesAsync(cancellationToken);
-            return RepositoryResult.Success;
+            return RepositoryResult.Success(GetPrimaryKey(entity));
         }
 
-        public virtual RepositoryResult Update(TEntity entity)
+        public virtual RepositoryResult CreateBulk(IEnumerable<TEntity> entities)
         {
             ThrowIfDisposed();
-            if (entity == null)
+            if (entities == null)
             {
-                throw new ArgumentNullException(nameof(entity));
+                throw new ArgumentNullException(nameof(entities));
             }
 
-            Context.Attach(entity);
-            Context.Update(entity);
+            Context.AddRange(entities);
             SaveChanges();
 
-            return RepositoryResult.Success;
+            return RepositoryResult.Success(entities.Select(GetPrimaryKey));
         }
 
-        public virtual async Task<RepositoryResult> UpdateAsync(
-            TEntity entity,
-            CancellationToken cancellationToken = default)
+        public virtual async Task<RepositoryResult> CreateBulkAsync(
+            IEnumerable<TEntity> entities,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            if (entity == null)
+            if (entities == null)
             {
-                throw new ArgumentNullException(nameof(entity));
+                throw new ArgumentNullException(nameof(entities));
             }
 
-            Context.Attach(entity);
+            Context.AddRange(entities);
+            await SaveChangesAsync(cancellationToken);
+
+            List<string> keys = new List<string>();
+            foreach (var entity in entities)
+            {
+                keys.Add(GetPrimaryKey(entity));
+            }
+
+            return RepositoryResult.Success(keys);
+        }
+
+        public virtual RepositoryResult Update(TEntity original,
+            TEntity updated)
+        {
+            ThrowIfDisposed();
+            if (original == null)
+            {
+                throw new ArgumentNullException(nameof(original));
+            }
+
+            if (updated == null)
+            {
+                throw new ArgumentNullException(nameof(updated));
+            }
+
+            Context.Entry(original).CurrentValues.SetValues(updated);
+            SaveChanges();
+
+            return RepositoryResult.Success(GetPrimaryKey(updated));
+        }
+
+        public virtual async Task<RepositoryResult> UpdateAsync(
+            TEntity original,
+            TEntity updated,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (original == null)
+            {
+                throw new ArgumentNullException(nameof(original));
+            }
+
+            if (updated == null)
+            {
+                throw new ArgumentNullException(nameof(updated));
+            }
+
+            Context.Entry(original).CurrentValues.SetValues(updated);
             // TODO: Update concurrency stamp if any on the entity.
-            Context.Update(entity);
             try
             {
                 await SaveChangesAsync(cancellationToken);
@@ -115,7 +161,7 @@ namespace DemoCluster.DAL
                 return RepositoryResult.Failed(new RepositoryError { Code = "", Description = "" });
             }
 
-            return RepositoryResult.Success;
+            return RepositoryResult.Success(GetPrimaryKey(updated));
         }
 
         public virtual RepositoryResult Delete(TEntity entity)
@@ -129,12 +175,12 @@ namespace DemoCluster.DAL
             Context.Remove(entity);
             SaveChanges();
 
-            return RepositoryResult.Success;
+            return RepositoryResult.Success();
         }
 
         public virtual async Task<RepositoryResult> DeleteAsync(
             TEntity entity,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -153,7 +199,7 @@ namespace DemoCluster.DAL
                 return RepositoryResult.Failed(new RepositoryError { Code = "", Description = "" });
             }
 
-            return RepositoryResult.Success;
+            return RepositoryResult.Success();
         }
 
         public virtual TEntity FindByKey(params object[] keyValues)
@@ -170,7 +216,7 @@ namespace DemoCluster.DAL
 
         public virtual async Task<TEntity> FindByKeyAsync(
             object[] keyValues,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -184,10 +230,23 @@ namespace DemoCluster.DAL
         }
 
         public virtual async Task<IEnumerable<TEntity>> AllAsync(
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default(CancellationToken),
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
             ThrowIfDisposed();
-            return await Entities.ToListAsync(cancellationToken);
+            return await includeProperties.Aggregate(
+                Entities,
+                (current, property) => current.Include(property)).ToListAsync(cancellationToken);
+        }
+
+        public void Dispose() => _disposed = true;
+
+        public IQueryable<TEntity> AggregateProperties(
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return includeProperties.Aggregate(
+                Entities,
+                (current, includeProperty) => current.Include(includeProperty));
         }
 
         public void ThrowIfDisposed()
@@ -198,14 +257,12 @@ namespace DemoCluster.DAL
             }
         }
 
-        public IQueryable<TEntity> AggregateProperties(
-            params Expression<Func<TEntity, object>>[] includeProperties)
+        private string GetPrimaryKey(TEntity entity)
         {
-            return includeProperties.Aggregate(
-                Entities,
-                (current, includeProperty) => current.Include(includeProperty));
-        }
+            var keyName = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties
+                .Select(x => x.Name).Single();
 
-        public void Dispose() => _disposed = true;
+            return entity.GetType().GetProperty(keyName).GetValue(entity, null).ToString();
+        }
     }
 }
