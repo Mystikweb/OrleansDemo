@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(filter));
             }
 
-            return repository.Entities.AsNoTracking()
+            return repository.Entities
                 .Where(filter)
                 .ToList();
         }
@@ -39,7 +40,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(filter));
             }
 
-            if (filter == null)
+            if (includeProperties == null)
             {
                 throw new ArgumentNullException(nameof(includeProperties));
             }
@@ -68,7 +69,6 @@ namespace DemoCluster.DAL
             }
 
             return orderBy(repository.Entities
-                    .AsNoTracking()
                     .Where(filter))
                 .ToList();
         }
@@ -98,7 +98,6 @@ namespace DemoCluster.DAL
             }
 
             var query = orderBy(repository.Entities
-                .AsNoTracking()
                 .Where(filter));
 
             if (maxRecords != 0)
@@ -194,7 +193,6 @@ namespace DemoCluster.DAL
             }
 
             var query = repository.Entities
-                .AsNoTracking()
                 .Where(filter);
 
             if (maxRecords != 0)
@@ -249,7 +247,6 @@ namespace DemoCluster.DAL
             }
 
             var results = await repository.Entities
-                .AsNoTracking()
                 .Where(filter)
                 .ToListAsync(cancellationToken);
 
@@ -299,7 +296,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(orderBy));
             }
 
-            return await orderBy(repository.Entities.AsNoTracking().Where(filter))
+            return await orderBy(repository.Entities.Where(filter))
                 .ToListAsync(cancellationToken);
         }
 
@@ -328,7 +325,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentOutOfRangeException(nameof(maxRecords));
             }
 
-            var query = orderBy(repository.Entities.AsNoTracking().Where(filter));
+            var query = orderBy(repository.Entities.Where(filter));
 
             if (maxRecords != 0)
             {
@@ -360,8 +357,7 @@ namespace DemoCluster.DAL
             }
 
             return await orderBy(repository.AggregateProperties(includeProperties)
-                    .Where(filter))
-                .ToListAsync(cancellationToken);
+                    .Where(filter)).ToListAsync(cancellationToken);
         }
 
         public static async Task<IEnumerable<TEntity>> FindByAsync<TEntity, TContext>(
@@ -428,7 +424,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentException(nameof(maxRecords));
             }
 
-            var query = repository.Entities.AsNoTracking().Where(filter);
+            var query = repository.Entities.Where(filter);
             if (maxRecords == 0)
             {
                 return await query.ToListAsync(cancellationToken);
@@ -464,7 +460,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(includeProperties));
             }
 
-            var query = repository.Entities.AsNoTracking().Where(filter);
+            var query = repository.Entities.Where(filter);
             if (maxRecords != 0)
             {
                 var results = await query.ToListAsync(cancellationToken);

@@ -23,7 +23,7 @@ namespace DemoCluster.Messaging.Hubs
 
         public async Task RegisterDevice(string name)
         {
-            DeviceConfig result = await deviceLogic.GetDeviceAsync(name, Context.ConnectionAborted);
+            DeviceConfig result = await deviceLogic.GetDeviceAsync(name);
             if (result != null)
             {
                 IDeviceRegistry registry = clusterClient.GetGrain<IDeviceRegistry>(0);

@@ -144,7 +144,7 @@ namespace DemoCluster.DAL.Logic
         #region Device CRUD
         public async Task<List<DeviceConfig>> GetDeviceListAsync(CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.AllAsync();
+            IEnumerable<Device> listResults = await devices.AllAsync(token, d => d.DeviceEventType, d => d.DeviceSensor, d => d.DeviceState);
 
             return listResults
                 .Select(d => d.ToViewModel())
