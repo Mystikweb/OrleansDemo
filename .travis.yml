@@ -1,17 +1,17 @@
-language: csharp
 sudo: required
-mono: none
-dotnet: 2.1.403
-services:
-    - docker
+
 branches:
   only:
     - master
     - develop
-before_script:
-  - chmod a+x ./build-server.sh
-script:
-  - ./build-server.sh
+
+mono: none
+dotnet: 2.1.403
+language: csharp
+
+services:
+    - docker
+
 notifications:
   email:
     on_success: never
@@ -19,3 +19,15 @@ notifications:
   slack:
     rooms:
       - mystikweb:PXFBzS4uEnTzScjI1IlvmBcd#orleansdemo
+
+jobs:
+  include:
+      - stage: build
+        before_script:
+          - chmod a+x ./build-server.sh
+        script:
+          - ./build-server.sh
+      - stage: push
+        before_script:
+          -chmod a+x ./push-silo.sh
+        script: ./push-silo.sh
