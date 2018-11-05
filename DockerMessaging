@@ -1,0 +1,19 @@
+FROM microsoft/dotnet:2.1-sdk AS source
+WORKDIR /src
+COPY /src/DemoCluster.DAL ./DemoCluster.DAL
+COPY /src/DemoCluster.GrainInterfaces ./DemoCluster.GrainInterfaces
+COPY /src/DemoCluster.Messaging ./DemoCluster.Messaging
+WORKDIR ./DemoCluster.Messaging
+RUN dotnet restore DemoCluster.Messaging.csproj
+
+FROM source AS build
+RUN dotnet build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o ../../release
+
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS runtime
+WORKDIR /app
+COPY --from=publish /release .
+EXPOSE 80
+ENTRYPOINT ["dotnet", "DemoCluster.Messaging.dll"]

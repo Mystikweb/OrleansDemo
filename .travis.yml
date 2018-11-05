@@ -21,11 +21,22 @@ jobs:
         language: csharp
         before_script:
           - chmod a+x ./build-silo.sh
-        script:
-          - ./build-silo.sh
-      - stage: push
+        script: ./build-silo.sh
+      - stage: push-silo
         services:
           - docker
         before_script:
           - chmod a+x ./push-silo.sh
         script: ./push-silo.sh
+      - stage: push-configuration
+        services:
+          - docker
+        before_script:
+          - chmod a+x ./push-configuration.sh
+        script: ./push-configuraiton.sh
+      - stage: push-messaging
+        services:
+          - docker
+        before_script:
+          - chmod a+x ./push-messaging.sh
+        script: ./push-messaging.sh
