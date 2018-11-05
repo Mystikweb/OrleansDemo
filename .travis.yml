@@ -33,7 +33,7 @@ jobs:
           - docker
         before_script:
           - chmod a+x ./push-configuration.sh
-        script: ./push-configuraiton.sh
+        script: ./push-configuration.sh
       - stage: push-messaging
         services:
           - docker
