@@ -5,13 +5,6 @@ branches:
     - master
     - develop
 
-mono: none
-dotnet: 2.1.403
-language: csharp
-
-services:
-    - docker
-
 notifications:
   email:
     on_success: never
@@ -23,11 +16,16 @@ notifications:
 jobs:
   include:
       - stage: build
+        mono: none
+        dotnet: 2.1.403
+        language: csharp
         before_script:
           - chmod a+x ./build-silo.sh
         script:
           - ./build-silo.sh
       - stage: push
+        services:
+          - docker
         before_script:
-          -chmod a+x ./push-silo.sh
+          - chmod a+x ./push-silo.sh
         script: ./push-silo.sh
