@@ -9,11 +9,11 @@ COPY /src/DemoCluster.Util ./DemoCluster.Util
 COPY /src/Orleans.Storage.Redis ./Orleans.Storage.Redis
 COPY /src/DemoCluster ./DemoCluster
 WORKDIR ./DemoCluster
-RUN dotnet restore -v m DemoCluster.csproj
+RUN dotnet restore -v m ./DemoCluster.csproj
 
 # create a build environment from source
 FROM source AS build
-RUN dotnet build -v m
+RUN dotnet build -v m .
 
 # take the build and publish the app
 FROM build AS publish
