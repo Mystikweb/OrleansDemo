@@ -24,9 +24,9 @@ jobs:
   include:
       - stage: build
         before_script:
-          - chmod a+x ./build-server.sh
+          - chmod a+x ./build-silo.sh
         script:
-          - ./build-server.sh
+          - ./build-silo.sh
       - stage: push
         before_script:
           -chmod a+x ./push-silo.sh
