@@ -1,10 +1,9 @@
-using DemoCluster.DAL;
+using DemoCluster.DAL.Logic;
 using DemoCluster.DAL.Models;
 using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.GrainInterfaces.States;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.MultiCluster;
 using Orleans.Providers;
 using System;
@@ -19,9 +18,9 @@ namespace DemoCluster.GrainImplementations
     public class DeviceRegistry : RegistryGrain<IDeviceGrain>, IDeviceRegistry
     {
         private readonly ILogger logger;
-        private readonly IConfigurationStorage storage;
+        private readonly DeviceLogic storage;
 
-        public DeviceRegistry(ILogger<DeviceRegistry> logger, IConfigurationStorage storage)
+        public DeviceRegistry(ILogger<DeviceRegistry> logger, DeviceLogic storage)
         {
             this.logger = logger;
             this.storage = storage;
@@ -83,7 +82,7 @@ namespace DemoCluster.GrainImplementations
 
         public async Task StartDevice(string deviceId)
         {
-            var device = await storage.GetDeviceByIdAsync(deviceId);
+            var device = await storage.GetDeviceAsync(Guid.Parse(deviceId));
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             await RegisterGrain(deviceGrain);
@@ -93,7 +92,7 @@ namespace DemoCluster.GrainImplementations
 
         public async Task StopDevice(string deviceId)
         {
-            var device = await storage.GetDeviceByIdAsync(deviceId);
+            var device = await storage.GetDeviceAsync(Guid.Parse(deviceId));
 
             var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
             //await deviceGrain.Stop();

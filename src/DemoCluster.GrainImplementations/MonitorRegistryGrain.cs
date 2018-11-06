@@ -18,32 +18,18 @@ namespace DemoCluster.GrainImplementations
         RegistryGrain<IMessageMonitorGrain>, IMonitorRegistryGrain
     {
         private readonly ILogger logger;
-        private readonly IConfigurationStorage storage;
         private CancellationToken cancellation;
 
-        public MonitorRegistryGrain(ILogger<MonitorRegistryGrain> logger, IConfigurationStorage storage)
+        public MonitorRegistryGrain(ILogger<MonitorRegistryGrain> logger)
         {
             this.logger = logger;
-            this.storage = storage;
         }
 
-        public async Task Initialize(CancellationToken cancellation)
+        public Task Initialize(CancellationToken cancellation)
         {
             this.cancellation = cancellation;
 
-            var monitors = await storage.GetMonitorListAsync();
-            foreach (var monitor in monitors.Where(m => m.IsEnabled && m.RunAtStartup))
-            {
-                var monitorGrain = GrainFactory.GetGrain<IMessageMonitorGrain>(Guid.Parse(monitor.MonitorId));
-
-                bool isSetup = await monitorGrain.UpdateMonitor(monitor);
-                await RegisterGrain(monitorGrain);
-
-                if (!isSetup)
-                {
-                    logger.LogWarning($"Monitor with id {monitor.MonitorId} was not initialized successfully.");
-                }
-            }
+            return Task.CompletedTask;
         }
 
         public Task ConfigureMonitor(MonitorConfig config)

@@ -14,13 +14,10 @@ namespace DemoCluster.Configuration.Controllers
     [Produces("application/json")]
     public class RuntimeController : Controller
     {
-        private readonly IRuntimeStorage runtime;
         private readonly ILogger logger;
 
-        public RuntimeController(IRuntimeStorage runtime, 
-            ILogger<RuntimeController> logger)
+        public RuntimeController(ILogger<RuntimeController> logger)
         {
-            this.runtime = runtime;
             this.logger = logger;
         }
     }
