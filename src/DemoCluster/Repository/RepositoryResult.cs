@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DemoCluster.DAL
+namespace DemoCluster.Repository
 {
     public class RepositoryResult
     {

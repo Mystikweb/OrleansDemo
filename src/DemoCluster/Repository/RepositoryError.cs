@@ -1,4 +1,4 @@
-namespace DemoCluster.DAL
+namespace DemoCluster.Repository
 {
     public class RepositoryError
     {

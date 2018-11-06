@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoCluster.DAL
+namespace DemoCluster.Repository
 {
     public interface IRepository<TEntity, TContext>
         where TEntity : class
@@ -15,7 +15,7 @@ namespace DemoCluster.DAL
         IQueryable<TEntity> Entities { get; }
 
         void ThrowIfDisposed();
-        IQueryable<TEntity> AggregateProperties(params Expression<Func<TEntity, object>>[] includeProperties);
+        IQueryable<TEntity> IncludeProperties(params string[] includeProperties);
 
         void SaveChanges();
         Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
@@ -36,6 +36,6 @@ namespace DemoCluster.DAL
         Task<TEntity> FindByKeyAsync(params object[] keyValues);
         Task<TEntity> FindByKeyAsync(object[] keyValues, CancellationToken cancellationToken = default(CancellationToken));
         IEnumerable<TEntity> All();
-        Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default(CancellationToken), params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default(CancellationToken), params string[] includeProperties);
     }
 }

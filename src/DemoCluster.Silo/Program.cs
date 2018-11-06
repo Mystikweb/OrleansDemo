@@ -97,6 +97,7 @@ namespace DemoCluster
                 .AddMemoryGrainStorage("MemoryStorage")
                 .AddLogStorageBasedLogConsistencyProvider()
                 .AddRedisGrainStorage("CacheStorage", options => appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Bind(options))
+                .AddSimpleMessageStreamProvider("SensorValues")
                 .AddConfigurationLogic(appConfig.GetConnectionString("Configuration"))
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .ConfigureLogging(log =>

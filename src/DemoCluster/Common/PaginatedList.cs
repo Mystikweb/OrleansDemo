@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DemoCluster.DAL
+namespace DemoCluster
 {
     public class PaginatedList<T> : List<T>
     {

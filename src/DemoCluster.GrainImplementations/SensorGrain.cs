@@ -14,7 +14,8 @@ namespace DemoCluster.GrainImplementations
     [LogConsistencyProvider(ProviderName="LogStorage")]
     [StorageProvider(ProviderName = "SqlBase")]
     public class SensorGrain :
-        JournaledGrain<SensorState>, ISensorGrain
+        JournaledGrain<SensorState>,
+        ISensorGrain
     {
         private readonly ILogger logger;
 

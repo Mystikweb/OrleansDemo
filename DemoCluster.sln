@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Configuration",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Messaging", "src\DemoCluster.Messaging\DemoCluster.Messaging.csproj", "{6B4B203E-490F-4AA9-B791-F8B07DFC6256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.Silo", "src\DemoCluster.Silo\DemoCluster.Silo.csproj", "{3C919B86-0AF6-46DF-9DED-CE4BDA023874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Silo", "src\DemoCluster.Silo\DemoCluster.Silo.csproj", "{3C919B86-0AF6-46DF-9DED-CE4BDA023874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster", "src\DemoCluster\DemoCluster.csproj", "{016BFA3C-8C2E-4BBF-86C1-EB1405742DC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster", "src\DemoCluster\DemoCluster.csproj", "{016BFA3C-8C2E-4BBF-86C1-EB1405742DC5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{33E3B4ED-6FEC-4968-B40F-B989C4B44689}"
 EndProject

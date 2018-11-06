@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Models;
+using DemoCluster.Repository;
 using Microsoft.Extensions.Logging;
 
 namespace DemoCluster.DAL.Logic
@@ -144,7 +145,7 @@ namespace DemoCluster.DAL.Logic
         #region Device CRUD
         public async Task<List<DeviceConfig>> GetDeviceListAsync(CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.AllAsync(token, d => d.DeviceEventType, d => d.DeviceSensor, d => d.DeviceState);
+            IEnumerable<Device> listResults = await devices.AllAsync(token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -154,7 +155,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<List<DeviceConfig>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.FindByAsync(filter);
+            IEnumerable<Device> listResults = await devices.FindByAsync(filter, token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -165,7 +166,7 @@ namespace DemoCluster.DAL.Logic
             Func<IQueryable<Device>, IOrderedQueryable<Device>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.FindByAsync(filter, orderBy);
+            IEnumerable<Device> listResults = await devices.FindByAsync(filter, orderBy, token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
@@ -188,7 +189,8 @@ namespace DemoCluster.DAL.Logic
         public async Task<DeviceConfig> GetDeviceAsync(Guid deviceId,
             CancellationToken token = default(CancellationToken))
         {
-            Device result = await devices.FindByKeyAsync(deviceId);
+            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.DeviceId == deviceId, token, Constants.DEVICE_PROPERTIES);
+            Device result = searchResults.FirstOrDefault();
 
             return result?.ToViewModel();
         }
@@ -196,7 +198,7 @@ namespace DemoCluster.DAL.Logic
         public async Task<DeviceConfig> GetDeviceAsync(string deviceName,
             CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.Name == deviceName);
+            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.Name == deviceName, token, Constants.DEVICE_PROPERTIES);
             Device result = searchResults.FirstOrDefault();
 
             return result?.ToViewModel();
@@ -272,7 +274,7 @@ namespace DemoCluster.DAL.Logic
         #region Device Sensor CRUD
         public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<DeviceSensor> listResults = await deviceSensors.AllAsync(token);
+            IEnumerable<DeviceSensor> listResults = await deviceSensors.AllAsync();
 
             return listResults
                 .Select(d => d.ToViewModel())

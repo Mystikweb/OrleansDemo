@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DemoCluster.DAL;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.Messaging.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using System;
+using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DemoCluster.Messaging
@@ -53,10 +49,13 @@ namespace DemoCluster.Messaging
             }
 
             app.UseHttpsRedirection();
+
             app.UseSignalR(routes => 
             {
                 routes.MapHub<DeviceRegistrationHub>("/registration");
+                routes.MapHub<SensorValueHub>("/sensorvalue");
             });
+
             app.UseMvc();
         }
 
@@ -66,11 +65,7 @@ namespace DemoCluster.Messaging
 
             var client = new ClientBuilder()
                 .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IDeviceRegistry).Assembly))
-                .Configure<ClusterOptions>(options =>
-                {
-                    options.ClusterId = Configuration["ClusterId"];
-                    options.ServiceId = Configuration["ServiceId"];
-                })
+                .Configure<ClusterOptions>(options => Configuration.GetSection("ClusterOptions").Bind(options))
                 .UseAdoNetClustering(options =>
                 {
                     options.ConnectionString = Configuration.GetConnectionString("Cluster");

@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DemoCluster.DAL
+namespace DemoCluster.Repository
 {
     public static class RepositoryExtensions
     {
@@ -30,7 +30,7 @@ namespace DemoCluster.DAL
         public static IEnumerable<TEntity> FindBy<TEntity, TContext>(
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -45,7 +45,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(includeProperties));
             }
 
-            return repository.AggregateProperties(includeProperties)
+            return repository.IncludeProperties(includeProperties)
                 .Where(filter)
                 .ToList();
         }
@@ -112,7 +112,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -132,7 +132,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(includeProperties));
             }
 
-            return orderBy(repository.AggregateProperties(includeProperties)
+            return orderBy(repository.IncludeProperties(includeProperties)
                     .Where(filter))
                 .ToList();
         }
@@ -142,7 +142,7 @@ namespace DemoCluster.DAL
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -162,7 +162,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentOutOfRangeException(nameof(maxRecords));
             }
 
-            var query = orderBy(repository.AggregateProperties(includeProperties)
+            var query = orderBy(repository.IncludeProperties(includeProperties)
                 .Where(filter));
 
             if (maxRecords != 0)
@@ -207,7 +207,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -222,7 +222,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentException(nameof(maxRecords));
             }
 
-            var query = repository.AggregateProperties(includeProperties)
+            var query = repository.IncludeProperties(includeProperties)
                 .Where(filter);
 
             if (maxRecords != 0)
@@ -257,7 +257,7 @@ namespace DemoCluster.DAL
             this IRepository<TEntity, TContext> repository,
             Expression<Func<TEntity, bool>> filter,
             CancellationToken cancellationToken = default(CancellationToken),
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -272,7 +272,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(includeProperties));
             }
 
-            return await repository.AggregateProperties(includeProperties)
+            return await repository.IncludeProperties(includeProperties)
                 .Where(filter)
                 .ToListAsync(cancellationToken);
         }
@@ -341,7 +341,7 @@ namespace DemoCluster.DAL
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             CancellationToken cancellationToken = default(CancellationToken),
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -356,7 +356,7 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(orderBy));
             }
 
-            return await orderBy(repository.AggregateProperties(includeProperties)
+            return await orderBy(repository.IncludeProperties(includeProperties)
                     .Where(filter)).ToListAsync(cancellationToken);
         }
 
@@ -366,7 +366,7 @@ namespace DemoCluster.DAL
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             int maxRecords,
             CancellationToken cancellationToken = default(CancellationToken),
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -393,14 +393,14 @@ namespace DemoCluster.DAL
 
             if (maxRecords != 0)
             {
-                var results = await orderBy(repository.AggregateProperties(includeProperties)
+                var results = await orderBy(repository.IncludeProperties(includeProperties)
                         .Where(filter))
                     .ToListAsync(cancellationToken);
 
                 return results.Take(maxRecords);
             }
 
-            return await orderBy(repository.AggregateProperties(includeProperties)
+            return await orderBy(repository.IncludeProperties(includeProperties)
                     .Where(filter))
                 .ToListAsync(cancellationToken);
         }
@@ -440,7 +440,7 @@ namespace DemoCluster.DAL
             Expression<Func<TEntity, bool>> filter,
             int maxRecords,
             CancellationToken cancellationToken = default(CancellationToken),
-            params Expression<Func<TEntity, object>>[] includeProperties)
+            params string[] includeProperties)
             where TEntity : class
             where TContext : DbContext
         {
@@ -460,7 +460,9 @@ namespace DemoCluster.DAL
                 throw new ArgumentNullException(nameof(includeProperties));
             }
 
-            var query = repository.Entities.Where(filter);
+            var query = repository
+                .IncludeProperties(includeProperties)
+                .Where(filter);
             if (maxRecords != 0)
             {
                 var results = await query.ToListAsync(cancellationToken);

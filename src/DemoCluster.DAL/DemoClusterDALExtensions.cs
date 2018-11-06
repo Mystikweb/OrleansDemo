@@ -7,6 +7,7 @@ using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Database.Runtime;
 using DemoCluster.DAL.Logic;
 using DemoCluster.DAL.Models;
+using DemoCluster.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

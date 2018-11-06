@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DemoCluster.DAL.Database.Configuration;
 using DemoCluster.DAL.Models;
+using DemoCluster.Repository;
 using Microsoft.Extensions.Logging;
 
 namespace DemoCluster.DAL.Logic
