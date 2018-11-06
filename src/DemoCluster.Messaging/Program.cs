@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,12 +14,6 @@ namespace DemoCluster.Messaging
     {
         public static void Main(string[] args)
         {
-            if (Environment.UserInteractive)
-            {
-                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-                Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "https://localhost:5005");
-            }
-
             CreateWebHostBuilder(args).Build().Run();
         }
 

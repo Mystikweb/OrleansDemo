@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainInterfaces", "DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj", "{5F5A1475-8910-4BD3-B64D-2665C79672FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainInterfaces", "src\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj", "{5F5A1475-8910-4BD3-B64D-2665C79672FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainImplementations", "DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj", "{CD4D7215-AE7C-411F-933C-0689BF5C5B6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.GrainImplementations", "src\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj", "{CD4D7215-AE7C-411F-933C-0689BF5C5B6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Storage.Redis", "Orleans.Storage.Redis\Orleans.Storage.Redis.csproj", "{30F32260-843A-4784-B1F2-98C8E5755673}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Storage.Redis", "src\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj", "{30F32260-843A-4784-B1F2-98C8E5755673}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.DAL", "DemoCluster.DAL\DemoCluster.DAL.csproj", "{CC24D1EC-D375-4B10-8396-F140840BFF8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.DAL", "src\DemoCluster.DAL\DemoCluster.DAL.csproj", "{CC24D1EC-D375-4B10-8396-F140840BFF8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Configuration", "DemoCluster.Configuration\DemoCluster.Configuration.csproj", "{6D4C2139-919C-4C0A-9582-713C22F0C73A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Configuration", "src\DemoCluster.Configuration\DemoCluster.Configuration.csproj", "{6D4C2139-919C-4C0A-9582-713C22F0C73A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Messaging", "DemoCluster.Messaging\DemoCluster.Messaging.csproj", "{6B4B203E-490F-4AA9-B791-F8B07DFC6256}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCluster.Messaging", "src\DemoCluster.Messaging\DemoCluster.Messaging.csproj", "{6B4B203E-490F-4AA9-B791-F8B07DFC6256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.Silo", "DemoCluster.Silo\DemoCluster.Silo.csproj", "{3C919B86-0AF6-46DF-9DED-CE4BDA023874}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster.Silo", "src\DemoCluster.Silo\DemoCluster.Silo.csproj", "{3C919B86-0AF6-46DF-9DED-CE4BDA023874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster", "DemoCluster\DemoCluster.csproj", "{016BFA3C-8C2E-4BBF-86C1-EB1405742DC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCluster", "src\DemoCluster\DemoCluster.csproj", "{016BFA3C-8C2E-4BBF-86C1-EB1405742DC5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{33E3B4ED-6FEC-4968-B40F-B989C4B44689}"
 EndProject
