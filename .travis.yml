@@ -22,21 +22,9 @@ jobs:
         before_script:
           - chmod a+x ./build-solution.sh
         script: ./build-solution.sh
-      - stage: "Build Silo Image"
+      - stage: "Docker Image Push"
         services:
           - docker
         before_script:
-          - chmod a+x ./build-push-silo.sh
-        script: ./build-push-silo.sh
-      - stage: "Build Configuration Image"
-        services:
-          - docker
-        before_script:
-          - chmod a+x ./build-push-configuration.sh
-        script: ./build-push-configuration.sh
-      - stage: "Build Runtime Image"
-        services:
-          - docker
-        before_script:
-          - chmod a+x ./build-push-runtime.sh
-        script: ./build-push-runtime.sh
+          - chmod a+x ./docker-push.sh
+        script: ./docker-push.sh
