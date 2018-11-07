@@ -1,12 +1,13 @@
+using DemoCluster.DAL.Database.Configuration;
+using DemoCluster.Models;
+using DemoCluster.Repository;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DemoCluster.DAL.Database.Configuration;
-using DemoCluster.DAL.Models;
-using Microsoft.Extensions.Logging;
 
 namespace DemoCluster.DAL.Logic
 {
@@ -32,9 +33,9 @@ namespace DemoCluster.DAL.Logic
         }
 
         #region Device Configuration
-        public async Task<DeviceConfig> CreateDeviceAsync(DeviceConfig model, CancellationToken token = default(CancellationToken))
+        public async Task<DeviceViewModel> CreateDeviceAsync(DeviceViewModel model, CancellationToken token = default(CancellationToken))
         {
-            DeviceConfig result = null;
+            DeviceViewModel result = null;
 
             try
             {
@@ -45,7 +46,7 @@ namespace DemoCluster.DAL.Logic
                     await SaveDeviceSensorAsync(deviceSensor);
                 }
 
-                foreach (var deviceEvent in model.Events)
+                foreach (var deviceEvent in model.EventTypes)
                 {
                     await SaveDeviceEventAsync(deviceEvent);
                 }
@@ -66,9 +67,9 @@ namespace DemoCluster.DAL.Logic
             return result;
         }
 
-        public async Task<DeviceConfig> UpdateDeviceAsync(DeviceConfig model, CancellationToken token = default(CancellationToken))
+        public async Task<DeviceViewModel> UpdateDeviceAsync(DeviceViewModel model, CancellationToken token = default(CancellationToken))
         {
-            DeviceConfig config = await GetDeviceAsync(Guid.Parse(model.DeviceId));
+            DeviceViewModel config = await GetDeviceAsync(Guid.Parse(model.DeviceId));
             if (config == null)
             {
                 logger.LogError($"Unable to find device {model.Name} with id {model.DeviceId}.");
@@ -84,7 +85,7 @@ namespace DemoCluster.DAL.Logic
                     await SaveDeviceSensorAsync(deviceSensor);
                 }
 
-                foreach (var deviceEvent in model.Events)
+                foreach (var deviceEvent in model.EventTypes)
                 {
                     await SaveDeviceEventAsync(deviceEvent);
                 }
@@ -105,9 +106,9 @@ namespace DemoCluster.DAL.Logic
             return config;
         }
 
-        public async Task DeleteDeviceAsync(DeviceConfig model, CancellationToken token = default(CancellationToken))
+        public async Task DeleteDeviceAsync(DeviceViewModel model, CancellationToken token = default(CancellationToken))
         {
-            DeviceConfig config = await GetDeviceAsync(Guid.Parse(model.DeviceId));
+            DeviceViewModel config = await GetDeviceAsync(Guid.Parse(model.DeviceId));
             if (config == null)
             {
                 logger.LogError($"Unable to find device {model.Name} with id {model.DeviceId}.");
@@ -121,7 +122,7 @@ namespace DemoCluster.DAL.Logic
                     await RemoveDeviceStateAsync(deviceState);
                 }
 
-                foreach (var deviceEvent in model.Events)
+                foreach (var deviceEvent in model.EventTypes)
                 {
                     await RemoveDeviceEventAsync(deviceEvent);
                 }
@@ -142,37 +143,37 @@ namespace DemoCluster.DAL.Logic
         #endregion
 
         #region Device CRUD
-        public async Task<List<DeviceConfig>> GetDeviceListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<DeviceViewModel>> GetDeviceListAsync(CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.AllAsync(token, d => d.DeviceEventType, d => d.DeviceSensor, d => d.DeviceState);
+            IEnumerable<Device> listResults = await devices.AllAsync(token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
                 .ToList();
         }
 
-        public async Task<List<DeviceConfig>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
+        public async Task<List<DeviceViewModel>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.FindByAsync(filter);
+            IEnumerable<Device> listResults = await devices.FindByAsync(filter, token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
                 .ToList();
         }
 
-        public async Task<List<DeviceConfig>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
+        public async Task<List<DeviceViewModel>> GetDeviceListAsync(Expression<Func<Device, bool>> filter,
             Func<IQueryable<Device>, IOrderedQueryable<Device>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<Device> listResults = await devices.FindByAsync(filter, orderBy);
+            IEnumerable<Device> listResults = await devices.FindByAsync(filter, orderBy, token, Constants.DEVICE_PROPERTIES);
 
             return listResults
                 .Select(d => d.ToViewModel())
                 .ToList();
         }
 
-        public async Task<PaginatedList<DeviceConfig>> GetDevicePageAsync(string filter, 
+        public async Task<PaginatedList<DeviceViewModel>> GetDevicePageAsync(string filter, 
             int pageIndex, 
             int pageSize,
             CancellationToken token = default(CancellationToken))
@@ -185,24 +186,25 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<DeviceConfig> GetDeviceAsync(Guid deviceId,
+        public async Task<DeviceViewModel> GetDeviceAsync(Guid deviceId,
             CancellationToken token = default(CancellationToken))
         {
-            Device result = await devices.FindByKeyAsync(deviceId);
-
-            return result?.ToViewModel();
-        }
-
-        public async Task<DeviceConfig> GetDeviceAsync(string deviceName,
-            CancellationToken token = default(CancellationToken))
-        {
-            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.Name == deviceName);
+            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.DeviceId == deviceId, token, Constants.DEVICE_PROPERTIES);
             Device result = searchResults.FirstOrDefault();
 
             return result?.ToViewModel();
         }
 
-        public async Task<DeviceConfig> SaveDeviceAsync(DeviceConfig model,
+        public async Task<DeviceViewModel> GetDeviceAsync(string deviceName,
+            CancellationToken token = default(CancellationToken))
+        {
+            IEnumerable<Device> searchResults = await devices.FindByAsync(d => d.Name == deviceName, token, Constants.DEVICE_PROPERTIES);
+            Device result = searchResults.FirstOrDefault();
+
+            return result?.ToViewModel();
+        }
+
+        public async Task<DeviceViewModel> SaveDeviceAsync(DeviceViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             Device deviceItem = null;
@@ -238,14 +240,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error creating device {model.Name}");
+                logger.LogError(ex, $"Error saving device {model.Name}");
                 throw;
             }
 
             return deviceItem?.ToViewModel();
         }
 
-        public async Task RemoveDeviceAsync(DeviceConfig model,
+        public async Task RemoveDeviceAsync(DeviceViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
@@ -254,7 +256,7 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Removed service {model.Name} successfully.");
+                    logger.LogInformation($"Removed device {model.Name} successfully.");
                 }
                 else
                 {
@@ -263,23 +265,23 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error removing service {model.Name}");
+                logger.LogError(ex, $"Error removing device {model.Name}");
                 throw;
             }
         }
         #endregion
 
         #region Device Sensor CRUD
-        public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<DeviceSensorViewModel>> GetDeviceSensorListAsync(CancellationToken token = default(CancellationToken))
         {
-            IEnumerable<DeviceSensor> listResults = await deviceSensors.AllAsync(token);
+            IEnumerable<DeviceSensor> listResults = await deviceSensors.AllAsync();
 
             return listResults
                 .Select(d => d.ToViewModel())
                 .ToList();
         }
 
-        public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
+        public async Task<List<DeviceSensorViewModel>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
             IEnumerable<DeviceSensor> listResults = await deviceSensors.FindByAsync(filter);
@@ -289,7 +291,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<DeviceSensorConfig>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
+        public async Task<List<DeviceSensorViewModel>> GetDeviceSensorListAsync(Expression<Func<DeviceSensor, bool>> filter,
             Func<IQueryable<DeviceSensor>, IOrderedQueryable<DeviceSensor>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
@@ -300,7 +302,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<PaginatedList<DeviceSensorConfig>> GetDeviceSensorPageAsync(Guid deviceId, 
+        public async Task<PaginatedList<DeviceSensorViewModel>> GetDeviceSensorPageAsync(Guid deviceId, 
             string filter,
             int pageIndex,
             int pageSize,
@@ -321,7 +323,7 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<DeviceSensorConfig> SaveDeviceSensorAsync(DeviceSensorConfig model,
+        public async Task<DeviceSensorViewModel> SaveDeviceSensorAsync(DeviceSensorViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             DeviceSensor deviceSensorItem = null;
@@ -342,13 +344,13 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Created device sensor {model.Name}");
+                    logger.LogInformation($"Created device sensor {model.SensorName}");
 
-                    IEnumerable<DeviceSensor> searchResults = await deviceSensors.FindByAsync(s => s.Sensor.Name == model.Name);
+                    IEnumerable<DeviceSensor> searchResults = await deviceSensors.FindByAsync(s => s.Sensor.Name == model.SensorName);
                     deviceSensorItem = searchResults.FirstOrDefault();
                     if (deviceSensorItem == null)
                     {
-                        logger.LogError($"Unable to find device sensor {model.Name} as result.");
+                        logger.LogError($"Unable to find device sensor {model.SensorName} as result.");
                     }
                 }
                 else
@@ -358,14 +360,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error creating device {model.Name}");
+                logger.LogError(ex, $"Error saving device sensor {model.SensorName}");
                 throw;
             }
 
             return deviceSensorItem?.ToViewModel();
         }
 
-        public async Task RemoveDeviceSensorAsync(DeviceSensorConfig model,
+        public async Task RemoveDeviceSensorAsync(DeviceSensorViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
@@ -374,7 +376,7 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Removed service {model.Name} successfully.");
+                    logger.LogInformation($"Removed device sensor {model.SensorName} successfully.");
                 }
                 else
                 {
@@ -383,14 +385,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error removing service {model.Name}");
+                logger.LogError(ex, $"Error removing device sensor {model.SensorName}");
                 throw;
             }
         }
         #endregion
 
         #region Device Event CRUD
-        public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<DeviceEventTypeViewModel>> GetDeviceEventListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<DeviceEventType> listResults = await deviceEvents.AllAsync(token);
 
@@ -399,7 +401,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
+        public async Task<List<DeviceEventTypeViewModel>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
             IEnumerable<DeviceEventType> listResults = await deviceEvents.FindByAsync(filter);
@@ -409,7 +411,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<DeviceEventConfig>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
+        public async Task<List<DeviceEventTypeViewModel>> GetDeviceEventListAsync(Expression<Func<DeviceEventType, bool>> filter,
             Func<IQueryable<DeviceEventType>, IOrderedQueryable<DeviceEventType>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
@@ -420,7 +422,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<PaginatedList<DeviceEventConfig>> GetDeviceEventPageAsync(Guid deviceId, 
+        public async Task<PaginatedList<DeviceEventTypeViewModel>> GetDeviceEventPageAsync(Guid deviceId, 
             string filter,
             int pageIndex,
             int pageSize,
@@ -441,7 +443,7 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<DeviceEventConfig> SaveDeviceEventAsync(DeviceEventConfig model,
+        public async Task<DeviceEventTypeViewModel> SaveDeviceEventAsync(DeviceEventTypeViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             DeviceEventType deviceEventItem = null;
@@ -462,13 +464,13 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Created device sensor {model.Name}");
+                    logger.LogInformation($"Created device event type {model.EventTypeName}");
 
-                    IEnumerable<DeviceEventType> searchResults = await deviceEvents.FindByAsync(s => s.EventType.Name == model.Name);
+                    IEnumerable<DeviceEventType> searchResults = await deviceEvents.FindByAsync(s => s.EventType.Name == model.EventTypeName);
                     deviceEventItem = searchResults.FirstOrDefault();
                     if (deviceEventItem == null)
                     {
-                        logger.LogError($"Unable to find device sensor {model.Name} as result.");
+                        logger.LogError($"Unable to find device event type {model.EventTypeName} as result.");
                     }
                 }
                 else
@@ -478,14 +480,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error creating device {model.Name}");
+                logger.LogError(ex, $"Error saving device event type {model.EventTypeName}");
                 throw;
             }
 
             return deviceEventItem?.ToViewModel();
         }
 
-        public async Task RemoveDeviceEventAsync(DeviceEventConfig model,
+        public async Task RemoveDeviceEventAsync(DeviceEventTypeViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
@@ -494,7 +496,7 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Removed service {model.Name} successfully.");
+                    logger.LogInformation($"Removed device event type {model.EventTypeName} successfully.");
                 }
                 else
                 {
@@ -503,14 +505,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error removing service {model.Name}");
+                logger.LogError(ex, $"Error removing device event type {model.EventTypeName}");
                 throw;
             }
         }
         #endregion
 
         #region Device State CRUD
-        public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<DeviceStateViewModel>> GetDeviceStateListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<DeviceState> listResults = await deviceStates.AllAsync(token);
 
@@ -519,7 +521,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
+        public async Task<List<DeviceStateViewModel>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
             IEnumerable<DeviceState> listResults = await deviceStates.FindByAsync(filter);
@@ -529,7 +531,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<DeviceStateConfig>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
+        public async Task<List<DeviceStateViewModel>> GetDeviceStateListAsync(Expression<Func<DeviceState, bool>> filter,
             Func<IQueryable<DeviceState>, IOrderedQueryable<DeviceState>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
@@ -540,7 +542,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<PaginatedList<DeviceStateConfig>> GetDeviceStatePageAsync(Guid deviceId, 
+        public async Task<PaginatedList<DeviceStateViewModel>> GetDeviceStatePageAsync(Guid deviceId, 
             string filter,
             int pageIndex,
             int pageSize,
@@ -561,7 +563,7 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<DeviceStateConfig> SaveDeviceStateAsync(DeviceStateConfig model,
+        public async Task<DeviceStateViewModel> SaveDeviceStateAsync(DeviceStateViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             DeviceState deviceStateItem = null;
@@ -582,13 +584,13 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Created device sensor {model.Name}");
+                    logger.LogInformation($"Created device state {model.StateName}");
 
-                    IEnumerable<DeviceState> searchResults = await deviceStates.FindByAsync(s => s.State.Name == model.Name);
+                    IEnumerable<DeviceState> searchResults = await deviceStates.FindByAsync(s => s.State.Name == model.StateName);
                     deviceStateItem = searchResults.FirstOrDefault();
                     if (deviceStateItem == null)
                     {
-                        logger.LogError($"Unable to find device sensor {model.Name} as result.");
+                        logger.LogError($"Unable to find device state {model.StateName} as result.");
                     }
                 }
                 else
@@ -598,14 +600,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error creating device {model.Name}");
+                logger.LogError(ex, $"Error saving device state {model.StateName}");
                 throw;
             }
 
             return deviceStateItem?.ToViewModel();
         }
 
-        public async Task RemoveDeviceStateAsync(DeviceStateConfig model,
+        public async Task RemoveDeviceStateAsync(DeviceStateViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
@@ -614,7 +616,7 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Removed service {model.Name} successfully.");
+                    logger.LogInformation($"Removed device state {model.StateName} successfully.");
                 }
                 else
                 {
@@ -623,7 +625,7 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error removing service {model.Name}");
+                logger.LogError(ex, $"Error removing device state {model.StateName}");
                 throw;
             }
         }

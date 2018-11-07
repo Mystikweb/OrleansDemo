@@ -8,16 +8,27 @@ BEGIN
     SET @testDeviceId = (SELECT DeviceId FROM Config.Device WHERE [Name] = N'Test')
 END
 
-DECLARE @testTempId INT = (SELECT SensorId FROM Config.Sensor WHERE [Name] = N'TestTemp')
+DECLARE @testTempId INT = (SELECT SensorId FROM Config.Sensor WHERE [Name] = N'Temperature')
 IF @testTempId IS NULL
 BEGIN
-    INSERT INTO Config.Sensor (Name, UOM) VALUES (N'TestTemp', N'°')
+    INSERT INTO Config.Sensor (Name, UOM) VALUES (N'Temperature', N'°')
     SET @testTempId = @@IDENTITY
 END
 
-DECLARE @testDeviceSensorId INT = (SELECT DeviceSensorId FROM Config.DeviceSensor WHERE DeviceId = @testDeviceId AND SensorId = @testTempId )
-IF @testDeviceSensorId IS NULL
+DECLARE @testHumidity INT = (SELECT SensorId FROM Config.Sensor WHERE [Name] = N'Humidity')
+IF @testHumidity IS NULL
+BEGIN
+    INSERT INTO Config.Sensor (Name, UOM) VALUES (N'Humidity', N'%')
+    SET @testHumidity = @@IDENTITY
+END
+
+DECLARE @testDeviceTempSensorId INT = (SELECT DeviceSensorId FROM Config.DeviceSensor WHERE DeviceId = @testDeviceId AND SensorId = @testTempId )
+IF @testDeviceTempSensorId IS NULL
     INSERT INTO Config.DeviceSensor (DeviceId, SensorId, IsEnabled) VALUES (@testDeviceId, @testTempId, 1)
+
+DECLARE @testDeviceHumidSensorId INT = (SELECT DeviceSensorId FROM Config.DeviceSensor WHERE DeviceId = @testDeviceId AND SensorId = @testHumidity )
+IF @testDeviceHumidSensorId IS NULL
+    INSERT INTO Config.DeviceSensor (DeviceId, SensorId, IsEnabled) VALUES (@testDeviceId, @testHumidity, 1)
 
 DECLARE @eventTypeId INT
 DECLARE runner CURSOR LOCAL FOR (SELECT [StateId] FROM Config.State)

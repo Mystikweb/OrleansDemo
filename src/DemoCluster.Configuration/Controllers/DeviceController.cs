@@ -1,6 +1,5 @@
-using DemoCluster.DAL;
 using DemoCluster.DAL.Logic;
-using DemoCluster.DAL.Models;
+using DemoCluster.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,17 +20,17 @@ namespace DemoCluster.Configuration.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DeviceConfig>> Get()
+        public async Task<IEnumerable<DeviceViewModel>> Get()
         {
-            return await deviceLogic.GetDeviceListAsync(HttpContext.RequestAborted);
+            return await deviceLogic.GetDeviceListAsync();
         }
 
         [HttpGet("{deviceId}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<DeviceConfig>> GetById(string deviceId)
+        public async Task<ActionResult<DeviceViewModel>> GetById(string deviceId)
         {
-            DeviceConfig result = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId), HttpContext.RequestAborted);
+            DeviceViewModel result = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId));
             if (result == null)
             {
                 return NotFound();
@@ -43,9 +42,9 @@ namespace DemoCluster.Configuration.Controllers
         [HttpGet("name/{name}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<DeviceConfig>> GetByName(string name)
+        public async Task<ActionResult<DeviceViewModel>> GetByName(string name)
         {
-            DeviceConfig result = await deviceLogic.GetDeviceAsync(name, HttpContext.RequestAborted);
+            DeviceViewModel result = await deviceLogic.GetDeviceAsync(name, HttpContext.RequestAborted);
             if (result == null)
             {
                 return NotFound();
@@ -57,18 +56,18 @@ namespace DemoCluster.Configuration.Controllers
         [HttpPost]
         [ProducesResponseType(400)]
         [ProducesResponseType(201)]
-        public async Task<ActionResult<DeviceConfig>> Post([FromBody] DeviceConfig config)
+        public async Task<ActionResult<DeviceViewModel>> Post([FromBody] DeviceViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             
-            DeviceConfig result = null;
+            DeviceViewModel result = null;
 
             try
             {
-                result = await deviceLogic.CreateDeviceAsync(config, HttpContext.RequestAborted);
+                result = await deviceLogic.CreateDeviceAsync(model);
             }
             catch (Exception ex)
             {
@@ -82,14 +81,14 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(204)]
-        public async Task<ActionResult> Put(string deviceId, [FromBody] DeviceConfig config)
+        public async Task<ActionResult> Put(string deviceId, [FromBody] DeviceViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            DeviceConfig device = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId), HttpContext.RequestAborted);
+            DeviceViewModel device = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId));
             if (device == null)
             {
                 return NotFound();
@@ -97,7 +96,7 @@ namespace DemoCluster.Configuration.Controllers
 
             try
             {
-                await deviceLogic.UpdateDeviceAsync(config, HttpContext.RequestAborted);
+                await deviceLogic.UpdateDeviceAsync(model);
             }
             catch (Exception ex)
             {
@@ -113,15 +112,15 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(204)]
         public async Task<ActionResult> Delete(string deviceId)
         {
-            DeviceConfig config = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId), HttpContext.RequestAborted);
-            if (config == null)
+            DeviceViewModel model = await deviceLogic.GetDeviceAsync(Guid.Parse(deviceId));
+            if (model == null)
             {
                 return NotFound();
             }
 
             try
             {
-                await deviceLogic.DeleteDeviceAsync(config, HttpContext.RequestAborted);
+                await deviceLogic.DeleteDeviceAsync(model);
             }
             catch (Exception ex)
             {

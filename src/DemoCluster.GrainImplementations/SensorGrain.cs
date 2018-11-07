@@ -1,20 +1,21 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DemoCluster.DAL.Models;
+using DemoCluster.Commands;
 using DemoCluster.GrainInterfaces;
-using DemoCluster.GrainInterfaces.Commands;
-using DemoCluster.GrainInterfaces.States;
+using DemoCluster.Models;
+using DemoCluster.States;
 using Microsoft.Extensions.Logging;
 using Orleans.EventSourcing;
 using Orleans.Providers;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
     [LogConsistencyProvider(ProviderName="LogStorage")]
     [StorageProvider(ProviderName = "SqlBase")]
     public class SensorGrain :
-        JournaledGrain<SensorState>, ISensorGrain
+        JournaledGrain<SensorState>,
+        ISensorGrain
     {
         private readonly ILogger logger;
 
@@ -28,18 +29,18 @@ namespace DemoCluster.GrainImplementations
             await RefreshNow();
         }
 
-        public async Task<bool> UpdateConfig(DeviceSensorConfig config)
+        public async Task<bool> UpdateModel(DeviceSensorViewModel model)
         {
-            RaiseEvent(new SensorConfigCommand(config.DeviceSensorId.Value, config.SensorId, config.Name, config.UOM, config.IsEnabled));
+            RaiseEvent(new UpdateSensor(model.DeviceSensorId.Value, model.SensorId, model.SensorName, model.UOM, model.IsEnabled));
             await ConfirmEvents();
 
             return true;
         }
 
-        public Task<SensorStateSummary> GetDeviceState()
+        public Task<SensorSummaryViewModel> GetSummary()
         {
-            var result = State.ToStateSummary();
-            var lastValue = State.Values.OrderByDescending(v => v.Timestamp).FirstOrDefault();
+            SensorSummaryViewModel result = State.ToViewModel();
+            SensorValueState lastValue = State.Values.OrderByDescending(v => v.Timestamp).FirstOrDefault();
 
             result.LastValue = lastValue == null ? null : (double?)lastValue.Value;
             result.LastValueReceived = lastValue == null ? null : (DateTime?)lastValue.Timestamp;
@@ -50,9 +51,9 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(result);
         }
 
-        public async Task RecordValue(SensorValueItem value)
+        public async Task RecordValue(SensorValueViewModel value)
         {
-            RaiseEvent(new SensorValueAddedCommand(value.Value, value.TimeStamp));
+            RaiseEvent(new AddSensorValue(value.Value, value.TimeStamp));
             await ConfirmEvents();
 
             logger.LogInformation($"Sensor {State.Name} ({State.DeviceSensorId}) received new value of {value.Value} at {value.TimeStamp.ToLocalTime().ToLongTimeString()}");

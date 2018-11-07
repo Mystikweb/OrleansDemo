@@ -1,55 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <ServerGarbageCollection>true</ServerGarbageCollection>
-        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <None Remove="appsettings.Development.json" />
-      <None Remove="appsettings.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="appsettings.Development.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
-        <ProjectReference Include="..\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj" />
-        <ProjectReference Include="..\Orleans.Storage.Redis\Orleans.Storage.Redis.csproj" />
-        <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
-        <ProjectReference Include="..\DemoCluster.Util\DemoCluster.Util.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Orleans.Statistics.AdoNet" Version="2.0.0-beta3" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
-        <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
-        <PackageReference Include="Orleans.Providers.MongoDB" Version="2.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
-        <PackageReference Include="OrleansDashboard" Version="2.1.3" />
-        <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.1.2" />
-        <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="2.1.2" />
-        <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="2.1.2" />
-        <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.1.2" />
-        <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.1.2" />
-        <PackageReference Include="Microsoft.Orleans.Server" Version="2.1.2" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
+    <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="2.1.2" />
+  </ItemGroup>
 
 </Project>

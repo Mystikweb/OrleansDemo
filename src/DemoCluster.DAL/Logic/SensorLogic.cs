@@ -1,12 +1,13 @@
+using DemoCluster.DAL.Database.Configuration;
+using DemoCluster.Models;
+using DemoCluster.Repository;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DemoCluster.DAL.Database.Configuration;
-using DemoCluster.DAL.Models;
-using Microsoft.Extensions.Logging;
 
 namespace DemoCluster.DAL.Logic
 {
@@ -15,13 +16,14 @@ namespace DemoCluster.DAL.Logic
         private readonly ILogger logger;
         private readonly IRepository<Sensor, ConfigurationContext> sensors;
 
-        public SensorLogic(ILogger<SensorLogic> logger, IRepository<Sensor, ConfigurationContext> sensors)
+        public SensorLogic(ILogger<SensorLogic> logger, 
+            IRepository<Sensor, ConfigurationContext> sensors)
         {
             this.logger = logger;
             this.sensors = sensors;
         }
 
-        public async Task<List<SensorConfig>> GetSensorListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<SensorViewModel>> GetSensorListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<Sensor> listResults = await sensors.AllAsync(token);
 
@@ -30,7 +32,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<SensorConfig>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
+        public async Task<List<SensorViewModel>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
             IEnumerable<Sensor> listResults = await sensors.FindByAsync(filter);
@@ -40,7 +42,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<SensorConfig>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
+        public async Task<List<SensorViewModel>> GetSensorListAsync(Expression<Func<Sensor, bool>> filter,
             Func<IQueryable<Sensor>, IOrderedQueryable<Sensor>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
@@ -51,7 +53,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<PaginatedList<SensorConfig>> GetSensorPageAsync(string filter, 
+        public async Task<PaginatedList<SensorViewModel>> GetSensorPageAsync(string filter, 
             int pageIndex, 
             int pageSize,
             CancellationToken token = default(CancellationToken))
@@ -64,7 +66,7 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<SensorConfig> GetSensorAsync(int sensorId,
+        public async Task<SensorViewModel> GetSensorAsync(int sensorId,
             CancellationToken token = default(CancellationToken))
         {
             Sensor result = await sensors.FindByKeyAsync(sensorId);
@@ -72,7 +74,7 @@ namespace DemoCluster.DAL.Logic
             return result?.ToViewModel();
         }
 
-        public async Task<SensorConfig> GetSensorAsync(string sensorName,
+        public async Task<SensorViewModel> GetSensorAsync(string sensorName,
             CancellationToken token = default(CancellationToken))
         {
             Sensor result = await sensors.FindByKeyAsync(sensorName);
@@ -80,7 +82,7 @@ namespace DemoCluster.DAL.Logic
             return result?.ToViewModel();
         }
 
-        public async Task<SensorConfig> SaveSensorAsync(SensorConfig model,
+        public async Task<SensorViewModel> SaveSensorAsync(SensorViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             Sensor sensorItem = null;
@@ -123,7 +125,7 @@ namespace DemoCluster.DAL.Logic
             return sensorItem?.ToViewModel();
         }
 
-        public async Task RemoveSensorAsync(SensorConfig model,
+        public async Task RemoveSensorAsync(SensorViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
