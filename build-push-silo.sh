@@ -15,7 +15,7 @@ rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster.GrainInterfaces $STA
 rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster.Hosting $STAGING_DIR
 rsync -av --exclude 'bin/' --exclude 'obj/' src/Orleans.Storage.Redis $STAGING_DIR
 rsync -av --exclude 'bin/' --exclude 'obj/' --exclude 'Dockerfile' src/DemoCluster.Silo $STAGING_DIR
-rsync src/DemoCluster/Dockerfile $STAGING_DIR
+rsync src/DemoCluster.Silo/Dockerfile $STAGING_DIR
 
 echo "Files copied to $STAGING_DIR starting Docker build process"
 cd $STAGING_DIR
