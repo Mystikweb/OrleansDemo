@@ -2,7 +2,7 @@
 
 echo "Creating staging folder for docker build of the runtime"
 
-STAGING_DIR = "./runtime-staging/"
+STAGING_DIR="./runtime-staging/"
 
 if [ -d "$STAGING_DIR" ]; then rm -Rf "$STAGING_DIR"; fi
 
