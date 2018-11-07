@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dotnet build -v m ./src/DemoCluster.sln
+dotnet build -v m ./DemoCluster.sln
