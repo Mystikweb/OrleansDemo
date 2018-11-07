@@ -5,7 +5,7 @@ echo "Creating staging folder for docker build of the runtime"
 DOCKER_TAG="latest"
 STAGING_DIR="./runtime-staging/"
 
-if [ ${TRAVIS_BRANCH} != "master"]; then let DOCKER_TAG=${TRAVIS_BRANCH}; fi
+if [ "$TRAVIS_BRANCH" != "master" ]; then let DOCKER_TAG=${TRAVIS_BRANCH}; fi
 
 if [ -d "$STAGING_DIR" ]; then rm -Rf "$STAGING_DIR"; fi
 
