@@ -1,16 +1,15 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DemoCluster.DAL;
-using DemoCluster.DAL.Models;
+using DemoCluster.Commands;
 using DemoCluster.GrainInterfaces;
-using DemoCluster.GrainInterfaces.Commands;
-using DemoCluster.GrainInterfaces.States;
+using DemoCluster.Models;
+using DemoCluster.States;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Runtime;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
 {
@@ -22,7 +21,7 @@ namespace DemoCluster.GrainImplementations
     {
         private readonly ILogger logger;
         private IGrainReminder reminder;
-        private DeviceConfig deviceConfig;
+        private DeviceViewModel deviceModel;
 
         public DeviceGrain(ILogger<DeviceGrain> logger)
         {
@@ -59,21 +58,21 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(State);
         }
 
-        public Task<DeviceConfig> GetCurrentConfig()
+        public Task<DeviceViewModel> GetDeviceModel()
         {
-            return Task.FromResult(deviceConfig);
+            return Task.FromResult(deviceModel);
         }
 
-        public Task<DeviceStateItem> GetCurrentStatus()
+        public Task<CurrentDeviceStateViewModel> GetCurrentStatus()
         {
-            return Task.FromResult(State.CurrentState.ToStateItem(this.GetPrimaryKey()));
+            return Task.FromResult(State.CurrentState.ToViewModel(this.GetPrimaryKey()));
         }
 
-        public async Task<bool> UpdateConfig(DeviceConfig config)
+        public async Task<bool> UpdateDevice(DeviceViewModel config)
         {
-            deviceConfig = config;
+            deviceModel = config;
 
-            RaiseEvent(new DeviceConfigCommand(this.GetPrimaryKey(), deviceConfig.Name));
+            RaiseEvent(new UpdateDevice(this.GetPrimaryKey(), deviceModel.Name));
             await ConfirmEvents();
             await ProcessConfigStatus();
             await ProcessConfigSensors();
@@ -81,9 +80,9 @@ namespace DemoCluster.GrainImplementations
             return true;
         }
 
-        public async Task<bool> UpdateCurrentStatus(DeviceStateItem state)
+        public async Task<bool> UpdateDeviceState(DeviceStateViewModel state)
         {
-            RaiseEvent(new DeviceStatusCommand(state.DeviceStatusId, state.StatusId, state.Name));
+            RaiseEvent(new UpdateDeviceState(state.DeviceStateId.Value, state.StateId, state.StateName));
             await ConfirmEvents();
 
             return true;
@@ -91,23 +90,23 @@ namespace DemoCluster.GrainImplementations
 
         private async Task ProcessConfigStatus()
         {
-            if (deviceConfig.IsEnabled && State.CurrentState.Name != "RUNNING")
+            if (deviceModel.IsEnabled && State.CurrentState.Name != "RUNNING")
             {
-                var runningState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "RUNNING");
+                DeviceStateViewModel runningState = deviceModel.States.FirstOrDefault(s => s.IsEnabled && s.StateName == "RUNNING");
                 if (runningState != null)
                 {
-                    await UpdateCurrentStatus(runningState.ConfigToStateItem(this.GetPrimaryKey()));
+                    await UpdateDeviceState(runningState);
                 }
 
                 reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
             }
 
-            if (!deviceConfig.IsEnabled && State.CurrentState.Name != "STOPPED")
+            if (!deviceModel.IsEnabled && State.CurrentState.Name != "STOPPED")
             {
-                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                DeviceStateViewModel stoppedState = deviceModel.States.FirstOrDefault(s => s.IsEnabled && s.StateName == "STOPPED");
                 if (stoppedState != null)
                 {
-                    await UpdateCurrentStatus(stoppedState.ConfigToStateItem(this.GetPrimaryKey()));
+                    await UpdateDeviceState(stoppedState);
                 }
 
                 await UnregisterReminder(reminder);
@@ -116,20 +115,20 @@ namespace DemoCluster.GrainImplementations
 
         private async Task ProcessConfigSensors()
         {
-            foreach (var sensor in deviceConfig.Sensors)
+            foreach (DeviceSensorViewModel deviceSensorModel in deviceModel.Sensors)
             {
-                var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
-                var isSetup = await sensorGrain.UpdateConfig(sensor);
+                ISensorGrain sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)deviceSensorModel.DeviceSensorId.Value);
+                bool isSetup = await sensorGrain.UpdateModel(deviceSensorModel);
 
                 if (!isSetup)
                 {
-                    logger.LogError($"Unable to register sensor {sensor.Name} ({sensor.DeviceSensorId}) with device {deviceConfig.Name}");
+                    logger.LogError($"Unable to register sensor {deviceSensorModel.SensorName} ({deviceSensorModel.DeviceSensorId}) with device {deviceModel.Name}");
                 }
                 else
                 {
-                    var sensorSummary = await sensorGrain.GetDeviceState();
+                    SensorSummaryViewModel sensorSummary = await sensorGrain.GetSummary();
 
-                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                    RaiseEvent(new UpdateDeviceSensor(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.SensorName,
                         sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
                         sensorSummary.AverageValue, sensorSummary.TotalValue));
 
@@ -140,14 +139,14 @@ namespace DemoCluster.GrainImplementations
 
         private async Task UpdateSensorSummaries()
         {
-            if (deviceConfig != null)
+            if (deviceModel != null)
             {
-                foreach (var sensor in deviceConfig.Sensors)
+                foreach (DeviceSensorViewModel sensor in deviceModel.Sensors)
                 {
-                    var sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId);
-                    var sensorSummary = await sensorGrain.GetDeviceState();
+                    ISensorGrain sensorGrain = GrainFactory.GetGrain<ISensorGrain>((long)sensor.DeviceSensorId.Value);
+                    SensorSummaryViewModel sensorSummary = await sensorGrain.GetSummary();
 
-                    RaiseEvent(new DeviceSensorSummaryUpdatedCommand(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.Name,
+                    RaiseEvent(new UpdateDeviceSensor(sensorSummary.DeviceSensorId, sensorSummary.SensorId, sensorSummary.SensorName,
                         sensorSummary.UOM, sensorSummary.IsEnabled, sensorSummary.LastValue, sensorSummary.LastValueReceived,
                         sensorSummary.AverageValue, sensorSummary.TotalValue));
 

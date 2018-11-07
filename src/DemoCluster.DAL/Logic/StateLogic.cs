@@ -1,13 +1,13 @@
+using DemoCluster.DAL.Database.Configuration;
+using DemoCluster.Models;
+using DemoCluster.Repository;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DemoCluster.DAL.Database.Configuration;
-using DemoCluster.DAL.Models;
-using DemoCluster.Repository;
-using Microsoft.Extensions.Logging;
 
 namespace DemoCluster.DAL.Logic
 {
@@ -16,13 +16,14 @@ namespace DemoCluster.DAL.Logic
         private readonly ILogger logger;
         private readonly IRepository<State, ConfigurationContext> states;
 
-        public StateLogic(ILogger<StateLogic> logger, IRepository<State, ConfigurationContext> states)
+        public StateLogic(ILogger<StateLogic> logger, 
+            IRepository<State, ConfigurationContext> states)
         {
             this.logger = logger;
             this.states = states;
         }
 
-        public async Task<List<StateConfig>> GetStateListAsync(CancellationToken token = default(CancellationToken))
+        public async Task<List<StateViewModel>> GetStateListAsync(CancellationToken token = default(CancellationToken))
         {
             IEnumerable<State> listResults = await states.AllAsync(token);
 
@@ -31,7 +32,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<StateConfig>> GetStateListAsync(Expression<Func<State, bool>> filter,
+        public async Task<List<StateViewModel>> GetStateListAsync(Expression<Func<State, bool>> filter,
             CancellationToken token = default(CancellationToken))
         {
             IEnumerable<State> listResults = await states.FindByAsync(filter);
@@ -41,7 +42,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<List<StateConfig>> GetStateListAsync(Expression<Func<State, bool>> filter,
+        public async Task<List<StateViewModel>> GetStateListAsync(Expression<Func<State, bool>> filter,
             Func<IQueryable<State>, IOrderedQueryable<State>> orderBy,
             CancellationToken token = default(CancellationToken))
         {
@@ -52,7 +53,7 @@ namespace DemoCluster.DAL.Logic
                 .ToList();
         }
 
-        public async Task<PaginatedList<StateConfig>> GetStatePageAsync(string filter, 
+        public async Task<PaginatedList<StateViewModel>> GetStatePageAsync(string filter, 
             int pageIndex, 
             int pageSize,
             CancellationToken token = default(CancellationToken))
@@ -65,7 +66,7 @@ namespace DemoCluster.DAL.Logic
                 .ToPaginatedList(pageIndex, pageSize);
         }
 
-        public async Task<StateConfig> GetStateAsync(int eventId,
+        public async Task<StateViewModel> GetStateAsync(int eventId,
             CancellationToken token = default(CancellationToken))
         {
             State result = await states.FindByKeyAsync(eventId);
@@ -73,7 +74,7 @@ namespace DemoCluster.DAL.Logic
             return result?.ToViewModel();
         }
 
-        public async Task<StateConfig> GetStateAsync(string eventName,
+        public async Task<StateViewModel> GetStateAsync(string eventName,
             CancellationToken token = default(CancellationToken))
         {
             State result = await states.FindByKeyAsync(eventName);
@@ -81,7 +82,7 @@ namespace DemoCluster.DAL.Logic
             return result?.ToViewModel();
         }
 
-        public async Task<StateConfig> SaveStateAsync(StateConfig model,
+        public async Task<StateViewModel> SaveStateAsync(StateViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             State stateItem = null;
@@ -107,7 +108,7 @@ namespace DemoCluster.DAL.Logic
                     stateItem = await states.FindByKeyAsync(model.Name);
                     if (stateItem == null)
                     {
-                        logger.LogError($"Unable to find device {model.Name} as result.");
+                        logger.LogError($"Unable to find state {model.Name} as result.");
                     }
                 }
                 else
@@ -117,14 +118,14 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error creating device {model.Name}");
+                logger.LogError(ex, $"Error creating state {model.Name}");
                 throw;
             }
 
             return stateItem?.ToViewModel();
         }
 
-        public async Task RemoveStateAsync(StateConfig model,
+        public async Task RemoveStateAsync(StateViewModel model,
             CancellationToken token = default(CancellationToken))
         {
             try
@@ -133,7 +134,7 @@ namespace DemoCluster.DAL.Logic
 
                 if (result.Succeeded)
                 {
-                    logger.LogInformation($"Removed service {model.Name} successfully.");
+                    logger.LogInformation($"Removed state {model.Name} successfully.");
                 }
                 else
                 {
@@ -142,7 +143,7 @@ namespace DemoCluster.DAL.Logic
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error removing service {model.Name}");
+                logger.LogError(ex, $"Error removing state {model.Name}");
                 throw;
             }
         }

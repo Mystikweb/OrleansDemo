@@ -1,4 +1,4 @@
-using DemoCluster.DAL;
+using DemoCluster.Hosting;
 using DemoCluster.GrainImplementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -98,7 +98,7 @@ namespace DemoCluster
                 .AddLogStorageBasedLogConsistencyProvider()
                 .AddRedisGrainStorage("CacheStorage", options => appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Bind(options))
                 .AddSimpleMessageStreamProvider("SensorValues")
-                .AddConfigurationLogic(appConfig.GetConnectionString("Configuration"))
+                .AddDataAccess(appConfig.GetConnectionString("Configuration"))
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .ConfigureLogging(log =>
                 {

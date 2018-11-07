@@ -1,14 +1,13 @@
-using System.Threading.Tasks;
-using DemoCluster.DAL.Models;
-using DemoCluster.GrainInterfaces.States;
+using DemoCluster.Models;
 using Orleans;
+using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
     public interface ISensorGrain : IGrainWithIntegerKey
     {
-        Task<bool> UpdateConfig(DeviceSensorConfig config);
-        Task RecordValue(SensorValueItem value);
-        Task<SensorStateSummary> GetDeviceState();
+        Task<bool> UpdateModel(DeviceSensorViewModel model);
+        Task RecordValue(SensorValueViewModel value);
+        Task<SensorSummaryViewModel> GetSummary();
     }
 }

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
+    <ProjectReference Include="..\DemoCluster.Hosting\DemoCluster.Hosting.csproj" />
   </ItemGroup>
 
 </Project>

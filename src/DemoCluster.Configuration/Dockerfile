@@ -4,15 +4,17 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY ["DemoCluster.Configuration/DemoCluster.Configuration.csproj", "DemoCluster.Configuration/"]
+COPY ["DemoCluster/DemoCluster.csproj", "DemoCluster/"]
 COPY ["DemoCluster.DAL/DemoCluster.DAL.csproj", "DemoCluster.DAL/"]
-RUN dotnet restore "DemoCluster.Configuration/DemoCluster.Configuration.csproj"
+COPY ["DemoCluster.Hosting/DemoCluster.Hosting.csproj", "DemoCluster.Hosting/"]
+COPY ["DemoCluster.Configuration/DemoCluster.Configuration.csproj", "DemoCluster.Configuration/"]
+RUN dotnet restore "DemoCluster.Configuration/DemoCluster.Configuration.csproj" -v q
 COPY . .
 WORKDIR "/src/DemoCluster.Configuration"
-RUN dotnet build "DemoCluster.Configuration.csproj" -c Release -o /app
+RUN dotnet build "DemoCluster.Configuration.csproj" -v q -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "DemoCluster.Configuration.csproj" -c Release -o /app
+RUN dotnet publish "DemoCluster.Configuration.csproj" -v q -c Release -o /app
 
 FROM base AS final
 WORKDIR /app

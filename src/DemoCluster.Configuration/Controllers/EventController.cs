@@ -1,10 +1,9 @@
+using DemoCluster.DAL.Logic;
+using DemoCluster.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DemoCluster.DAL;
-using DemoCluster.DAL.Logic;
-using DemoCluster.DAL.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DemoCluster.Configuration.Controllers
 {
@@ -13,25 +12,25 @@ namespace DemoCluster.Configuration.Controllers
     [Produces("application/json")]
     public class EventController : Controller
     {
-        private readonly EventLogic eventLogic;
+        private readonly EventTypeLogic eventLogic;
 
-        public EventController(EventLogic eventLogic)
+        public EventController(EventTypeLogic eventLogic)
         {
             this.eventLogic = eventLogic;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<EventConfig>> Get()
+        public async Task<IEnumerable<EventTypeViewModel>> Get()
         {
-            return await eventLogic.GetEventListAsync(HttpContext.RequestAborted);
+            return await eventLogic.GetEventListAsync();
         }
 
         [HttpGet("{eventId}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<EventConfig>> Get(int eventId)
+        public async Task<ActionResult<EventTypeViewModel>> Get(int eventId)
         {
-            EventConfig result = await eventLogic.GetEventAsync(eventId, HttpContext.RequestAborted);
+            EventTypeViewModel result = await eventLogic.GetEventAsync(eventId);
             if (result == null)
             {
                 return NotFound();
@@ -43,18 +42,18 @@ namespace DemoCluster.Configuration.Controllers
         [HttpPost]
         [ProducesResponseType(400)]
         [ProducesResponseType(201)]
-        public async Task<ActionResult<EventConfig>> Post([FromBody] EventConfig config)
+        public async Task<ActionResult<EventTypeViewModel>> Post([FromBody] EventTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            EventConfig result = null;
+            EventTypeViewModel result = null;
 
             try
             {
-                result = await eventLogic.SaveEventAsync(config, HttpContext.RequestAborted);
+                result = await eventLogic.SaveEventAsync(model);
             }
             catch (Exception ex)
             {
@@ -68,14 +67,14 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(204)]
-        public async Task<ActionResult> Put(int eventId, [FromBody] EventConfig config)
+        public async Task<ActionResult> Put(int eventId, [FromBody] EventTypeViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            EventConfig eventType = await eventLogic.GetEventAsync(eventId, HttpContext.RequestAborted);
+            EventTypeViewModel eventType = await eventLogic.GetEventAsync(eventId);
             if (eventType == null)
             {
                 return NotFound();
@@ -83,7 +82,7 @@ namespace DemoCluster.Configuration.Controllers
 
             try
             {
-                await eventLogic.SaveEventAsync(config, HttpContext.RequestAborted);
+                await eventLogic.SaveEventAsync(model);
             }
             catch (Exception ex)
             {
@@ -99,15 +98,15 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(204)]
         public async Task<ActionResult> Delete(int eventId)
         {
-            EventConfig config = await eventLogic.GetEventAsync(eventId, HttpContext.RequestAborted);
-            if (config == null)
+            EventTypeViewModel model = await eventLogic.GetEventAsync(eventId);
+            if (model == null)
             {
                 return NotFound();
             }
 
             try
             {
-                await eventLogic.RemoveEventAsync(config, HttpContext.RequestAborted);
+                await eventLogic.RemoveEventAsync(model);
             }
             catch (Exception ex)
             {

@@ -1,8 +1,8 @@
+using DemoCluster.Models;
+using DemoCluster.States;
+using Orleans;
 using System;
 using System.Threading.Tasks;
-using DemoCluster.DAL.Models;
-using DemoCluster.GrainInterfaces.States;
-using Orleans;
 
 namespace DemoCluster.GrainInterfaces
 {
@@ -10,9 +10,9 @@ namespace DemoCluster.GrainInterfaces
     {
         Task<Guid> GetKey();
         Task<DeviceState> GetState();
-        Task<DeviceConfig> GetCurrentConfig();
-        Task<bool> UpdateConfig(DeviceConfig config);
-        Task<DeviceStateItem> GetCurrentStatus();
-        Task<bool> UpdateCurrentStatus(DeviceStateItem state);
+        Task<DeviceViewModel> GetDeviceModel();
+        Task<bool> UpdateDevice(DeviceViewModel model);
+        Task<CurrentDeviceStateViewModel> GetCurrentStatus();
+        Task<bool> UpdateDeviceState(DeviceStateViewModel state);
     }
 }

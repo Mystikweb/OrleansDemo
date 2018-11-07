@@ -1,10 +1,9 @@
+using DemoCluster.DAL.Logic;
+using DemoCluster.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DemoCluster.DAL;
-using DemoCluster.DAL.Logic;
-using DemoCluster.DAL.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DemoCluster.Configuration.Controllers
 {
@@ -21,17 +20,17 @@ namespace DemoCluster.Configuration.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SensorConfig>> Get()
+        public async Task<IEnumerable<SensorViewModel>> Get()
         {
-            return await sensorLogic.GetSensorListAsync(HttpContext.RequestAborted);
+            return await sensorLogic.GetSensorListAsync();
         }
 
         [HttpGet("{sensorId}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<SensorConfig>> Get(int sensorId)
+        public async Task<ActionResult<SensorViewModel>> Get(int sensorId)
         {
-            SensorConfig result = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
+            SensorViewModel result = await sensorLogic.GetSensorAsync(sensorId);
             if (result == null)
             {
                 return NotFound();
@@ -43,18 +42,18 @@ namespace DemoCluster.Configuration.Controllers
         [HttpPost]
         [ProducesResponseType(400)]
         [ProducesResponseType(201)]
-        public async Task<ActionResult<SensorConfig>> Post([FromBody] SensorConfig config)
+        public async Task<ActionResult<SensorViewModel>> Post([FromBody] SensorViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            SensorConfig result = null;
+            SensorViewModel result = null;
 
             try
             {
-                result = await sensorLogic.SaveSensorAsync(config, HttpContext.RequestAborted);
+                result = await sensorLogic.SaveSensorAsync(model);
             }
             catch (Exception ex)
             {
@@ -68,22 +67,23 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(204)]
-        public async Task<ActionResult> Put(int sensorId, [FromBody] SensorConfig config)
+        public async Task<ActionResult> Put(int sensorId, [FromBody] SensorViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            SensorConfig sensor = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
+            SensorViewModel sensor = await sensorLogic.GetSensorAsync(sensorId);
             if (sensor == null)
             {
                 return NotFound();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                await sensorLogic.SaveSensorAsync(config, HttpContext.RequestAborted);
+                await sensorLogic.SaveSensorAsync(model);
             }
             catch (Exception ex)
             {
@@ -99,15 +99,15 @@ namespace DemoCluster.Configuration.Controllers
         [ProducesResponseType(204)]
         public async Task<ActionResult> Delete(int sensorId)
         {
-            SensorConfig config = await sensorLogic.GetSensorAsync(sensorId, HttpContext.RequestAborted);
-            if (config == null)
+            SensorViewModel model = await sensorLogic.GetSensorAsync(sensorId);
+            if (model == null)
             {
                 return NotFound();
             }
 
             try
             {
-                await sensorLogic.RemoveSensorAsync(config, HttpContext.RequestAborted);
+                await sensorLogic.RemoveSensorAsync(model);
             }
             catch (Exception ex)
             {

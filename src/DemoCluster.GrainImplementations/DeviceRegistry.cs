@@ -1,8 +1,7 @@
 using DemoCluster.DAL.Logic;
-using DemoCluster.DAL.Models;
-using DemoCluster.GrainImplementations.Patterms;
 using DemoCluster.GrainInterfaces;
-using DemoCluster.GrainInterfaces.States;
+using DemoCluster.Models;
+using DemoCluster.States;
 using Microsoft.Extensions.Logging;
 using Orleans.MultiCluster;
 using Orleans.Providers;
@@ -28,30 +27,30 @@ namespace DemoCluster.GrainImplementations
 
         public async Task Initialize()
         {
-            var deviceList = await storage.GetDeviceListAsync();
+            List<DeviceViewModel> deviceList = await storage.GetDeviceListAsync();
 
-            foreach (var device in deviceList)
+            foreach (DeviceViewModel deviceModel in deviceList)
             {
-                var deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+                IDeviceGrain deviceGrain = GrainFactory.GetGrain<IDeviceGrain>(Guid.Parse(deviceModel.DeviceId));
                 await RegisterGrain(deviceGrain);
 
-                bool isSetup = await deviceGrain.UpdateConfig(device);
+                bool isSetup = await deviceGrain.UpdateDevice(deviceModel);
                 if (!isSetup)
                 {
-                    logger.LogWarning($"Device {device.DeviceId} was not seupt correctly on initialization");
+                    logger.LogWarning($"Device {deviceModel.DeviceId} was not seupt correctly on initialization");
                 }
             }
         }
 
         public async Task Teardown()
         {
-            foreach (var device in State.RegisteredGrains)
+            foreach (IDeviceGrain device in State.RegisteredGrains)
             {
-                var deviceConfig = await device.GetCurrentConfig();
-                var stoppedState = deviceConfig.States.FirstOrDefault(s => s.IsEnabled && s.Name == "STOPPED");
+                DeviceViewModel deviceModel = await device.GetDeviceModel();
+                DeviceStateViewModel stoppedState = deviceModel.States.FirstOrDefault(s => s.IsEnabled && s.StateName == "STOPPED");
                 if (stoppedState != null)
                 {
-                    await device.UpdateCurrentStatus(stoppedState.ConfigToStateItem(Guid.Parse(deviceConfig.DeviceId)));
+                    await device.UpdateDeviceState(stoppedState);
                 }
 
                 await UnregisterGrain(device);
@@ -72,7 +71,7 @@ namespace DemoCluster.GrainImplementations
                     result.Add(currentState);
                 }    
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, $"Error loading device states");
             }
