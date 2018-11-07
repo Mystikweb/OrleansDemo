@@ -2,7 +2,7 @@
 
 echo "Creating staging folder for docker build of the configuration"
 
-STAGING_DIR = ./configuration-staging
+STAGING_DIR = "./configuration-staging/"
 
 if [ -d "$STAGING_DIR" ]; then rm -Rf "$STAGING_DIR"; fi
 

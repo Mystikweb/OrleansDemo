@@ -32,7 +32,7 @@ jobs:
         services:
           - docker
         before_script:
-          - chmod a+x ./buil-push-configuration.sh
+          - chmod a+x ./build-push-configuration.sh
         script: ./build-push-configuration.sh
       - stage: "Build Runtime Image"
         services:

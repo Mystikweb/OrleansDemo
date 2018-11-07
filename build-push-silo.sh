@@ -2,7 +2,7 @@
 
 echo "Creating staging folder for docker build of the silo"
 
-STAGING_DIR = ./silo-staging
+STAGING_DIR = "./silo-staging/"
 
 if [ -d "$STAGING_DIR" ]; then rm -Rf "$STAGING_DIR"; fi
 
