@@ -20,23 +20,23 @@ jobs:
         dotnet: 2.1.403
         language: csharp
         before_script:
-          - chmod a+x ./build-silo.sh
-        script: ./build-silo.sh
-      - stage: push-silo
+          - chmod a+x ./build-solution.sh
+        script: ./build-solution.sh
+      - stage: buildSiloImage
         services:
           - docker
         before_script:
-          - chmod a+x ./push-silo.sh
-        script: ./push-silo.sh
-      - stage: push-configuration
+          - chmod a+x ./build-push-silo.sh
+        script: ./build-push-silo.sh
+      - stage: buildConfigurationImage
         services:
           - docker
         before_script:
-          - chmod a+x ./push-configuration.sh
-        script: ./push-configuration.sh
-      - stage: push-messaging
+          - chmod a+x ./buil-push-configuration.sh
+        script: ./build-push-configuration.sh
+      - stage: buildRuntimeImage
         services:
           - docker
         before_script:
-          - chmod a+x ./push-messaging.sh
-        script: ./push-messaging.sh
+          - chmod a+x ./build-push-runtime.sh
+        script: ./build-push-runtime.sh
