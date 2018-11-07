@@ -11,6 +11,7 @@ mkdir -p "$STAGING_DIR"
 rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster "$STAGING_DIR"
 rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster.DAL "$STAGING_DIR"
 rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster.Hosting "$STAGING_DIR"
+rsync -av --exclude 'bin/' --exclude 'obj/' src/DemoCluster.GrainInterfaces "$STAGING_DIR"
 rsync -av --exclude 'bin/' --exclude 'obj/' --exclude 'Dockerfile' src/DemoCluster.Runtime "$STAGING_DIR"
 rsync src/DemoCluster.Runtime/Dockerfile "$STAGING_DIR"
 
