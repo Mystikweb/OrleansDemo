@@ -5,7 +5,7 @@ echo "Creating staging folder for docker build of the configuration"
 DOCKER_TAG="latest"
 STAGING_DIR="./configuration-staging/"
 
-if [ "$TRAVIS_BRANCH" != "master" ]; then let DOCKER_TAG="$TRAVIS_BRANCH"; fi
+if [ "$TRAVIS_BRANCH" != "master" ]; then DOCKER_TAG="$TRAVIS_BRANCH"; fi
 
 if [ -d "$STAGING_DIR" ]; then rm -Rf "$STAGING_DIR"; fi
 
