@@ -42,12 +42,6 @@ namespace DemoCluster.Runtime
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
 
             app.UseSignalR(routes =>
             {
