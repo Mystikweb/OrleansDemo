@@ -1,7 +1,7 @@
 version: "3"
 services:
   silo:
-    image: mystikweb/orleansdemosilo:develop
+    image: mystikweb.ddns.net/mystikweb/orleansdemosilo:develop
     deploy:
       replicas: 2
       restart_policy:
@@ -17,7 +17,7 @@ services:
     networks:
       - demonet
   config:
-    image: mystikweb/orleansdemoconfiguration:develop
+    image: mystikweb.ddns.net/mystikweb/orleansdemoconfiguration:develop
     deploy:
       replicas: 1
       restart_policy:
@@ -27,11 +27,11 @@ services:
           cpus: "0.5"
           memory: 512M
     ports:
-      - "5001:80"
+      - "5000:5000"
     networks:
       - demonet
   runtime:
-    image: mystikweb/orleansdemoruntime:develop
+    image: mystikweb.ddns.net/mystikweb/orleansdemoruntime:develop
     deploy:
       replicas: 1
       restart_policy:
@@ -41,7 +41,7 @@ services:
           cpus: "0.5"
           memory: 512M
     ports:
-      - "5005:80"
+      - "5005:5005"
     networks:
       - demonet
   visualizer:
