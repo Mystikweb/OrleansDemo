@@ -74,9 +74,8 @@ namespace DemoCluster
                 .Build();
 
             return new SiloHostBuilder()
-                .UseLocalhostClustering()
-                .Configure<EndpointOptions>(options => options.AdvertisedIPAddress = IPAddress.Loopback)
                 .Configure<ClusterOptions>(options => appConfig.GetSection("ClusterOptions").Bind(options))
+                .ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000)
                 .Configure<ProcessExitHandlingOptions>(options => options.FastKillOnProcessExit = false)
                 .UseAdoNetClustering(options =>
                 {
