@@ -38,14 +38,14 @@ rsync src/DemoCluster.Silo/Dockerfile ${SILO_STAGING_DIR}
 rsync -a src/DemoCluster ${CONFIGURATION_STAGING_DIR}
 rsync -a src/DemoCluster.DAL ${CONFIGURATION_STAGING_DIR}
 rsync -a src/DemoCluster.Hosting ${CONFIGURATION_STAGING_DIR}
-rsync -a --exclude 'Dockerfile' src/DemoCluster.Configuration ${CONFIGURATION_STAGING_DIR}
+rsync -a --exclude '*.Development.json' --exclude 'Dockerfile' src/DemoCluster.Configuration ${CONFIGURATION_STAGING_DIR}
 rsync src/DemoCluster.Configuration/Dockerfile ${CONFIGURATION_STAGING_DIR}
 
 rsync -a src/DemoCluster ${RUNTIME_STAGING_DIR}
 rsync -a src/DemoCluster.DAL ${RUNTIME_STAGING_DIR}
 rsync -a src/DemoCluster.Hosting ${RUNTIME_STAGING_DIR}
 rsync -a src/DemoCluster.GrainInterfaces ${RUNTIME_STAGING_DIR}
-rsync -a --exclude 'Dockerfile' src/DemoCluster.Runtime ${RUNTIME_STAGING_DIR}
+rsync -a --exclude '*.Development.json' --exclude 'Dockerfile' src/DemoCluster.Runtime ${RUNTIME_STAGING_DIR}
 rsync src/DemoCluster.Runtime/Dockerfile ${RUNTIME_STAGING_DIR}
 
 echo "Files copied to staging folders successfully...starting Docker build process for silo container..."
