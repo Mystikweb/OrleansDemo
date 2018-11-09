@@ -9,9 +9,9 @@ namespace Orleans.Storage.Redis
     public static class RedisProviderExtensions
     {
         public static ISiloHostBuilder AddRedisGrainStorage(this ISiloHostBuilder builder, string name,
-            Action<OptionsBuilder<RedisProviderOptions>> configureOptions = null)
+            Action<RedisProviderOptions> configureOptions)
         {
-            return builder.ConfigureServices(services => services.AddRedisGrainStorage(name, configureOptions));
+            return builder.ConfigureServices(services => services.AddRedisGrainStorage(name, ob => ob.Configure(configureOptions)));
         }
 
         public static IServiceCollection AddRedisGrainStorage(this IServiceCollection services, string name,

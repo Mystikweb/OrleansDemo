@@ -21,20 +21,20 @@ namespace Orleans.Storage.Redis
         private ConnectionMultiplexer connectionMultiplexer;
         private IDatabase redisDatabase;
 
-        public RedisStorage(ILoggerFactory loggerFactory, SerializationManager serializationManager, RedisProviderOptions options)
+        public RedisStorage(ILogger<RedisStorage> logger, SerializationManager serializationManager, RedisProviderOptions options)
         {
             this.options = options;
-            this.logger = loggerFactory.CreateLogger($"{this.GetType().FullName}");
+            this.logger = logger;
             this.serializationManager = serializationManager;
 
             redisOptions = new ConfigurationOptions
             {
-                ClientName = this.GetType().FullName,
+                ClientName = GetType().FullName,
                 EndPoints =
                 {
-                    { options.Hostname, options.Port }
+                    { this.options.Hostname, this.options.Port }
                 },
-                Password = options.Password
+                Password = this.options.Password
             };
 
             jsonSettings = new JsonSerializerSettings()
