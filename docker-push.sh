@@ -32,7 +32,7 @@ rsync -a src/DemoCluster.GrainImplementations ${SILO_STAGING_DIR}
 rsync -a src/DemoCluster.GrainInterfaces ${SILO_STAGING_DIR}
 rsync -a src/DemoCluster.Hosting ${SILO_STAGING_DIR}
 rsync -a src/Orleans.Storage.Redis ${SILO_STAGING_DIR}
-rsync -a --exclude 'appsettings.Development.json' --exclude 'Dockerfile' src/DemoCluster.Silo ${SILO_STAGING_DIR}
+rsync -a --exclude '*.Development.json' --exclude 'Dockerfile' src/DemoCluster.Silo ${SILO_STAGING_DIR}
 rsync src/DemoCluster.Silo/Dockerfile ${SILO_STAGING_DIR}
 
 rsync -a src/DemoCluster ${CONFIGURATION_STAGING_DIR}
