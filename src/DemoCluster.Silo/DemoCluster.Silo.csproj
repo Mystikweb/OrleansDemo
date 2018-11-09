@@ -10,7 +10,7 @@
     <None Remove="appsettings.json" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)'== 'Debug' ">
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Content Include="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
