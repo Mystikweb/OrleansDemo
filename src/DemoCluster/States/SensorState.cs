@@ -12,6 +12,7 @@ namespace DemoCluster.States
         public string Name { get; set; }
         public string UOM { get; set; }
         public bool IsEnabled { get; set; }
+        public bool IsRunning { get; set; }
         public DateTime Timestamp { get; set; }
         public List<SensorValueState> Values { get; set; } = new List<SensorValueState>();
 
@@ -22,12 +23,14 @@ namespace DemoCluster.States
             Name = @event.Name;
             UOM = @event.UOM;
             IsEnabled = @event.IsEnabled;
+            IsRunning = @event.IsRunning;
             Timestamp = @event.Timestamp;
         }
 
         public void Apply(UpdateSensorStatus @event)
         {
             IsEnabled = @event.IsEnabled;
+            IsRunning = @event.IsRunning;
             Timestamp = @event.Timestamp;
         }
 

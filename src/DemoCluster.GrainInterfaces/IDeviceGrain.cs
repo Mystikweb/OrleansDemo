@@ -1,18 +1,17 @@
 using DemoCluster.Models;
-using DemoCluster.States;
 using Orleans;
-using System;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
     public interface IDeviceGrain : IGrainWithGuidKey
     {
-        Task<Guid> GetKey();
-        Task<DeviceState> GetState();
+        Task<DeviceSummaryViewModel> GetDeviceSummary();
         Task<DeviceViewModel> GetDeviceModel();
-        Task<bool> UpdateDevice(DeviceViewModel model);
+        Task<bool> UpdateDevice(DeviceViewModel model, bool runDevice = true);
         Task<CurrentDeviceStateViewModel> GetCurrentStatus();
         Task<bool> UpdateDeviceState(DeviceStateViewModel state);
+        Task<bool> Start(DeviceViewModel model);
+        Task<bool> Stop();
     }
 }

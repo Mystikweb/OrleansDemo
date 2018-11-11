@@ -6,8 +6,10 @@ namespace DemoCluster.GrainInterfaces
 {
     public interface ISensorGrain : IGrainWithIntegerKey
     {
-        Task<bool> UpdateModel(DeviceSensorViewModel model);
-        Task RecordValue(SensorValueViewModel value);
         Task<SensorSummaryViewModel> GetSummary();
+        Task<bool> UpdateModel(DeviceSensorViewModel model, bool runSensor = true);
+        Task RecordValue(SensorValueViewModel value);
+        Task<bool> Start(bool withUpdate = true);
+        Task<bool> Stop();
     }
 }

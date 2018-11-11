@@ -10,6 +10,7 @@ namespace DemoCluster.States
         public string Name { get; set; }
         public string UOM { get; set; }
         public bool Enabled { get; set; }
+        public bool Running { get; set; }
         public double? LastValue { get; set; }
         public DateTime? LastValueReceived { get; set; }
         public double? AverageValue { get; set; }

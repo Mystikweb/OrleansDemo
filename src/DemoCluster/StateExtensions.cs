@@ -21,7 +21,8 @@ namespace DemoCluster
             SensorId = state.SensorId,
             SensorName = state.Name,
             UOM = state.UOM,
-            IsEnabled = state.IsEnabled
+            IsEnabled = state.IsEnabled,
+            IsRunning = state.IsRunning
         };
     }
 }

@@ -9,6 +9,7 @@ namespace DemoCluster.States
     {
         public Guid DeviceId { get; set; }
         public string Name { get; set; }
+        public bool IsEnabled { get; set; }
         public DateTime Timestamp { get; set; }
         public CurrentDeviceState CurrentState { get; set; } = new CurrentDeviceState();
         public List<DeviceSensorState> Sensors { get; set; } = new List<DeviceSensorState>();
@@ -17,6 +18,13 @@ namespace DemoCluster.States
         {
             DeviceId = @event.DeviceId;
             Name = @event.Name;
+            IsEnabled = @event.IsEnabled;
+            Timestamp = @event.Timestamp;
+        }
+
+        public void Apply(UpdateDeviceStatus @event)
+        {
+            IsEnabled = @event.IsEnabled;
             Timestamp = @event.Timestamp;
         }
 
@@ -42,6 +50,7 @@ namespace DemoCluster.States
                 Name = @event.Name,
                 UOM = @event.UOM,
                 Enabled = @event.IsEnabled,
+                Running = @event.IsRunning,
                 LastValue = @event.LastValue,
                 LastValueReceived = @event.LastValueReceived,
                 AverageValue = @event.AverageValue,

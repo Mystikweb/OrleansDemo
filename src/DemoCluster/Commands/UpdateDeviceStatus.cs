@@ -2,9 +2,9 @@ using System;
 
 namespace DemoCluster.Commands
 {
-    public class UpdateSensorStatus : BaseCommand
+    public class UpdateDeviceStatus : BaseCommand
     {
-        public UpdateSensorStatus(bool isEnabled, 
+        public UpdateDeviceStatus(bool isEnabled,
             bool shouldRun,
             DateTime? timeStamp = null)
             : base(timeStamp)

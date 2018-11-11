@@ -8,7 +8,8 @@ namespace DemoCluster.Commands
             int sensorId, 
             string name, 
             string uom, 
-            bool isEnabled, 
+            bool isEnabled,
+            bool shouldRun,
             DateTime? timeStamp = null)
             : base(timeStamp)
         {
@@ -17,12 +18,14 @@ namespace DemoCluster.Commands
             Name = name;
             UOM = uom;
             IsEnabled = isEnabled;
+            IsRunning = isEnabled && shouldRun ? true : false;
         }
 
-        public int DeviceSensorId { get; private set; }
-        public int SensorId { get; private set; }
-        public string Name { get; private set; }
-        public string UOM { get; private set; }
-        public bool IsEnabled { get; private set; }
+        public int DeviceSensorId { get; }
+        public int SensorId { get; }
+        public string Name { get; }
+        public string UOM { get; }
+        public bool IsEnabled { get; }
+        public bool IsRunning { get; }
     }
 }
