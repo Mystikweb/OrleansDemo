@@ -1,0 +1,61 @@
+version: "3"
+services:
+  silo:
+    image: mystikweb.ddns.net/mystikweb/orleansdemosilo:develop
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1024M
+    ports:
+      - "8080:8080"
+      - "11111:11111"
+      - "30000:30000"
+      - "40000:40000"
+      - "50000:50000"
+    networks:
+      - demonet
+  config:
+    image: mystikweb.ddns.net/mystikweb/orleansdemoconfiguration:develop
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    ports:
+      - "5000:5000"
+    networks:
+      - demonet
+  runtime:
+    image: mystikweb.ddns.net/mystikweb/orleansdemoruntime:develop
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    ports:
+      - "5005:5005"
+    networks:
+      - demonet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8000:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - demonet
+networks:
+  demonet:
