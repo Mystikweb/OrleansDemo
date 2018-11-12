@@ -44,7 +44,7 @@ namespace DemoCluster.GrainImplementations
         {
             switch (reminderName)
             {
-                case "GetSensorUpdates":
+                case Constants.REMINDER_GET_SENSOR_UPDATES:
                     await UpdateSensorSummaries();
                     break;
             }
@@ -101,16 +101,21 @@ namespace DemoCluster.GrainImplementations
             return true;
         }
 
-        public async Task<bool> Start(DeviceViewModel model)
+        public async Task<bool> Start(DeviceViewModel model = null)
         {
-            if (deviceModel == null)
+            if (deviceModel == null && model != null)
             {
                 await UpdateDevice(model);
             }
-            else
+            else if (model == null && deviceModel != null)
             {
                 await ProcessConfigStatus(true);
                 await ProcessConfigSensors(true);
+            }
+            else
+            {
+                logger.LogError($"No configuration defined for device {this.GetPrimaryKeyString()}. Unable to start device.");
+                return false;
             }
 
             return IsRunning;
@@ -193,7 +198,7 @@ namespace DemoCluster.GrainImplementations
 
         private async Task SetupReminder()
         {
-            reminder = await RegisterOrUpdateReminder("GetSensorUpdates", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
+            reminder = await RegisterOrUpdateReminder(Constants.REMINDER_GET_SENSOR_UPDATES, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
         }
     }
 }

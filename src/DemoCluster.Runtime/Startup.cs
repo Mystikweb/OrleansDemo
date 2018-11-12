@@ -46,6 +46,7 @@ namespace DemoCluster.Runtime
             app.UseSignalR(routes =>
             {
                 routes.MapHub<RegistrationHub>("/registration");
+                routes.MapHub<DeviceHub>("/device");
                 routes.MapHub<SensorValueHub>("/sensorvalue");
             });
 

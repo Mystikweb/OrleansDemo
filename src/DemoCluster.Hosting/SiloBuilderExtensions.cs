@@ -1,3 +1,4 @@
+using DemoCluster.GrainImplementations;
 using Orleans.Hosting;
 
 namespace DemoCluster.Hosting
@@ -9,6 +10,13 @@ namespace DemoCluster.Hosting
         {
             return builder.ConfigureServices(services =>
                 services.AddDataAccess(connectionString));
+        }
+
+        public static ISiloHostBuilder AddDeviceServices(this ISiloHostBuilder builder)
+        {
+            return builder.AddGrainService<DeviceService>()
+                .ConfigureServices(services =>
+                    services.AddDeviceServices());
         }
     }
 }

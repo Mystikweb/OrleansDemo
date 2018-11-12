@@ -25,16 +25,16 @@ namespace DemoCluster.Runtime.Hubs
             SensorSummaryViewModel summary = await sensorGrain.GetSummary();
             await Groups.AddToGroupAsync(Context.ConnectionId, $"Sensor_{deviceSensorId}");
 
-            await Clients.Group($"Sensor_{deviceSensorId}").SendAsync("CurrentState", summary);
+            await Clients.Group($"Sensor_{deviceSensorId}").SendAsync(Constants.MESSAGING_SENSOR_VALUE_CURRENT_STATE, summary);
         }
 
-        public async Task Recordvalue(SensorValueViewModel value)
+        public async Task RecordValue(SensorValueViewModel value)
         {
             ISensorGrain sensorGrain = clusterClient.GetGrain<ISensorGrain>(value.DeviceSensorId);
             await sensorGrain.RecordValue(value);
 
             SensorSummaryViewModel summary = await sensorGrain.GetSummary();
-            await Clients.Group($"Sensor_{value.DeviceSensorId}").SendAsync("CurrentState", summary);
+            await Clients.Group($"Sensor_{value.DeviceSensorId}").SendAsync(Constants.MESSAGING_SENSOR_VALUE_CURRENT_STATE, summary);
         }
     }
 }

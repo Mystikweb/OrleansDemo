@@ -11,7 +11,7 @@ namespace DemoCluster.GrainInterfaces
         Task<bool> UpdateDevice(DeviceViewModel model, bool runDevice = true);
         Task<CurrentDeviceStateViewModel> GetCurrentStatus();
         Task<bool> UpdateDeviceState(DeviceStateViewModel state);
-        Task<bool> Start(DeviceViewModel model);
+        Task<bool> Start(DeviceViewModel model = null);
         Task<bool> Stop();
     }
 }

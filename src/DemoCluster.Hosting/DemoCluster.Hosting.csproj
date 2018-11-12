@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DemoCluster.DAL\DemoCluster.DAL.csproj" />
+    <ProjectReference Include="..\DemoCluster.GrainImplementations\DemoCluster.GrainImplementations.csproj" />
+    <ProjectReference Include="..\DemoCluster.GrainInterfaces\DemoCluster.GrainInterfaces.csproj" />
     <ProjectReference Include="..\DemoCluster\DemoCluster.csproj" />
   </ItemGroup>
 

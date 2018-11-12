@@ -7,7 +7,6 @@ using Orleans.Core;
 using Orleans.Runtime;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainImplementations
@@ -19,8 +18,9 @@ namespace DemoCluster.GrainImplementations
     {
         private readonly ILogger logger;
         private readonly IGrainFactory grainFactory;
-
         private readonly HashSet<DeviceViewModel> devices;
+
+        private bool hasStarted = false;
 
         public DeviceService(IGrainIdentity grainIdentity, 
             Silo silo, 
@@ -34,25 +34,83 @@ namespace DemoCluster.GrainImplementations
             devices = new HashSet<DeviceViewModel>();
         }
 
-        public override Task Start()
+        protected async override Task StartInBackground()
         {
-            
-            return base.Start();
+            IDeviceRegistry registry = grainFactory.GetGrain<IDeviceRegistry>(0);
+            List<IDeviceGrain> deviceGrains = await registry.GetRegisteredGrains();
+
+            foreach (IDeviceGrain deviceGrain in deviceGrains)
+            {
+                grainFactory.BindGrainReference(deviceGrain);
+                DeviceViewModel deviceModel = await deviceGrain.GetDeviceModel();
+                
+                if (!devices.Contains(deviceModel))
+                {
+                    devices.Add(deviceModel);
+                }
+            }
+
+            hasStarted = true;
+
+            await base.StartInBackground();
         }
 
-        public Task<IDeviceGrain> AddDevice(DeviceViewModel device)
+        public async Task<List<DeviceSummaryViewModel>> GetDevices()
         {
-            throw new NotImplementedException();
+            if (hasStarted)
+            {
+                IDeviceRegistry deviceRegistry = grainFactory.GetGrain<IDeviceRegistry>(0);
+                List<IDeviceGrain> deviceGrains = await deviceRegistry.GetRegisteredGrains();
+
+                List<DeviceSummaryViewModel> results = new List<DeviceSummaryViewModel>();
+
+                foreach (IDeviceGrain device in deviceGrains)
+                {
+                    grainFactory.BindGrainReference(device);
+                    results.Add(await device.GetDeviceSummary());
+                }
+
+                return results;
+            }
+
+            return null;
         }
 
-        public Task<IDeviceGrain> UpdateDevice(DeviceViewModel device)
+        public async Task<DeviceSummaryViewModel> AddDevice(DeviceViewModel device)
         {
-            throw new NotImplementedException();
+            IDeviceGrain deviceGrain = grainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+            IDeviceRegistry registry = grainFactory.GetGrain<IDeviceRegistry>(0);
+
+            if (!devices.Contains(device))
+            {
+                await deviceGrain.Start(device);
+                await registry.RegisterGrain(deviceGrain);
+                devices.Add(device);
+            }
+
+            return await deviceGrain.GetDeviceSummary();
         }
 
-        public Task RemoveDevice(DeviceViewModel device)
+        public async Task<DeviceSummaryViewModel> UpdateDevice(DeviceViewModel device)
         {
-            throw new NotImplementedException();
+            IDeviceGrain deviceGrain = grainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+            await deviceGrain.UpdateDevice(device);
+
+            return await deviceGrain.GetDeviceSummary();
+        }
+
+        public async Task RemoveDevice(DeviceViewModel device)
+        {
+            if (devices.Contains(device))
+            {
+                IDeviceGrain deviceGrain = grainFactory.GetGrain<IDeviceGrain>(Guid.Parse(device.DeviceId));
+                await deviceGrain.UpdateDevice(device, false);
+
+                IDeviceRegistry registry = grainFactory.GetGrain<IDeviceRegistry>(0);
+                await registry.UnregisterGrain(deviceGrain);
+
+                devices.Remove(device);
+            }
         }
     }
 }

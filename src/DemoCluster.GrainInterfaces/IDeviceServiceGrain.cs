@@ -1,11 +1,11 @@
 using DemoCluster.Models;
-using Orleans.Services;
+using Orleans;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DemoCluster.GrainInterfaces
 {
-    public interface IDeviceService : IGrainService
+    public interface IDeviceServiceGrain : IGrainWithIntegerKey
     {
         Task<List<DeviceSummaryViewModel>> GetDevices();
         Task<DeviceSummaryViewModel> AddDevice(DeviceViewModel device);

@@ -98,6 +98,7 @@ namespace DemoCluster
                 .AddRedisGrainStorage("CacheStorage", options => appConfig.GetSection(RedisProviderOptions.SECTION_NAME).Bind(options))
                 .AddSimpleMessageStreamProvider("SensorValues")
                 .AddDataAccess(appConfig.GetConnectionString("Configuration"))
+                .AddDeviceServices()
                 .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                 .ConfigureLogging(log =>
                 {
@@ -106,7 +107,6 @@ namespace DemoCluster
                     log.AddDebug();
                 })
                 .UseDashboard()
-                .AddStartupTask<DeviceRegistryStartup>()
                 .Build();
         }
     }

@@ -30,13 +30,12 @@ namespace DemoCluster.Runtime.Hubs
             DeviceViewModel result = await deviceLogic.GetDeviceAsync(name);
             if (result != null)
             {
-                IDeviceRegistry registry = clusterClient.GetGrain<IDeviceRegistry>(0);
+                IDeviceServiceGrain serviceGrain = clusterClient.GetGrain<IDeviceServiceGrain>(0);
                 logger.LogDebug($"Device registry invoked and making call to start device {result.Name} with id {result.DeviceId}");
-                await registry.StartDevice(result.DeviceId);
-
+                await serviceGrain.AddDevice(result);
             }
 
-            await Clients.Caller.SendAsync("ReceiveConfig", result);
+            await Clients.Caller.SendAsync(Constants.MESSAGING_REGISTRATION_RECEIVE_CONFIG, result);
         }
     }
 }
