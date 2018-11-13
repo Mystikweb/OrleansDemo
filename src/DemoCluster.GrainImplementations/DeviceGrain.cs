@@ -75,6 +75,13 @@ namespace DemoCluster.GrainImplementations
             return Task.FromResult(deviceModel);
         }
 
+        public Task SetDeviceModel(DeviceViewModel model)
+        {
+            deviceModel = model;
+
+            return Task.CompletedTask;
+        }
+
         public Task<CurrentDeviceStateViewModel> GetCurrentStatus()
         {
             return Task.FromResult(State.CurrentState.ToViewModel(this.GetPrimaryKey()));

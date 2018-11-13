@@ -18,23 +18,24 @@ namespace DemoCluster.Runtime.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly ILogger logger;
-        private readonly IGrainFactory grainFactory;
+        private readonly IClusterClient clusterClient;
         private readonly IHubContext<DeviceHub> deviceHub;
 
         public DashboardController(ILogger<DashboardController> logger,
-            IGrainFactory grainFactory,
+            IClusterClient clusterClient,
             IHubContext<DeviceHub> deviceHub)
         {
             this.logger = logger;
-            this.grainFactory = grainFactory;
+            this.clusterClient = clusterClient;
             this.deviceHub = deviceHub;
         }
 
-        public async Task<ActionResult<List<DeviceSummaryViewModel>>> GetAsync()
+        [HttpGet]
+        public async Task<List<DeviceSummaryViewModel>> Get()
         {
-            IDeviceServiceGrain serviceGrain = grainFactory.GetGrain<IDeviceServiceGrain>(0);
+            IDeviceServiceGrain serviceGrain = clusterClient.GetGrain<IDeviceServiceGrain>(0);
 
-            return Ok(await serviceGrain.GetDevices());
+            return await serviceGrain.GetDevices();
         }
     }
 }

@@ -1,3 +1,4 @@
+using DemoCluster.DAL.Logic;
 using DemoCluster.GrainInterfaces;
 using DemoCluster.Models;
 using Microsoft.Extensions.Logging;
@@ -18,17 +19,20 @@ namespace DemoCluster.GrainImplementations
     {
         private readonly ILogger logger;
         private readonly IGrainFactory grainFactory;
-        private readonly HashSet<DeviceViewModel> devices;
+        private readonly DeviceLogic deviceLogic;
 
+        private readonly HashSet<DeviceViewModel> devices;
         private bool hasStarted = false;
 
         public DeviceService(IGrainIdentity grainIdentity, 
             Silo silo, 
             ILoggerFactory loggerFactory, 
-            IGrainFactory grainFactory)
+            IGrainFactory grainFactory,
+            DeviceLogic deviceLogic)
             : base(grainIdentity, silo, loggerFactory)
         {
             this.grainFactory = grainFactory;
+            this.deviceLogic = deviceLogic;
 
             logger = loggerFactory.CreateLogger<DeviceService>();
             devices = new HashSet<DeviceViewModel>();
@@ -43,7 +47,12 @@ namespace DemoCluster.GrainImplementations
             {
                 grainFactory.BindGrainReference(deviceGrain);
                 DeviceViewModel deviceModel = await deviceGrain.GetDeviceModel();
-                
+                if (deviceModel == null)
+                {
+                    deviceModel = await deviceLogic.GetDeviceAsync(deviceGrain.GetPrimaryKey());
+                    await deviceGrain.Start(deviceModel);
+                }
+
                 if (!devices.Contains(deviceModel))
                 {
                     devices.Add(deviceModel);
@@ -67,7 +76,8 @@ namespace DemoCluster.GrainImplementations
                 foreach (IDeviceGrain device in deviceGrains)
                 {
                     grainFactory.BindGrainReference(device);
-                    results.Add(await device.GetDeviceSummary());
+                    DeviceSummaryViewModel result = await device.GetDeviceSummary();
+                    results.Add(result);
                 }
 
                 return results;

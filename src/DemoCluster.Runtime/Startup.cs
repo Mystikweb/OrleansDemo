@@ -30,6 +30,16 @@ namespace DemoCluster.Runtime
             services.AddDataAccess(Configuration.GetConnectionString("Configuration"));
             services.AddSingleton(CreateClusterClient);
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(config =>
+                {
+                    config.AllowAnyHeader();
+                    config.AllowAnyMethod();
+                    config.AllowAnyOrigin();
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSignalR();
@@ -42,6 +52,8 @@ namespace DemoCluster.Runtime
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors();
 
             app.UseSignalR(routes =>
             {

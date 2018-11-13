@@ -21,6 +21,16 @@ namespace DemoCluster.Configuration
         {
             services.AddDataAccess(Configuration.GetConnectionString("Configuration"));
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(config =>
+                {
+                    config.AllowAnyHeader();
+                    config.AllowAnyMethod();
+                    config.AllowAnyOrigin();
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -31,7 +41,9 @@ namespace DemoCluster.Configuration
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            app.UseCors();
+
             app.UseMvc();
         }
     }

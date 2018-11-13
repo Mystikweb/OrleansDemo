@@ -8,6 +8,7 @@ namespace DemoCluster.GrainInterfaces
     {
         Task<DeviceSummaryViewModel> GetDeviceSummary();
         Task<DeviceViewModel> GetDeviceModel();
+        Task SetDeviceModel(DeviceViewModel model);
         Task<bool> UpdateDevice(DeviceViewModel model, bool runDevice = true);
         Task<CurrentDeviceStateViewModel> GetCurrentStatus();
         Task<bool> UpdateDeviceState(DeviceStateViewModel state);
